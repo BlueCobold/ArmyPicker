@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical" >
+
+	<LinearLayout
+		android:id="@+id/option_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="10dp"
+		android:orientation="vertical"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/group_points"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:textSize="16sp"
+		android:layout_marginRight="40dp"
+		android:gravity="right"
+		android:minWidth="50dp"
+		android:paddingLeft="10dp"
+		android:textColor="#A0FFFFFF"
+		/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="@drawable/option_group_list_separator"/>
+
+</LinearLayout>

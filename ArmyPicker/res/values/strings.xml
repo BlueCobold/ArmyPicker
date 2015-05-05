@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+		<string name="app_name">ArmyPicker</string>
+	<string name="title_activity_army">ArmyActivity</string>
+	<string name="new_item">new</string>
+	<string name="abort">Abort</string>
+	<string name="your_available_armies">Your armies:</string>
+	<string name="available_units">Available units:</string>
+	<string name="your_selected_units">Selected units:</string>
+	<string name="delete_button">Button to delete the entry</string>
+	<string name="available_armies">Available armies:</string>
+
+</resources>

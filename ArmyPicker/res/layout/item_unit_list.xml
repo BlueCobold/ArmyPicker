@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical" >
+
+	<TextView
+		android:id="@+id/unit_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:textSize="20sp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp"
+		android:paddingLeft="30dp"
+		android:textColor="#A0FFFFFF"
+		android:text="Unit name"
+		/>
+
+	<ImageButton
+		android:id="@+id/unit_delete"
+		android:layout_width="30dp"
+		android:layout_height="30dp"
+		android:layout_alignParentRight="true"
+		android:layout_marginTop="10dp"
+		android:background="@null"
+		android:scaleType="fitCenter"
+		android:src="@drawable/ic_action_discard" />
+
+	<TextView
+		android:id="@+id/unit_points"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toLeftOf="@+id/unit_delete"
+		android:textSize="20sp"
+		android:paddingTop="10dp"
+		android:gravity="right"
+		android:paddingBottom="10dp"
+		android:paddingRight="5dp"
+		android:minWidth="50dp"
+		android:textColor="#A0FFFFFF"
+		android:text="180"
+		/>
+
+	<ImageButton
+		android:id="@+id/unit_add"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_width="30dp"
+		android:layout_height="30dp"
+		android:layout_marginTop="10dp"
+		android:layout_toLeftOf="@+id/unit_points"
+		android:scaleType="fitCenter"
+		android:background="@null"
+		android:src="@drawable/ic_action_new" />
+
+	<TextView
+		android:id="@+id/unit_amount"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@id/unit_name"
+		android:padding="10dp"
+		android:text="[1]"
+		android:textColor="#A0FFFFFF"
+		android:textSize="20sp" />
+
+	<LinearLayout
+		android:id="@+id/unit_options_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:orientation="vertical"
+		android:background="#20000050"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		android:layout_alignParentLeft="true"
+		android:layout_below="@+id/unit_name" >
+	</LinearLayout>
+
+</RelativeLayout>
