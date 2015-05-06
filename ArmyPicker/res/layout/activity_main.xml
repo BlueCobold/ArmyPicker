@@ -70,5 +70,53 @@
 
 		</LinearLayout>
 	</LinearLayout>
+	
+	<LinearLayout
+		android:id="@+id/army_edit_army"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:background="#80000000">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="fill_parent"
+			android:background="@drawable/army_list_gradient"
+			android:orientation="vertical"
+			android:layout_margin="20dp">
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#A0FFFFFF"
+				android:textSize="20sp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="10dp"
+				android:text="@string/army_name"
+				/>
+
+			<EditText
+			    android:id="@+id/army_name_edit"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+				android:textColor="#A0FFFFFF"
+			    android:textSize="20sp" >
+
+			    <requestFocus />
+			</EditText>
+			
+			<View 
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"/>
+
+			<Button
+				android:id="@+id/army_edit_ok"
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:textColor="#FFFFFFFF"
+				android:text="@string/ok" />
+
+		</LinearLayout>
+	</LinearLayout>
 </RelativeLayout>
 

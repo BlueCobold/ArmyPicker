@@ -10,5 +10,7 @@
 	<string name="your_selected_units">Selected units:</string>
 	<string name="delete_button">Button to delete the entry</string>
 	<string name="available_armies">Available armies:</string>
+	<string name="ok">OK</string>
+	<string name="army_name">Army name:</string>
 
 </resources>

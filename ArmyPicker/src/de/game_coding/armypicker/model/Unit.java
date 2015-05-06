@@ -20,7 +20,7 @@ public class Unit implements Parcelable {
 	private List<UnitOptionGroup> options = new ArrayList<UnitOptionGroup>();
 
 	public Unit(final String name, final Type type, final int points, final int amount, final int maxAmount,
-			final UnitOptionGroup... options) {
+		final UnitOptionGroup... options) {
 		this.name = name;
 		this.type = type;
 		this.points = points;
@@ -96,7 +96,11 @@ public class Unit implements Parcelable {
 	}
 
 	public int getTotalCosts() {
-		int total = amount * points;
+		return amount * points + getTotalOptionCosts();
+	}
+
+	public int getTotalOptionCosts() {
+		int total = 0;
 		for (final UnitOptionGroup group : options) {
 			total += group.getTotalCosts();
 		}
@@ -117,7 +121,7 @@ public class Unit implements Parcelable {
 		dest.writeInt(maxAmount);
 		dest.writeInt(initialAmount);
 
-		dest.writeList(options);
+		dest.writeTypedList(options);
 	}
 
 	private void readFromParcel(final Parcel source) {
@@ -129,6 +133,22 @@ public class Unit implements Parcelable {
 		initialAmount = source.readInt();
 
 		options = new ArrayList<UnitOptionGroup>();
-		source.readList(options, UnitOptionGroup.class.getClassLoader());
+		source.readTypedList(options, new UnitOptionGroupCreator(OptionRule.CREATOR));
+		for (final UnitOptionGroup group : options) {
+			for (final IRule rule : group.getRules()) {
+				((OptionRule) rule).setTargets(options);
+			}
+		}
+	}
+
+	public Unit addRule(final int targetGroupId, final OptionRule rule) {
+		rule.setTargets(options);
+		for (final UnitOptionGroup group : options) {
+			if (group.getId() == targetGroupId) {
+				group.getRules().add(rule);
+				break;
+			}
+		}
+		return this;
 	}
 }

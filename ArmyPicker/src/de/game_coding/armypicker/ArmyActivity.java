@@ -12,13 +12,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import de.game_coding.armypicker.R;
-import de.game_coding.armypicker.adapter.IValueChangedNotifier;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
 import de.game_coding.armypicker.adapter.UnitTypeListAdapter;
 import de.game_coding.armypicker.model.Army;
+import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.CloneUtil;
+import de.game_coding.armypicker.util.UIUtil;
 
 public class ArmyActivity extends Activity {
 
@@ -58,19 +58,19 @@ public class ArmyActivity extends Activity {
 				army.getUnits().add(CloneUtil.clone((Unit) parent.getAdapter().getItem(position), Unit.CREATOR));
 				armyList.setAdapter(newUnitAdapter());
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
-				selectionView.setVisibility(View.INVISIBLE);
+				UIUtil.hide(selectionView);
 			}
 		});
 
 		selectionView = findViewById(R.id.army_available_units_view);
-		selectionView.setVisibility(View.INVISIBLE);
+		UIUtil.show(selectionView, army.getUnits().size() == 0);
 
 		final View abort = findViewById(R.id.army_select_abort);
 		abort.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
-				selectionView.setVisibility(View.INVISIBLE);
+				UIUtil.hide(selectionView);
 			}
 		});
 	}
@@ -101,6 +101,7 @@ public class ArmyActivity extends Activity {
 			public void onDelete(final Unit unit, final int position) {
 				armyList.setAdapter(null);
 				army.getUnits().remove(unit);
+				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 				armyList.setAdapter(newUnitAdapter());
 			}
 		});
@@ -118,7 +119,7 @@ public class ArmyActivity extends Activity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add:
-			selectionView.setVisibility(View.VISIBLE);
+			UIUtil.show(selectionView);
 			break;
 
 		default:

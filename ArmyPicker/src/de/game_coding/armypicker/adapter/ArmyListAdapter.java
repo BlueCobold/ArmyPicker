@@ -18,7 +18,12 @@ public class ArmyListAdapter extends ArrayAdapter<Army> {
 		void onDelete(Army army, int position);
 	}
 
+	public interface EditHandler {
+		void onEdit(Army army, int position);
+	}
+
 	private DeleteHandler deleteHandler;
+	private EditHandler editHandler;
 
 	public ArmyListAdapter(final Context context, final List<Army> armies) {
 		super(context, R.layout.item_army_list, armies);
@@ -51,10 +56,25 @@ public class ArmyListAdapter extends ArrayAdapter<Army> {
 				}
 			}
 		});
+
+		final View edit = view.findViewById(R.id.list_item_edit);
+		edit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View view) {
+				if (editHandler != null) {
+					editHandler.onEdit(army, position);
+				}
+			}
+		});
 		return view;
 	}
 
-	public void setDeleteHandler(final DeleteHandler deleteHandler) {
-		this.deleteHandler = deleteHandler;
+	public void setDeleteHandler(final DeleteHandler handler) {
+		deleteHandler = handler;
+	}
+
+	public void setEditHandler(final EditHandler handler) {
+		editHandler = handler;
 	}
 }

@@ -17,6 +17,15 @@
 		android:textColor="#A0FFFFFF"
 		android:text="180"
 		/>
+	
+	<ImageView
+		android:id="@+id/list_item_edit"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		android:layout_toLeftOf="@+id/list_item_points"
+		android:layout_centerVertical="true"
+		android:focusable="false"
+		android:src="@drawable/ic_action_edit" />
 
 	<TextView
 		android:id="@+id/list_item_name"

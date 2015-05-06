@@ -13,8 +13,10 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitOptionGroup;
+import de.game_coding.armypicker.util.UIUtil;
 
 public class UnitListAdapter extends ArrayAdapter<Unit> {
 
@@ -35,7 +37,7 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 		View view = convertView;
 		if (view == null) {
 			final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-					Context.LAYOUT_INFLATER_SERVICE);
+				Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.item_unit_list, parent, false);
 		}
 		final Unit unit = getItem(position);
@@ -48,37 +50,51 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 
 		final TextView amount = (TextView) view.findViewById(R.id.unit_amount);
 		amount.setText("[" + unit.getAmount() + "]");
+		UIUtil.show(amount, unit.getMaxAmount() > 1);
 
 		final LinearLayout options = (LinearLayout) view.findViewById(R.id.unit_options_list);
 		final OptionGroupListAdapter adapter = newAdapter(new ArrayList<UnitOptionGroup>(), unit, view);
 		buildEntries(options, adapter);
 
+		final TextView optionPoints = (TextView) view.findViewById(R.id.unit_options_points);
+		optionPoints.setText(String.valueOf(unit.getTotalOptionCosts()));
+		optionPoints.setVisibility(View.GONE);
+
 		final View rootView = view;
 
 		final View add = view.findViewById(R.id.unit_add);
+		final View delete = view.findViewById(R.id.unit_delete);
+
 		if (unit.getMaxAmount() == unit.getInitialAmount()) {
 			add.setVisibility(View.INVISIBLE);
 			add.setEnabled(false);
 		}
+		UIUtil.show(add, unit.getAmount() < unit.getMaxAmount());
+
+		amount.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				if (unit.getAmount() < unit.getMaxAmount()) {
+					unit.setAmount(unit.getMaxAmount());
+				} else {
+					unit.setAmount(unit.getInitialAmount());
+				}
+				updateValues(unit, costs, amount, options, optionPoints, add, rootView);
+			}
+		});
+
 		add.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
 				if (unit.getAmount() < unit.getMaxAmount()) {
 					unit.setAmount(unit.getAmount() + 1);
-					costs.setText(String.valueOf(unit.getTotalCosts()));
-					amount.setText("[" + unit.getAmount() + "]");
-					if (notifier != null) {
-						notifier.onValueChanged();
-					}
-					if (options.getChildCount() > 0) {
-						buildEntries(options, newAdapter(unit.getOptions(), unit, rootView));
-					}
+					updateValues(unit, costs, amount, options, optionPoints, add, rootView);
 				}
 			}
 		});
 
-		final View delete = view.findViewById(R.id.unit_delete);
 		delete.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -89,14 +105,7 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 					}
 				} else {
 					unit.setAmount(unit.getAmount() - 1);
-					costs.setText(String.valueOf(unit.getTotalCosts()));
-					amount.setText("[" + unit.getAmount() + "]");
-					if (options.getChildCount() > 0) {
-						buildEntries(options, newAdapter(unit.getOptions(), unit, rootView));
-					}
-				}
-				if (notifier != null) {
-					notifier.onValueChanged();
+					updateValues(unit, costs, amount, options, optionPoints, add, rootView);
 				}
 			}
 		});
@@ -111,6 +120,21 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 		return view;
 	}
 
+	private void updateValues(final Unit unit, final TextView costs, final TextView amount, final LinearLayout options,
+		final TextView optionPoints, final View add, final View rootView) {
+		costs.setText(String.valueOf(unit.getTotalCosts()));
+		optionPoints.setText(String.valueOf(unit.getTotalOptionCosts()));
+		amount.setText("[" + unit.getAmount() + "]");
+		UIUtil.show(amount, unit.getMaxAmount() > 1);
+		if (options.getChildCount() > 0) {
+			buildEntries(options, newAdapter(unit.getOptions(), unit, rootView));
+		}
+		if (notifier != null) {
+			notifier.onValueChanged();
+		}
+		UIUtil.show(add, unit.getAmount() < unit.getMaxAmount());
+	}
+
 	private OptionGroupListAdapter newAdapter(final List<UnitOptionGroup> entries, final Unit unit, final View rootView) {
 		final OptionGroupListAdapter adapter = new OptionGroupListAdapter(getContext(), entries);
 		adapter.setNotifier(new IValueChangedNotifier() {
@@ -119,6 +143,8 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 			public void onValueChanged() {
 				final TextView costs = (TextView) rootView.findViewById(R.id.unit_points);
 				costs.setText(String.valueOf(unit.getTotalCosts()));
+				final TextView optionPoints = (TextView) rootView.findViewById(R.id.unit_options_points);
+				optionPoints.setText(String.valueOf(unit.getTotalOptionCosts()));
 				if (notifier != null) {
 					notifier.onValueChanged();
 				}
@@ -136,10 +162,16 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 
 	private void openCloseOptions(final View view, final Unit unit) {
 		final LinearLayout options = (LinearLayout) view.findViewById(R.id.unit_options_list);
+		final TextView optionPoints = (TextView) view.findViewById(R.id.unit_options_points);
 		if (options.getChildCount() == 0) {
 			buildEntries(options, newAdapter(unit.getOptions(), unit, view));
+			if ((unit.getOptions().size() > 0 && unit.getOptions().get(0).getOptions().size() > 1)
+				|| unit.getOptions().size() > 1) {
+				optionPoints.setVisibility(View.VISIBLE);
+			}
 		} else {
 			buildEntries(options, newAdapter(new ArrayList<UnitOptionGroup>(), unit, view));
+			optionPoints.setVisibility(View.GONE);
 		}
 	}
 

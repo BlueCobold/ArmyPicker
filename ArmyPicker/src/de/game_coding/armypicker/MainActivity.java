@@ -14,15 +14,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
-import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.adapter.ArmyListAdapter;
-import de.game_coding.armypicker.adapter.ArmyTypeListAdapter;
 import de.game_coding.armypicker.adapter.ArmyListAdapter.DeleteHandler;
+import de.game_coding.armypicker.adapter.ArmyListAdapter.EditHandler;
+import de.game_coding.armypicker.adapter.ArmyTypeListAdapter;
 import de.game_coding.armypicker.builder.SpaceElveBuilder;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.CloneUtil;
+import de.game_coding.armypicker.util.UIUtil;
 
 public class MainActivity extends Activity {
 
@@ -48,6 +50,12 @@ public class MainActivity extends Activity {
 
 	private ListView armyListView;
 
+	private View editView;
+
+	protected Army editArmy;
+
+	private EditText editArmyName;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,8 +73,25 @@ public class MainActivity extends Activity {
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 				armyListView.setAdapter(null);
 				armies.add(CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR));
-				armyListView.setAdapter(new ArmyListAdapter(MainActivity.this, armies));
+				final ArmyListAdapter adapter = newArmyAdapter(armyListView);
+				armyListView.setAdapter(adapter);
+				switchToArmy(armies.size() - 1);
 				selectionView.setVisibility(View.INVISIBLE);
+			}
+		});
+
+		editView = findViewById(R.id.army_edit_army);
+		UIUtil.hide(editView);
+
+		editArmyName = (EditText) findViewById(R.id.army_name_edit);
+
+		final View editOk = findViewById(R.id.army_edit_ok);
+		editOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				editArmy.setName(editArmyName.getText().toString());
+				UIUtil.hide(editView);
 			}
 		});
 
@@ -83,18 +108,22 @@ public class MainActivity extends Activity {
 		});
 	}
 
+	private void switchToArmy(final int position) {
+		final Army army = armies.get(position);
+		Log.d(TAG, "Clicked on item " + army.getName());
+		editedArmyIndex = position;
+		final Intent intent = new Intent(MainActivity.this, ArmyActivity.class);
+		intent.putExtra(ArmyActivity.EXTRA_ARMY, army);
+		startActivityForResult(intent, EDIT_ARMY);
+	}
+
 	private ArmyListAdapter newArmyAdapter(final ListView armyList) {
 		final ArmyListAdapter adapter = new ArmyListAdapter(this, armies);
 		armyList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-				final Army army = armies.get(position);
-				Log.d(TAG, "Clicked on item " + army.getName());
-				editedArmyIndex = position;
-				final Intent intent = new Intent(MainActivity.this, ArmyActivity.class);
-				intent.putExtra(ArmyActivity.EXTRA_ARMY, army);
-				startActivityForResult(intent, EDIT_ARMY);
+				switchToArmy(position);
 			}
 		});
 		adapter.setDeleteHandler(new DeleteHandler() {
@@ -104,6 +133,15 @@ public class MainActivity extends Activity {
 				armyList.setAdapter(null);
 				adapter.remove(army);
 				armyList.setAdapter(adapter);
+			}
+		});
+		adapter.setEditHandler(new EditHandler() {
+
+			@Override
+			public void onEdit(final Army army, final int position) {
+				editArmy = army;
+				editArmyName.setText(army.getName());
+				editView.setVisibility(View.VISIBLE);
 			}
 		});
 		return adapter;

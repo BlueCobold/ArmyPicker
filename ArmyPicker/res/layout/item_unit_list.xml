@@ -60,9 +60,8 @@
 		android:id="@+id/unit_amount"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:layout_toRightOf="@id/unit_name"
-		android:padding="10dp"
+		android:layout_toLeftOf="@id/unit_add"
+		android:paddingTop="10dp"
 		android:text="[1]"
 		android:textColor="#A0FFFFFF"
 		android:textSize="20sp" />
@@ -79,5 +78,21 @@
 		android:layout_alignParentLeft="true"
 		android:layout_below="@+id/unit_name" >
 	</LinearLayout>
+
+	<TextView
+		android:id="@+id/unit_options_points"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:textSize="16sp"
+		android:layout_below="@id/unit_options_list"
+		android:layout_alignParentRight="true"
+		android:layout_marginRight="40dp"
+		android:gravity="right"
+		android:minWidth="50dp"
+		android:paddingLeft="10dp"
+		android:text="100"
+		android:textColor="#A0FFFFFF"
+		/>
 
 </RelativeLayout>

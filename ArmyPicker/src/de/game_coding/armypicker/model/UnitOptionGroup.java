@@ -24,12 +24,20 @@ public class UnitOptionGroup implements Parcelable {
 		 */
 		ONE_PER_MODEL,
 		/**
+		 * Taken for each model in the unit - all will be equipped with it
+		 * except one model
+		 */
+		ONE_PER_MODEL_EXEPT_ONE,
+		/**
 		 * Can take a number of X of the upgrades for every Y models in the unit
 		 */
-		UP_TO_X_PER_Y_MODELS
+		UP_TO_X_PER_Y_MODELS,
+		/**
+		 * Can take each upgrade in this group X-times for every Y models in the
+		 * unit
+		 */
+		UP_TO_X_OF_EACH_PER_Y_MODELS
 	}
-
-	public final static Parcelable.Creator<UnitOptionGroup> CREATOR = new UnitOptionGroupCreator();
 
 	private GroupType type;
 
@@ -41,6 +49,22 @@ public class UnitOptionGroup implements Parcelable {
 
 	private List<UnitOption> options = new ArrayList<UnitOption>();
 
+	private List<IRule> rules = new ArrayList<IRule>();
+
+	private int id;
+
+	private Creator<?> ruleCreator;
+
+	private boolean enabled = true;
+
+	public UnitOptionGroup(final int id, final GroupType type, final UnitOption... options) {
+		this.id = id;
+		this.type = type;
+		this.optionNumberPerGroup = 1;
+		this.groupSize = 1;
+		this.options = Arrays.asList(options);
+	}
+
 	public UnitOptionGroup(final GroupType type, final UnitOption... options) {
 		this.type = type;
 		this.optionNumberPerGroup = 1;
@@ -48,20 +72,35 @@ public class UnitOptionGroup implements Parcelable {
 		this.options = Arrays.asList(options);
 	}
 
-	public UnitOptionGroup(final GroupType type, final int optionNumberPerGroup, final int groupSize,
-			final UnitOption... options) {
+	public UnitOptionGroup(final int id, final GroupType type, final int optionNumberPerGroup, final int groupSize,
+		final UnitOption... options) {
+		this.id = id;
 		this.type = type;
 		this.optionNumberPerGroup = optionNumberPerGroup;
 		this.groupSize = groupSize;
 		this.options = Arrays.asList(options);
 	}
 
-	public UnitOptionGroup(final Parcel source) {
-		readFromParecl(source);
+	public UnitOptionGroup(final GroupType type, final int optionNumberPerGroup, final int groupSize,
+		final UnitOption... options) {
+		this.type = type;
+		this.optionNumberPerGroup = optionNumberPerGroup;
+		this.groupSize = groupSize;
+		this.options = Arrays.asList(options);
+	}
+
+	public UnitOptionGroup(final Parcel source, final Creator<?> ruleCreator) {
+		this.ruleCreator = ruleCreator;
+		readFromParcel(source);
 	}
 
 	public GroupType getType() {
 		return type;
+	}
+
+	public void setType(final GroupType type) {
+		this.type = type;
+		validateAmounts();
 	}
 
 	public int getOptionNumberPerGroup() {
@@ -82,11 +121,14 @@ public class UnitOptionGroup implements Parcelable {
 	}
 
 	public void validateAmounts() {
-		final int max = getMaxAmount();
+		final int max = enabled ? getMaxAmount() : 0;
 		int current = 0;
 		for (final UnitOption option : options) {
-			if (type == GroupType.ONE_PER_MODEL) {
-				option.setAmountSelected(option.getAmountSelected() > 0 ? limit : 0);
+			if (type == GroupType.ONE_PER_MODEL || type == GroupType.ONE_PER_MODEL_EXEPT_ONE) {
+				option.setAmountSelected(option.getAmountSelected() > 0 ? max : 0);
+			} else if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
+				option.setAmountSelected(Math.min(option.getAmountSelected(), max));
+				continue;
 			}
 			current += option.getAmountSelected();
 			if (current > max) {
@@ -94,10 +136,31 @@ public class UnitOptionGroup implements Parcelable {
 				current = max;
 			}
 		}
+		for (final IRule rule : rules) {
+			rule.check();
+		}
+		return;
 	}
 
 	public List<UnitOption> getOptions() {
 		return options;
+	}
+
+	public List<IRule> getRules() {
+		return rules;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setEnabled(final boolean enabled) {
+		this.enabled = enabled;
+		validateAmounts();
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	private int getMaxAmount() {
@@ -111,6 +174,10 @@ public class UnitOptionGroup implements Parcelable {
 			max = limit;
 			break;
 
+		case ONE_PER_MODEL_EXEPT_ONE:
+			max = limit - 1;
+			break;
+
 		case UP_TO_X_PER_UNIT:
 			max = optionNumberPerGroup;
 			break;
@@ -122,13 +189,19 @@ public class UnitOptionGroup implements Parcelable {
 		return max;
 	}
 
-	public boolean canSelectMore() {
+	public boolean canSelectMore(final UnitOption option) {
+		if (!enabled) {
+			return false;
+		}
+		if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
+			return option.getAmountSelected() < getMaxAmount();
+		}
 		final int max = getMaxAmount();
 		int current = 0;
-		for (final UnitOption option : options) {
-			current += option.getAmountSelected();
+		for (final UnitOption unitOption : options) {
+			current += unitOption.getAmountSelected();
 			if (current > max) {
-				option.setAmountSelected(option.getAmountSelected() + max - current);
+				unitOption.setAmountSelected(unitOption.getAmountSelected() + max - current);
 				current = max;
 			}
 		}
@@ -154,14 +227,23 @@ public class UnitOptionGroup implements Parcelable {
 		dest.writeInt(optionNumberPerGroup);
 		dest.writeInt(groupSize);
 		dest.writeList(options);
+		dest.writeInt(id);
+		dest.writeTypedList(rules);
 	}
 
-	private void readFromParecl(final Parcel source) {
+	private void readFromParcel(final Parcel source) {
 		type = GroupType.values()[source.readInt()];
 		optionNumberPerGroup = source.readInt();
 		groupSize = source.readInt();
 
 		options = new ArrayList<UnitOption>();
 		source.readList(options, UnitOption.class.getClassLoader());
+
+		id = source.readInt();
+
+		if (ruleCreator != null) {
+			rules = new ArrayList<IRule>();
+			source.readTypedList(rules, (Parcelable.Creator<IRule>) ruleCreator);
+		}
 	}
 }

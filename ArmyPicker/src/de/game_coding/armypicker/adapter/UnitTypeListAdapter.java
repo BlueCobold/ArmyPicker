@@ -20,7 +20,7 @@ public class UnitTypeListAdapter extends ArrayAdapter<Unit> {
 		View view = convertView;
 		if (view == null) {
 			final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-					Context.LAYOUT_INFLATER_SERVICE);
+				Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.item_unit_type_list, parent, false);
 		}
 		final TextView title = (TextView) view.findViewById(R.id.list_item_name);
