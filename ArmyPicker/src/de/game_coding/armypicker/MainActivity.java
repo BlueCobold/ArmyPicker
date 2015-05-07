@@ -2,6 +2,7 @@ package de.game_coding.armypicker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import de.game_coding.armypicker.builder.SpaceElveBuilder;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.CloneUtil;
+import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
 
 public class MainActivity extends Activity {
@@ -60,6 +62,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		final List<Army> army = FileUtil.readArmies(this);
+		if (army != null) {
+			armies.addAll(army);
+		}
 		setContentView(R.layout.activity_main);
 
 		armyListView = (ListView) findViewById(R.id.army_selection);
@@ -72,7 +78,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 				armyListView.setAdapter(null);
-				armies.add(CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR));
+				final Army army = CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR);
+				armies.add(army);
+				army.setId(getUniqueArmyId());
 				final ArmyListAdapter adapter = newArmyAdapter(armyListView);
 				armyListView.setAdapter(adapter);
 				switchToArmy(armies.size() - 1);
@@ -108,6 +116,23 @@ public class MainActivity extends Activity {
 		});
 	}
 
+	private int getUniqueArmyId() {
+		final Random random = new Random();
+		boolean exists;
+		int id = 0;
+		do {
+			exists = false;
+			id = random.nextInt();
+			for (final Army army : armies) {
+				if (army.getId() == id) {
+					exists = true;
+					break;
+				}
+			}
+		} while (exists);
+		return id;
+	}
+
 	private void switchToArmy(final int position) {
 		final Army army = armies.get(position);
 		Log.d(TAG, "Clicked on item " + army.getName());
@@ -133,8 +158,10 @@ public class MainActivity extends Activity {
 				armyList.setAdapter(null);
 				adapter.remove(army);
 				armyList.setAdapter(adapter);
+				FileUtil.delete(army, MainActivity.this);
 			}
 		});
+
 		adapter.setEditHandler(new EditHandler() {
 
 			@Override

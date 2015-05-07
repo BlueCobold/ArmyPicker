@@ -7,7 +7,7 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class UnitOptionGroup implements Parcelable {
+public class UnitOptionGroup extends Model {
 
 	public enum GroupType {
 		/**
@@ -39,7 +39,7 @@ public class UnitOptionGroup implements Parcelable {
 		UP_TO_X_OF_EACH_PER_Y_MODELS
 	}
 
-	private GroupType type;
+	private GroupType type = GroupType.ONE_PER_MODEL;
 
 	private int optionNumberPerGroup;
 
@@ -223,6 +223,7 @@ public class UnitOptionGroup implements Parcelable {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
 		dest.writeInt(type.ordinal());
 		dest.writeInt(optionNumberPerGroup);
 		dest.writeInt(groupSize);
@@ -231,7 +232,12 @@ public class UnitOptionGroup implements Parcelable {
 		dest.writeTypedList(rules);
 	}
 
-	private void readFromParcel(final Parcel source) {
+	@Override
+	protected void readFromParcel(final Parcel source) {
+		super.readFromParcel(source);
+		if (getFileVersion() > getFeatureVersion()) {
+			return;
+		}
 		type = GroupType.values()[source.readInt()];
 		optionNumberPerGroup = source.readInt();
 		groupSize = source.readInt();
@@ -245,5 +251,10 @@ public class UnitOptionGroup implements Parcelable {
 			rules = new ArrayList<IRule>();
 			source.readTypedList(rules, (Parcelable.Creator<IRule>) ruleCreator);
 		}
+	}
+
+	@Override
+	protected int getFeatureVersion() {
+		return 0;
 	}
 }

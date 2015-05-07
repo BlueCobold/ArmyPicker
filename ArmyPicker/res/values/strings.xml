@@ -12,5 +12,10 @@
 	<string name="available_armies">Available armies:</string>
 	<string name="ok">OK</string>
 	<string name="army_name">Army name:</string>
+	<string name="type_hq">HQ</string>
+	<string name="type_elite">Elite</string>
+	<string name="type_standard">Standard</string>
+	<string name="type_fast">Fast Attack</string>
+	<string name="type_heavy">Heavy Support</string>
 
 </resources>

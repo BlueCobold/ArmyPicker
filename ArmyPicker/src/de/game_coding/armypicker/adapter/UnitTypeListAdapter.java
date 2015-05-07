@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.util.UIUtil;
 
 public class UnitTypeListAdapter extends ArrayAdapter<Unit> {
 
@@ -23,11 +24,40 @@ public class UnitTypeListAdapter extends ArrayAdapter<Unit> {
 				Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.item_unit_type_list, parent, false);
 		}
+		final Unit unit = getItem(position);
+
 		final TextView title = (TextView) view.findViewById(R.id.list_item_name);
-		title.setText(getItem(position).getName());
+		title.setText(unit.getName());
 
 		final TextView points = (TextView) view.findViewById(R.id.list_item_points);
-		points.setText(String.valueOf(getItem(position).getTotalCosts()));
+		points.setText(String.valueOf(unit.getTotalCosts()));
+
+		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
+		if (position == 0 || unit.getType() != getItem(position - 1).getType()) {
+			type.setText("== " + getUnitTypeName(unit, view) + " ==");
+			UIUtil.show(type);
+		} else {
+			type.setVisibility(View.GONE);
+		}
 		return view;
+	}
+
+	private String getUnitTypeName(final Unit unit, final View view) {
+		switch (unit.getType()) {
+		case ELITE:
+			return view.getResources().getString(R.string.type_elite);
+		case FAST_ATTACK:
+			return view.getResources().getString(R.string.type_fast);
+		case HQ:
+			return view.getResources().getString(R.string.type_hq);
+		case STANDARD:
+			return view.getResources().getString(R.string.type_standard);
+		case SUPPORT:
+			return view.getResources().getString(R.string.type_heavy);
+
+		default:
+			break;
+		}
+		return "";
 	}
 }

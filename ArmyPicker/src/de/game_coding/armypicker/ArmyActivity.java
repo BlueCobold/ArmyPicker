@@ -18,6 +18,7 @@ import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.CloneUtil;
+import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
 
 public class ArmyActivity extends Activity {
@@ -59,6 +60,7 @@ public class ArmyActivity extends Activity {
 				armyList.setAdapter(newUnitAdapter());
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 				UIUtil.hide(selectionView);
+				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
 
@@ -93,6 +95,7 @@ public class ArmyActivity extends Activity {
 			@Override
 			public void onValueChanged() {
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
+				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
 		adapter.setDeleteHandler(new UnitListAdapter.DeleteHandler() {
@@ -103,6 +106,7 @@ public class ArmyActivity extends Activity {
 				army.getUnits().remove(unit);
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 				armyList.setAdapter(newUnitAdapter());
+				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
 		return adapter;

@@ -7,12 +7,12 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Unit implements Parcelable {
+public class Unit extends Model {
 
 	public static final Parcelable.Creator<Unit> CREATOR = new UnitCreator();
 
-	private String name;
-	private Type type;
+	private String name = "";
+	private Type type = Type.STANDARD;
 	private int points;
 	private int amount = 1;
 	private int initialAmount = 1;
@@ -114,6 +114,7 @@ public class Unit implements Parcelable {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
 		dest.writeString(name);
 		dest.writeInt(points);
 		dest.writeInt(type.ordinal());
@@ -124,7 +125,12 @@ public class Unit implements Parcelable {
 		dest.writeTypedList(options);
 	}
 
-	private void readFromParcel(final Parcel source) {
+	@Override
+	protected void readFromParcel(final Parcel source) {
+		super.readFromParcel(source);
+		if (getFileVersion() > getFeatureVersion()) {
+			return;
+		}
 		name = source.readString();
 		points = source.readInt();
 		type = Type.values()[source.readInt()];
@@ -139,6 +145,11 @@ public class Unit implements Parcelable {
 				((OptionRule) rule).setTargets(options);
 			}
 		}
+	}
+
+	@Override
+	protected int getFeatureVersion() {
+		return 0;
 	}
 
 	public Unit addRule(final int targetGroupId, final OptionRule rule) {

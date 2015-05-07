@@ -3,7 +3,7 @@ package de.game_coding.armypicker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class UnitOption implements Parcelable {
+public class UnitOption extends Model {
 
 	public static Parcelable.Creator<UnitOption> CREATOR = new UnitOptionCreator();
 
@@ -76,16 +76,27 @@ public class UnitOption implements Parcelable {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
 		dest.writeString(name);
 		dest.writeInt(id);
 		dest.writeInt(costs);
 		dest.writeInt(amountSelected);
 	};
 
-	private void readFromParcel(final Parcel source) {
+	@Override
+	protected void readFromParcel(final Parcel source) {
+		super.readFromParcel(source);
+		if (getFileVersion() > getFeatureVersion()) {
+			return;
+		}
 		name = source.readString();
 		id = source.readInt();
 		costs = source.readInt();
 		amountSelected = source.readInt();
+	}
+
+	@Override
+	protected int getFeatureVersion() {
+		return 0;
 	}
 }

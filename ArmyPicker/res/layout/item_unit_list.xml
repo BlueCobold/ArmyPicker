@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:background="@drawable/item_gradient"
 	android:orientation="vertical" >
 
 	<TextView
@@ -81,17 +82,18 @@
 
 	<TextView
 		android:id="@+id/unit_options_points"
-		android:layout_width="wrap_content"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="right"
 		android:textSize="16sp"
 		android:layout_below="@id/unit_options_list"
 		android:layout_alignParentRight="true"
-		android:layout_marginRight="40dp"
+		android:paddingRight="40dp"
 		android:gravity="right"
 		android:minWidth="50dp"
 		android:paddingLeft="10dp"
 		android:text="100"
+		android:background="#30000050"
 		android:textColor="#A0FFFFFF"
 		/>
 

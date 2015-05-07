@@ -27,6 +27,10 @@ public class ArmyTypeListAdapter extends ArrayAdapter<Army> {
 		}
 		final TextView title = (TextView) view.findViewById(R.id.list_item_name);
 		title.setText(getItem(position).getName());
+
+		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
+		type.setVisibility(View.GONE);
+
 		return view;
 	}
 }

@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import de.game_coding.armypicker.model.UnitOptionGroup.GroupType;
 
-public class OptionRule implements IRule {
+public class OptionRule extends Model implements IRule {
 	private enum ActionType {
 		CHANGE_GROUP_TYPE, ENABLE_GROUP, ENABLE_OPTION,
 	}
@@ -131,6 +131,7 @@ public class OptionRule implements IRule {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
 		dest.writeInt(targetId);
 		dest.writeInt(sourceId);
 		dest.writeInt(targetType.ordinal());
@@ -138,12 +139,22 @@ public class OptionRule implements IRule {
 		dest.writeInt(actionType.ordinal());
 	}
 
-	private void readFromParcel(final Parcel source) {
+	@Override
+	protected void readFromParcel(final Parcel source) {
+		super.readFromParcel(source);
+		if (getFileVersion() > getFeatureVersion()) {
+			return;
+		}
 		targetId = source.readInt();
 		sourceId = source.readInt();
 		targetType = GroupType.values()[source.readInt()];
 		conditionType = ConditionType.values()[source.readInt()];
 		actionType = ActionType.values()[source.readInt()];
+	}
+
+	@Override
+	protected int getFeatureVersion() {
+		return 0;
 	}
 
 	public static final Parcelable.Creator<OptionRule> CREATOR = new Creator<OptionRule>() {

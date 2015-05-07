@@ -6,13 +6,14 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Army implements Parcelable {
+public class Army extends Model {
 
 	public static final Parcelable.Creator<Army> CREATOR = new ArmyCreator();
 
-	private String name;
-	private Unit[] unitTemplates;
+	private String name = "";
+	private Unit[] unitTemplates = new Unit[0];
 	private List<Unit> units = new ArrayList<Unit>();
+	private int id;
 
 	public Army(final String name, final Unit[] unitTemplates) {
 		this.name = name;
@@ -39,6 +40,14 @@ public class Army implements Parcelable {
 		return units;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(final int id) {
+		this.id = id;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -46,7 +55,9 @@ public class Army implements Parcelable {
 
 	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
+		super.writeToParcel(dest, flags);
 		dest.writeString(name);
+		dest.writeInt(id);
 
 		dest.writeInt(unitTemplates.length);
 		dest.writeTypedArray(unitTemplates, flags);
@@ -54,8 +65,14 @@ public class Army implements Parcelable {
 		dest.writeList(units);
 	}
 
-	private void readFromParcel(final Parcel source) {
+	@Override
+	protected void readFromParcel(final Parcel source) {
+		super.readFromParcel(source);
+		if (getFileVersion() > getFeatureVersion()) {
+			return;
+		}
 		name = source.readString();
+		id = source.readInt();
 
 		final int size = source.readInt();
 		unitTemplates = new Unit[size];
@@ -63,6 +80,11 @@ public class Army implements Parcelable {
 
 		units = new ArrayList<Unit>();
 		source.readList(units, Unit.class.getClassLoader());
+	}
+
+	@Override
+	protected int getFeatureVersion() {
+		return 0;
 	}
 
 	public int getTotalCosts() {
