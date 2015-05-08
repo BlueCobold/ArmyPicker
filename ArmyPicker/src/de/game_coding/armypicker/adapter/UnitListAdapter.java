@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +17,7 @@ import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitOptionGroup;
 import de.game_coding.armypicker.util.UIUtil;
 
-public class UnitListAdapter extends ArrayAdapter<Unit> {
+public class UnitListAdapter extends BaseUnitAdapter {
 
 	public interface DeleteHandler {
 		void onDelete(Unit unit, int position);
@@ -28,8 +27,11 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 
 	private DeleteHandler deleteHandler;
 
-	public UnitListAdapter(final Context context, final List<Unit> units) {
+	private final boolean showHeader;
+
+	public UnitListAdapter(final Context context, final List<Unit> units, final boolean showHeader) {
 		super(context, R.layout.item_unit_list, units);
+		this.showHeader = showHeader;
 	}
 
 	@Override
@@ -61,6 +63,14 @@ public class UnitListAdapter extends ArrayAdapter<Unit> {
 		optionPoints.setVisibility(View.GONE);
 
 		final View rootView = view;
+
+		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
+		if (showHeader && (position == 0 || unit.getType() != getItem(position - 1).getType())) {
+			type.setText("== " + getUnitTypeName(unit, view) + " ==");
+			UIUtil.show(type);
+		} else {
+			type.setVisibility(View.GONE);
+		}
 
 		final View add = view.findViewById(R.id.unit_add);
 		final View delete = view.findViewById(R.id.unit_delete);

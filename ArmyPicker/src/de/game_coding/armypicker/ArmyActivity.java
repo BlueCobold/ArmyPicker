@@ -1,8 +1,14 @@
 package de.game_coding.armypicker;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +29,8 @@ import de.game_coding.armypicker.util.UIUtil;
 
 public class ArmyActivity extends Activity {
 
+	private static final String SETTING_SHOW_TYPES = "ArmyActivity.SHOW_TYPES";
+
 	public static final String EXTRA_ARMY = "ArmyActivity.EXTRA_ARMY";
 
 	private Army army;
@@ -33,9 +41,13 @@ public class ArmyActivity extends Activity {
 
 	private ListView armyList;
 
+	private boolean showTypes;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		restoreSettings();
 
 		setContentView(R.layout.activity_army);
 		army = getIntent().getParcelableExtra(EXTRA_ARMY);
@@ -57,6 +69,9 @@ public class ArmyActivity extends Activity {
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 				armyList.setAdapter(null);
 				army.getUnits().add(CloneUtil.clone((Unit) parent.getAdapter().getItem(position), Unit.CREATOR));
+				if (showTypes) {
+					sortUnits(army);
+				}
 				armyList.setAdapter(newUnitAdapter());
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 				UIUtil.hide(selectionView);
@@ -78,6 +93,12 @@ public class ArmyActivity extends Activity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		storeSettings();
+	}
+
+	@Override
 	public void finish() {
 		final Bundle result = new Bundle();
 		result.putParcelable(EXTRA_ARMY, army);
@@ -88,8 +109,20 @@ public class ArmyActivity extends Activity {
 		super.finish();
 	}
 
+	private void restoreSettings() {
+		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		showTypes = settings.getBoolean(SETTING_SHOW_TYPES, false);
+	}
+
+	private void storeSettings() {
+		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final Editor editor = settings.edit();
+		editor.putBoolean(SETTING_SHOW_TYPES, showTypes);
+		editor.apply();
+	}
+
 	private UnitListAdapter newUnitAdapter() {
-		final UnitListAdapter adapter = new UnitListAdapter(this, army.getUnits());
+		final UnitListAdapter adapter = new UnitListAdapter(this, army.getUnits(), showTypes);
 		adapter.setNotifier(new IValueChangedNotifier() {
 
 			@Override
@@ -126,9 +159,42 @@ public class ArmyActivity extends Activity {
 			UIUtil.show(selectionView);
 			break;
 
+		case R.id.action_sort:
+			showTypes = !showTypes;
+			if (showTypes) {
+				sortUnits(army);
+			}
+			armyList.setAdapter(null);
+			armyList.setAdapter(newUnitAdapter());
+			break;
+
 		default:
 			break;
 		}
 		return true;
+	}
+
+	private static void sortUnits(final Army army) {
+		Collections.sort(army.getUnits(), new Comparator<Unit>() {
+
+			@Override
+			public int compare(final Unit lhs, final Unit rhs) {
+				if (lhs.getType().ordinal() < rhs.getType().ordinal()) {
+					return -1;
+				} else if (lhs.getType().ordinal() > rhs.getType().ordinal()) {
+					return 1;
+				}
+				final int nameOrder = lhs.getName().compareTo(rhs.getName());
+				if (nameOrder != 0) {
+					return nameOrder;
+				}
+				if (lhs.getTotalCosts() < rhs.getTotalOptionCosts()) {
+					return -1;
+				} else if (lhs.getTotalCosts() > rhs.getTotalCosts()) {
+					return 1;
+				}
+				return 0;
+			}
+		});
 	}
 }

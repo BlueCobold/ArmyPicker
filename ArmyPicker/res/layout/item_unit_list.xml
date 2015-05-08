@@ -5,12 +5,23 @@
 	android:background="@drawable/item_gradient"
 	android:orientation="vertical" >
 
+    <TextView 
+        android:id="@+id/unit_type_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:textColor="#A0FFFFFF"
+		android:text="-- type --"
+		android:textSize="20sp"
+		android:background="#30FFFFFF"
+		/>
+    
 	<TextView
 		android:id="@+id/unit_name"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
-		android:layout_alignParentTop="true"
+		android:layout_below="@id/unit_type_header"
 		android:textSize="20sp"
 		android:paddingTop="10dp"
 		android:paddingBottom="10dp"
@@ -24,6 +35,7 @@
 		android:layout_width="30dp"
 		android:layout_height="30dp"
 		android:layout_alignParentRight="true"
+		android:layout_below="@id/unit_type_header"
 		android:layout_marginTop="10dp"
 		android:background="@null"
 		android:scaleType="fitCenter"
@@ -33,8 +45,8 @@
 		android:id="@+id/unit_points"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
 		android:layout_toLeftOf="@+id/unit_delete"
+		android:layout_below="@id/unit_type_header"
 		android:textSize="20sp"
 		android:paddingTop="10dp"
 		android:gravity="right"
@@ -53,6 +65,7 @@
 		android:layout_height="30dp"
 		android:layout_marginTop="10dp"
 		android:layout_toLeftOf="@+id/unit_points"
+		android:layout_below="@id/unit_type_header"
 		android:scaleType="fitCenter"
 		android:background="@null"
 		android:src="@drawable/ic_action_new" />
@@ -62,6 +75,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toLeftOf="@id/unit_add"
+		android:layout_below="@id/unit_type_header"
 		android:paddingTop="10dp"
 		android:text="[1]"
 		android:textColor="#A0FFFFFF"

@@ -4,13 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.UIUtil;
 
-public class UnitTypeListAdapter extends ArrayAdapter<Unit> {
+public class UnitTypeListAdapter extends BaseUnitAdapter {
 
 	public UnitTypeListAdapter(final Context context, final Unit[] units) {
 		super(context, R.layout.item_unit_type_list, units);
@@ -40,24 +39,5 @@ public class UnitTypeListAdapter extends ArrayAdapter<Unit> {
 			type.setVisibility(View.GONE);
 		}
 		return view;
-	}
-
-	private String getUnitTypeName(final Unit unit, final View view) {
-		switch (unit.getType()) {
-		case ELITE:
-			return view.getResources().getString(R.string.type_elite);
-		case FAST_ATTACK:
-			return view.getResources().getString(R.string.type_fast);
-		case HQ:
-			return view.getResources().getString(R.string.type_hq);
-		case STANDARD:
-			return view.getResources().getString(R.string.type_standard);
-		case SUPPORT:
-			return view.getResources().getString(R.string.type_heavy);
-
-		default:
-			break;
-		}
-		return "";
 	}
 }

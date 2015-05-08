@@ -17,5 +17,6 @@
 	<string name="type_standard">Standard</string>
 	<string name="type_fast">Fast Attack</string>
 	<string name="type_heavy">Heavy Support</string>
+	<string name="sort_by_class">Sort by class</string>
 
 </resources>
