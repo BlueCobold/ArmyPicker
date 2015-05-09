@@ -247,7 +247,7 @@ public class UnitOptionGroup extends Model {
 		return total;
 	}
 
-	public int getSelectedCount() {
+	public int getAmountSelected() {
 		int total = 0;
 		for (final UnitOption option : options) {
 			total += option.getAmountSelected();
@@ -265,7 +265,7 @@ public class UnitOptionGroup extends Model {
 		super.writeToParcel(dest, flags);
 		dest.writeInt(type.ordinal());
 		dest.writeInt(optionNumberPerGroup);
-		dest.writeInt(initialOptionNumberPerGroup); // added with v1
+		dest.writeInt(initialOptionNumberPerGroup);
 		dest.writeInt(groupSize);
 		dest.writeList(options);
 		dest.writeInt(id);
@@ -280,11 +280,7 @@ public class UnitOptionGroup extends Model {
 		}
 		type = GroupType.values()[source.readInt()];
 		optionNumberPerGroup = source.readInt();
-		if (getFileVersion() >= 1) {
-			initialOptionNumberPerGroup = source.readInt();
-		} else {
-			initialOptionNumberPerGroup = optionNumberPerGroup;
-		}
+		initialOptionNumberPerGroup = source.readInt();
 		groupSize = source.readInt();
 
 		options = new ArrayList<UnitOption>();
@@ -300,6 +296,15 @@ public class UnitOptionGroup extends Model {
 
 	@Override
 	protected int getFeatureVersion() {
-		return 1;
+		return 0;
+	}
+
+	@Override
+	public String toString() {
+		String name = new String();
+		for (final UnitOption group : options) {
+			name += group.toString() + ", ";
+		}
+		return name;
 	}
 }

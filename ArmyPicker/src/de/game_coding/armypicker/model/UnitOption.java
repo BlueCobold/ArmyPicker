@@ -99,4 +99,9 @@ public class UnitOption extends Model {
 	protected int getFeatureVersion() {
 		return 0;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

@@ -157,9 +157,14 @@ public class Unit extends Model {
 		for (final UnitOptionGroup group : options) {
 			if (group.getId() == targetGroupId) {
 				group.getRules().add(rule);
-				break;
+				return this;
 			}
 		}
-		return this;
+		throw new IllegalArgumentException("No group with id=" + targetGroupId + " defined");
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 }
