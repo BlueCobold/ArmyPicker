@@ -4,6 +4,16 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical" >
 
+    <TextView 
+        android:id="@+id/option_warnings_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:textColor="#A0FF0000"
+		android:textSize="16sp"
+		android:background="#30FF0000"
+		/>
+    
 	<LinearLayout
 		android:id="@+id/option_list"
 		android:layout_width="match_parent"

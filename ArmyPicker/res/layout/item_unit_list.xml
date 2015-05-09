@@ -15,7 +15,7 @@
 		android:textSize="20sp"
 		android:background="#30FFFFFF"
 		/>
-    
+
 	<TextView
 		android:id="@+id/unit_name"
 		android:layout_width="wrap_content"

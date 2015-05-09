@@ -11,10 +11,6 @@ public class UnitOptionGroup extends Model {
 
 	public enum GroupType {
 		/**
-		 * Can only be taken once for the entire unit
-		 */
-		ONE_PER_UNIT,
-		/**
 		 * Can be taken x times for the entire unit, no matter the number of
 		 * members
 		 */
@@ -36,14 +32,20 @@ public class UnitOptionGroup extends Model {
 		 * Can take each upgrade in this group X-times for every Y models in the
 		 * unit
 		 */
-		UP_TO_X_OF_EACH_PER_Y_MODELS
+		UP_TO_X_OF_EACH_PER_Y_MODELS,
+		/**
+		 * Can only be taken once for the entire unit and must always be taken
+		 */
+		X_PER_UNIT,
 	}
 
 	private GroupType type = GroupType.ONE_PER_MODEL;
 
-	private int optionNumberPerGroup;
+	private int optionNumberPerGroup = 1;
 
-	private int groupSize;
+	private int initialOptionNumberPerGroup = 1;
+
+	private int groupSize = 1;
 
 	private int limit;
 
@@ -57,18 +59,16 @@ public class UnitOptionGroup extends Model {
 
 	private boolean enabled = true;
 
+	private final List<String> warnings = new ArrayList<String>();
+
 	public UnitOptionGroup(final int id, final GroupType type, final UnitOption... options) {
 		this.id = id;
 		this.type = type;
-		this.optionNumberPerGroup = 1;
-		this.groupSize = 1;
 		this.options = Arrays.asList(options);
 	}
 
 	public UnitOptionGroup(final GroupType type, final UnitOption... options) {
 		this.type = type;
-		this.optionNumberPerGroup = 1;
-		this.groupSize = 1;
 		this.options = Arrays.asList(options);
 	}
 
@@ -77,7 +77,17 @@ public class UnitOptionGroup extends Model {
 		this.id = id;
 		this.type = type;
 		this.optionNumberPerGroup = optionNumberPerGroup;
+		this.initialOptionNumberPerGroup = optionNumberPerGroup;
 		this.groupSize = groupSize;
+		this.options = Arrays.asList(options);
+	}
+
+	public UnitOptionGroup(final int id, final GroupType type, final int optionNumberPerGroup,
+		final UnitOption... options) {
+		this.id = id;
+		this.type = type;
+		this.optionNumberPerGroup = optionNumberPerGroup;
+		this.initialOptionNumberPerGroup = optionNumberPerGroup;
 		this.options = Arrays.asList(options);
 	}
 
@@ -85,6 +95,7 @@ public class UnitOptionGroup extends Model {
 		final UnitOption... options) {
 		this.type = type;
 		this.optionNumberPerGroup = optionNumberPerGroup;
+		this.initialOptionNumberPerGroup = optionNumberPerGroup;
 		this.groupSize = groupSize;
 		this.options = Arrays.asList(options);
 	}
@@ -105,6 +116,14 @@ public class UnitOptionGroup extends Model {
 
 	public int getOptionNumberPerGroup() {
 		return optionNumberPerGroup;
+	}
+
+	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
+		this.optionNumberPerGroup = optionNumberPerGroup;
+	}
+
+	public int getInitalOptionNumberPerGroup() {
+		return initialOptionNumberPerGroup;
 	}
 
 	public int getGroupSize() {
@@ -129,6 +148,8 @@ public class UnitOptionGroup extends Model {
 			} else if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
 				option.setAmountSelected(Math.min(option.getAmountSelected(), max));
 				continue;
+			} else if (type == GroupType.X_PER_UNIT) {
+				option.setAmountSelected(optionNumberPerGroup);
 			}
 			current += option.getAmountSelected();
 			if (current > max) {
@@ -163,13 +184,23 @@ public class UnitOptionGroup extends Model {
 		return enabled;
 	}
 
+	public void setWarning(final String text) {
+		if (!warnings.contains(text)) {
+			warnings.add(text);
+		}
+	}
+
+	public void clearWarning(final String text) {
+		warnings.remove(text);
+	}
+
+	public List<String> getActiveWarnings() {
+		return warnings;
+	}
+
 	private int getMaxAmount() {
 		int max = limit;
 		switch (type) {
-		case ONE_PER_UNIT:
-			max = 1;
-			break;
-
 		case ONE_PER_MODEL:
 			max = limit;
 			break;
@@ -216,6 +247,14 @@ public class UnitOptionGroup extends Model {
 		return total;
 	}
 
+	public int getSelectedCount() {
+		int total = 0;
+		for (final UnitOption option : options) {
+			total += option.getAmountSelected();
+		}
+		return total;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -226,6 +265,7 @@ public class UnitOptionGroup extends Model {
 		super.writeToParcel(dest, flags);
 		dest.writeInt(type.ordinal());
 		dest.writeInt(optionNumberPerGroup);
+		dest.writeInt(initialOptionNumberPerGroup); // added with v1
 		dest.writeInt(groupSize);
 		dest.writeList(options);
 		dest.writeInt(id);
@@ -240,6 +280,11 @@ public class UnitOptionGroup extends Model {
 		}
 		type = GroupType.values()[source.readInt()];
 		optionNumberPerGroup = source.readInt();
+		if (getFileVersion() >= 1) {
+			initialOptionNumberPerGroup = source.readInt();
+		} else {
+			initialOptionNumberPerGroup = optionNumberPerGroup;
+		}
 		groupSize = source.readInt();
 
 		options = new ArrayList<UnitOption>();
@@ -255,6 +300,6 @@ public class UnitOptionGroup extends Model {
 
 	@Override
 	protected int getFeatureVersion() {
-		return 0;
+		return 1;
 	}
 }
