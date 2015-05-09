@@ -1,19 +1,35 @@
 package de.game_coding.armypicker.builder;
 
+import de.game_coding.armypicker.model.OptionRule;
+import de.game_coding.armypicker.model.Type;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.model.UnitOption;
+import de.game_coding.armypicker.model.UnitOptionGroup;
+import de.game_coding.armypicker.model.UnitOptionGroup.GroupType;
 
-public class SpaceElveBuilder {
+public class SpaceElveBuilder implements IArmyTemplateBuilder {
 
 	private static final Unit[] UNITS = new Unit[] {
 
 	};
 
-	public static Unit[] getTemplates() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.game_coding.armypicker.builder.UnitBuilder#getTemplates()
+	 */
+	@Override
+	public Unit[] getTemplates() {
 		return UNITS;
 	}
 
-	public static String getName() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.game_coding.armypicker.builder.UnitBuilder#getName()
+	 */
+	@Override
+	public String getName() {
 		return "Space Elves";
 	}
-
 }

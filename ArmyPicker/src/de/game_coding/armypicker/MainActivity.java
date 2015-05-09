@@ -21,9 +21,10 @@ import de.game_coding.armypicker.adapter.ArmyListAdapter;
 import de.game_coding.armypicker.adapter.ArmyListAdapter.DeleteHandler;
 import de.game_coding.armypicker.adapter.ArmyListAdapter.EditHandler;
 import de.game_coding.armypicker.adapter.ArmyTypeListAdapter;
+import de.game_coding.armypicker.builder.IArmyTemplateBuilder;
 import de.game_coding.armypicker.builder.SpaceElveBuilder;
+import de.game_coding.armypicker.builder.SpaceMonkBuilder;
 import de.game_coding.armypicker.model.Army;
-import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
@@ -32,13 +33,15 @@ public class MainActivity extends Activity {
 
 	protected static final String TAG = MainActivity.class.getName();
 
-	private static final Unit[] SPACE_ELVES = SpaceElveBuilder.getTemplates();
+	private static final IArmyTemplateBuilder SPACE_ELVES = new SpaceElveBuilder();
+	private static final IArmyTemplateBuilder SPACE_MONKS = new SpaceMonkBuilder();
 
 	private static final List<Army> ARMY_TEMPLATES = new ArrayList<Army>() {
 		private static final long serialVersionUID = 1493878691032538962L;
 
 		{
-			add(new Army(SpaceElveBuilder.getName(), SPACE_ELVES));
+			add(new Army(SPACE_ELVES.getName(), SPACE_ELVES.getTemplates()));
+			add(new Army(SPACE_MONKS.getName(), SPACE_MONKS.getTemplates()));
 		}
 	};
 
