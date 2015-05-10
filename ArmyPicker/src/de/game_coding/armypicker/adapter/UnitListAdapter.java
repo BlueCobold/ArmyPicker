@@ -14,6 +14,7 @@ import android.widget.TextView;
 import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.model.UnitOption;
 import de.game_coding.armypicker.model.UnitOptionGroup;
 import de.game_coding.armypicker.util.UIUtil;
 
@@ -29,9 +30,13 @@ public class UnitListAdapter extends BaseUnitAdapter {
 
 	private final boolean showHeader;
 
-	public UnitListAdapter(final Context context, final List<Unit> units, final boolean showHeader) {
+	private final boolean showSummaries;
+
+	public UnitListAdapter(final Context context, final List<Unit> units, final boolean showHeader,
+		final boolean showSummaries) {
 		super(context, R.layout.item_unit_list, units);
 		this.showHeader = showHeader;
+		this.showSummaries = showSummaries;
 	}
 
 	@Override
@@ -63,6 +68,15 @@ public class UnitListAdapter extends BaseUnitAdapter {
 		optionPoints.setVisibility(View.GONE);
 
 		final View rootView = view;
+
+		final TextView summary = (TextView) view.findViewById(R.id.unit_options_summary);
+		final String selectedOptions = getSelectedOptions(unit);
+		if (showSummaries && !selectedOptions.isEmpty()) {
+			summary.setVisibility(View.VISIBLE);
+			summary.setText(selectedOptions);
+		} else {
+			summary.setVisibility(View.GONE);
+		}
 
 		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
 		if (showHeader && (position == 0 || unit.getType() != getItem(position - 1).getType())) {
@@ -173,16 +187,42 @@ public class UnitListAdapter extends BaseUnitAdapter {
 	private void openCloseOptions(final View view, final Unit unit) {
 		final LinearLayout options = (LinearLayout) view.findViewById(R.id.unit_options_list);
 		final TextView optionPoints = (TextView) view.findViewById(R.id.unit_options_points);
+		final TextView summary = (TextView) view.findViewById(R.id.unit_options_summary);
 		if (options.getChildCount() == 0) {
 			buildEntries(options, newAdapter(unit.getOptions(), unit, view));
+			summary.setVisibility(View.GONE);
 			if ((unit.getOptions().size() > 0 && unit.getOptions().get(0).getOptions().size() > 1)
 				|| unit.getOptions().size() > 1) {
 				optionPoints.setVisibility(View.VISIBLE);
 			}
 		} else {
+			final String selectedOptions = getSelectedOptions(unit);
+			if (showSummaries && !selectedOptions.isEmpty()) {
+				summary.setVisibility(View.VISIBLE);
+				summary.setText(selectedOptions);
+			}
 			buildEntries(options, newAdapter(new ArrayList<UnitOptionGroup>(), unit, view));
 			optionPoints.setVisibility(View.GONE);
 		}
+	}
+
+	private String getSelectedOptions(final Unit unit) {
+		String result = new String();
+		for (final UnitOptionGroup group : unit.getOptions()) {
+			for (final UnitOption option : group.getOptions()) {
+				if (option.getAmountSelected() == 0) {
+					continue;
+				}
+				if (!result.isEmpty()) {
+					result += ", ";
+				}
+				result += option.getName();
+				if (option.getAmountSelected() > 1) {
+					result += " [" + option.getAmountSelected() + "]";
+				}
+			}
+		}
+		return result;
 	}
 
 	public void setNotifier(final IValueChangedNotifier notifier) {

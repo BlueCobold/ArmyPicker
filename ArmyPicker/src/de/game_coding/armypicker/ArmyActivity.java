@@ -30,6 +30,7 @@ import de.game_coding.armypicker.util.UIUtil;
 public class ArmyActivity extends Activity {
 
 	private static final String SETTING_SHOW_TYPES = "ArmyActivity.SHOW_TYPES";
+	private static final String SETTING_SHOW_SUMMARIES = "ArmyActivity.SHOW_SUMMARIES";
 
 	public static final String EXTRA_ARMY = "ArmyActivity.EXTRA_ARMY";
 
@@ -42,6 +43,7 @@ public class ArmyActivity extends Activity {
 	private ListView armyList;
 
 	private boolean showTypes;
+	private boolean showSummaries;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -112,17 +114,19 @@ public class ArmyActivity extends Activity {
 	private void restoreSettings() {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		showTypes = settings.getBoolean(SETTING_SHOW_TYPES, false);
+		showSummaries = settings.getBoolean(SETTING_SHOW_SUMMARIES, false);
 	}
 
 	private void storeSettings() {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		final Editor editor = settings.edit();
 		editor.putBoolean(SETTING_SHOW_TYPES, showTypes);
+		editor.putBoolean(SETTING_SHOW_TYPES, showSummaries);
 		editor.apply();
 	}
 
 	private UnitListAdapter newUnitAdapter() {
-		final UnitListAdapter adapter = new UnitListAdapter(this, army.getUnits(), showTypes);
+		final UnitListAdapter adapter = new UnitListAdapter(this, army.getUnits(), showTypes, showSummaries);
 		adapter.setNotifier(new IValueChangedNotifier() {
 
 			@Override
@@ -168,6 +172,10 @@ public class ArmyActivity extends Activity {
 			armyList.setAdapter(newUnitAdapter());
 			break;
 
+		case R.id.action_show_summary:
+			showSummaries = !showSummaries;
+			armyList.setAdapter(null);
+			armyList.setAdapter(newUnitAdapter());
 		default:
 			break;
 		}

@@ -18,5 +18,6 @@
 	<string name="type_fast">Fast Attack</string>
 	<string name="type_heavy">Heavy Support</string>
 	<string name="sort_by_class">Sort by class</string>
+	<string name="show_option_summaries">Show option summaries</string>
 
 </resources>
