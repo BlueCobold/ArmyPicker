@@ -4,8 +4,20 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical" >
 
-    <TextView 
-        android:id="@+id/option_warnings_header"
+	<TextView 
+		android:id="@+id/option_collapse_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:textColor="#A0FFFFFF"
+		android:paddingTop="3pt"
+		android:paddingBottom="3pt"
+		android:textSize="16sp"
+		android:background="#0AFFFFFF"
+		/>
+
+	<TextView 
+		android:id="@+id/option_warnings_header"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_horizontal"
@@ -13,7 +25,7 @@
 		android:textSize="16sp"
 		android:background="#30FF0000"
 		/>
-    
+
 	<LinearLayout
 		android:id="@+id/option_list"
 		android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -16,6 +17,8 @@ import de.game_coding.armypicker.model.UnitOptionGroup;
 
 public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 
+	private static final String CLOSE = "\u2191 ";
+	private static final String OPEN = "\u2193 ";
 	private IValueChangedNotifier notifier;
 	private final List<OptionListAdapter> adapters = new ArrayList<OptionListAdapter>();
 	private final List<IValueChangedNotifier> warningHandlers = new ArrayList<IValueChangedNotifier>();
@@ -37,7 +40,22 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 		final LinearLayout options = (LinearLayout) view.findViewById(R.id.option_list);
 		final OptionListAdapter adapter = new OptionListAdapter(getContext(), group);
 		adapters.add(adapter);
-		buildEntries(options, adapter);
+
+		final TextView collapseHeader = (TextView) view.findViewById(R.id.option_collapse_header);
+		collapseHeader.setVisibility(!group.isCollapsable() ? View.GONE : View.VISIBLE);
+		if (group.isCollapsable()) {
+			collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle());
+			collapseHeader.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(final View v) {
+					group.collapse(!group.isCollapsed());
+					collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle());
+					buildEntries(options, adapter, group);
+				}
+			});
+		}
+		buildEntries(options, adapter, group);
 
 		final View rootView = view;
 		updateWarnings(rootView, group);
@@ -89,8 +107,11 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 		}
 	}
 
-	private void buildEntries(final LinearLayout rootView, final OptionListAdapter adapter) {
+	private void buildEntries(final LinearLayout rootView, final OptionListAdapter adapter, final UnitOptionGroup group) {
 		rootView.removeAllViews();
+		if (group.isCollapsed()) {
+			return;
+		}
 		for (int i = 0; i < adapter.getCount(); i++) {
 			rootView.addView(adapter.getView(i, null, rootView));
 		}

@@ -39,6 +39,12 @@ public class UnitOptionGroup extends Model {
 		X_PER_UNIT,
 	}
 
+	public enum ExpansionState {
+		ALWAYS_EXPANDED, //
+		EXPANDED, //
+		COLLAPSED //
+	}
+
 	private GroupType type = GroupType.ONE_PER_MODEL;
 
 	private int optionNumberPerGroup = 1;
@@ -59,7 +65,11 @@ public class UnitOptionGroup extends Model {
 
 	private boolean enabled = true;
 
+	private ExpansionState expansion = ExpansionState.ALWAYS_EXPANDED;
+
 	private final List<String> warnings = new ArrayList<String>();
+
+	private String expansionTitle = "";
 
 	public UnitOptionGroup(final int id, final GroupType type, final UnitOption... options) {
 		this.id = id;
@@ -198,6 +208,28 @@ public class UnitOptionGroup extends Model {
 		return warnings;
 	}
 
+	public boolean isCollapsable() {
+		return expansion != ExpansionState.ALWAYS_EXPANDED;
+	}
+
+	public boolean isCollapsed() {
+		return expansion == ExpansionState.COLLAPSED;
+	}
+
+	public void collapse(final boolean collapsed) {
+		expansion = collapsed ? ExpansionState.COLLAPSED : ExpansionState.EXPANDED;
+	}
+
+	public UnitOptionGroup makeExpandable(final String expansionTitle) {
+		this.expansionTitle = expansionTitle;
+		expansion = ExpansionState.COLLAPSED;
+		return this;
+	}
+
+	public String getExpansionTitle() {
+		return expansionTitle;
+	}
+
 	private int getMaxAmount() {
 		int max = limit;
 		switch (type) {
@@ -267,6 +299,8 @@ public class UnitOptionGroup extends Model {
 		dest.writeInt(optionNumberPerGroup);
 		dest.writeInt(initialOptionNumberPerGroup);
 		dest.writeInt(groupSize);
+		dest.writeString(expansionTitle);
+		dest.writeInt(expansion.ordinal());
 		dest.writeList(options);
 		dest.writeInt(id);
 		dest.writeTypedList(rules);
@@ -282,6 +316,8 @@ public class UnitOptionGroup extends Model {
 		optionNumberPerGroup = source.readInt();
 		initialOptionNumberPerGroup = source.readInt();
 		groupSize = source.readInt();
+		expansionTitle = source.readString();
+		expansion = ExpansionState.values()[source.readInt()];
 
 		options = new ArrayList<UnitOption>();
 		source.readList(options, UnitOption.class.getClassLoader());
