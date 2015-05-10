@@ -37,6 +37,7 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 		}
 		final UnitOptionGroup group = getItem(position);
 
+		view.setBackgroundColor((position % 2 == 0) ? 0x0 : 0x0800ffff);
 		final LinearLayout options = (LinearLayout) view.findViewById(R.id.option_list);
 		final OptionListAdapter adapter = new OptionListAdapter(getContext(), group);
 		adapters.add(adapter);
