@@ -170,12 +170,14 @@ public class ArmyActivity extends Activity {
 			}
 			armyList.setAdapter(null);
 			armyList.setAdapter(newUnitAdapter());
+			storeSettings();
 			break;
 
 		case R.id.action_show_summary:
 			showSummaries = !showSummaries;
 			armyList.setAdapter(null);
 			armyList.setAdapter(newUnitAdapter());
+			storeSettings();
 		default:
 			break;
 		}
