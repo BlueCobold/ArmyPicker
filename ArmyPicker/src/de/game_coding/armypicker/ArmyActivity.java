@@ -121,7 +121,7 @@ public class ArmyActivity extends Activity {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		final Editor editor = settings.edit();
 		editor.putBoolean(SETTING_SHOW_TYPES, showTypes);
-		editor.putBoolean(SETTING_SHOW_TYPES, showSummaries);
+		editor.putBoolean(SETTING_SHOW_SUMMARIES, showSummaries);
 		editor.apply();
 	}
 
