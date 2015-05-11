@@ -129,7 +129,10 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
-		this.optionNumberPerGroup = optionNumberPerGroup;
+		if (this.optionNumberPerGroup != optionNumberPerGroup) {
+			this.optionNumberPerGroup = optionNumberPerGroup;
+			validateAmounts();
+		}
 	}
 
 	public int getInitalOptionNumberPerGroup() {
