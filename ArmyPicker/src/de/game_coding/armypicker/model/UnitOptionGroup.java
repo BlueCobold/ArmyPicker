@@ -164,6 +164,10 @@ public class UnitOptionGroup extends Model {
 			} else if (type == GroupType.X_PER_UNIT) {
 				option.setAmountSelected(optionNumberPerGroup);
 			}
+			if (option.getParentId() >= 0) {
+				option.setAmountSelected(Math.min(option.getAmountSelected(), getOptionAmount(option.getParentId())));
+				continue;
+			}
 			current += option.getAmountSelected();
 			if (current > max) {
 				option.setAmountSelected(option.getAmountSelected() + max - current);
@@ -174,6 +178,23 @@ public class UnitOptionGroup extends Model {
 			rule.check();
 		}
 		return;
+	}
+
+	private UnitOption getOption(final int id) {
+		for (final UnitOption option : options) {
+			if (option.getId() == id) {
+				return option;
+			}
+		}
+		return null;
+	}
+
+	private int getOptionAmount(final int optionId) {
+		final UnitOption option = getOption(optionId);
+		if (option != null) {
+			return option.getAmountSelected();
+		}
+		return 0;
 	}
 
 	public List<UnitOption> getOptions() {
@@ -264,7 +285,13 @@ public class UnitOptionGroup extends Model {
 		}
 		final int max = getMaxAmount();
 		int current = 0;
+		if (option.getParentId() >= 0) {
+			return option.getAmountSelected() < getOptionAmount(option.getParentId());
+		}
 		for (final UnitOption unitOption : options) {
+			if (unitOption.getParentId() >= 0) {
+				continue;
+			}
 			current += unitOption.getAmountSelected();
 			if (current > max) {
 				unitOption.setAmountSelected(unitOption.getAmountSelected() + max - current);
@@ -285,7 +312,9 @@ public class UnitOptionGroup extends Model {
 	public int getAmountSelected() {
 		int total = 0;
 		for (final UnitOption option : options) {
-			total += option.getAmountSelected();
+			if (option.getParentId() < 0) {
+				total += option.getAmountSelected();
+			}
 		}
 		return total;
 	}

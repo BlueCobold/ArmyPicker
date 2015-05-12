@@ -12,6 +12,7 @@ public class UnitOption extends Model {
 	private int amountSelected;
 	private int id;
 	private boolean enabled = true;
+	private int parentId = -1;
 
 	public UnitOption(final int id, final String name, final int costs, final int defaultAmount) {
 		this.id = id;
@@ -69,6 +70,15 @@ public class UnitOption extends Model {
 		this.enabled = enabled;
 	}
 
+	public UnitOption bindToOption(final int parentId) {
+		this.parentId = parentId;
+		return this;
+	}
+
+	public int getParentId() {
+		return parentId;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -81,6 +91,7 @@ public class UnitOption extends Model {
 		dest.writeInt(id);
 		dest.writeInt(costs);
 		dest.writeInt(amountSelected);
+		dest.writeInt(parentId);
 	};
 
 	@Override
@@ -93,6 +104,7 @@ public class UnitOption extends Model {
 		id = source.readInt();
 		costs = source.readInt();
 		amountSelected = source.readInt();
+		parentId = source.readInt();
 	}
 
 	@Override
