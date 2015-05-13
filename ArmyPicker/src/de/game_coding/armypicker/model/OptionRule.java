@@ -83,7 +83,6 @@ public class OptionRule extends Model implements IRule {
 	private boolean checkCondition() {
 		final UnitOptionGroup owner = getOwnerGroup();
 		final int sourceId = sourceIds.length > 0 ? sourceIds[0] : 0;
-		final UnitOptionGroup source = getGroup(sourceId);
 		switch (conditionType) {
 		case ALWAYS:
 			return true;
@@ -112,7 +111,7 @@ public class OptionRule extends Model implements IRule {
 			return false;
 
 		case ON_UNSELECTED:
-			return source != null && source.getAmountSelected() == 0;
+			return owner != null && owner.getAmountSelected() == 0;
 
 		case GROUP_SUMS_LESS_THAN:
 			return new Enabler().buildSourceSelectionSums() < value;
