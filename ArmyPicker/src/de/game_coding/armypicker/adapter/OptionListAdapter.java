@@ -38,8 +38,9 @@ public class OptionListAdapter extends ArrayAdapter<UnitOption> {
 				Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.item_option_list, parent, false);
 		}
-		view.setVisibility(optionGroup.isEnabled() ? View.VISIBLE : View.GONE);
 		final UnitOption option = getItem(position);
+		view.setVisibility(optionGroup.isEnabled() && (option.getParentId() < 0 || option.isEnabled()) ? View.VISIBLE
+			: View.GONE);
 
 		final TextView name = (TextView) view.findViewById(R.id.option_name);
 		name.setText(option.getName());
@@ -69,7 +70,9 @@ public class OptionListAdapter extends ArrayAdapter<UnitOption> {
 			public void onValueChanged() {
 				validateButtons(option, delete, add);
 				updateViews(option, amount, total);
-				rootView.setVisibility(optionGroup.isEnabled() ? View.VISIBLE : View.GONE);
+				rootView
+					.setVisibility(optionGroup.isEnabled() && (option.getParentId() < 0 || option.isEnabled()) ? View.VISIBLE
+						: View.GONE);
 			}
 		};
 		onValidate.add(handler);
