@@ -22,6 +22,7 @@ public class OptionRule extends Model implements IRule {
 		ALWAYS, //
 		ON_OWNER_SELECTED, //
 		ON_OPTION_SELECTED, //
+		ON_OPTION_NOT_SELECTED, //
 		ON_UNSELECTED, //
 		GROUP_SUMS_LESS_THAN, //
 		GROUP_SUMS_MORE_THAN, //
@@ -97,6 +98,14 @@ public class OptionRule extends Model implements IRule {
 			for (final int id : sourceIds) {
 				final UnitOption option = getOption(id);
 				if (option != null && option.getAmountSelected() > 0) {
+					return true;
+				}
+			}
+			return false;
+		case ON_OPTION_NOT_SELECTED:
+			for (final int id : sourceIds) {
+				final UnitOption option = getOption(id);
+				if (option != null && option.getAmountSelected() == 0) {
 					return true;
 				}
 			}
@@ -333,6 +342,12 @@ public class OptionRule extends Model implements IRule {
 		public OptionRule basedOnOption(final int... optionIds) {
 			OptionRule.this.sourceIds = optionIds;
 			conditionType = ConditionType.ON_OPTION_SELECTED;
+			return OptionRule.this;
+		}
+
+		public OptionRule basedOnNotOption(final int... optionIds) {
+			OptionRule.this.sourceIds = optionIds;
+			conditionType = ConditionType.ON_OPTION_NOT_SELECTED;
 			return OptionRule.this;
 		}
 
