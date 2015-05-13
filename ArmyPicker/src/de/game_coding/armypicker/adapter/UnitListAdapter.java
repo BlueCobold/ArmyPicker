@@ -216,7 +216,7 @@ public class UnitListAdapter extends BaseUnitAdapter {
 				if (!result.isEmpty()) {
 					result += ", ";
 				}
-				result += option.getName();
+				result += option.getLongName();
 				if (option.getAmountSelected() > 1) {
 					result += " [" + option.getAmountSelected() + "]";
 				}

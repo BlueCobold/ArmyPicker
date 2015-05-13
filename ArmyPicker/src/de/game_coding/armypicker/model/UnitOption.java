@@ -7,12 +7,13 @@ public class UnitOption extends Model {
 
 	public static Parcelable.Creator<UnitOption> CREATOR = new UnitOptionCreator();
 
-	private String name;
+	private String name = "";
 	private int costs;
 	private int amountSelected;
 	private int id;
 	private boolean enabled = true;
 	private int parentId = -1;
+	private String longName = "";
 
 	public UnitOption(final int id, final String name, final int costs, final int defaultAmount) {
 		this.id = id;
@@ -46,6 +47,10 @@ public class UnitOption extends Model {
 		return name;
 	}
 
+	public String getLongName() {
+		return longName.isEmpty() ? name : longName;
+	}
+
 	public int getCosts() {
 		return costs;
 	}
@@ -70,8 +75,13 @@ public class UnitOption extends Model {
 		this.enabled = enabled;
 	}
 
-	public UnitOption bindToOption(final int parentId) {
+	public UnitOption makeToChildOf(final int parentId) {
 		this.parentId = parentId;
+		return this;
+	}
+
+	public UnitOption applyLongName(final String name) {
+		longName = name;
 		return this;
 	}
 
@@ -88,6 +98,7 @@ public class UnitOption extends Model {
 	public void writeToParcel(final Parcel dest, final int flags) {
 		super.writeToParcel(dest, flags);
 		dest.writeString(name);
+		dest.writeString(longName);
 		dest.writeInt(id);
 		dest.writeInt(costs);
 		dest.writeInt(amountSelected);
@@ -101,6 +112,7 @@ public class UnitOption extends Model {
 			return;
 		}
 		name = source.readString();
+		longName = source.readString();
 		id = source.readInt();
 		costs = source.readInt();
 		amountSelected = source.readInt();
@@ -114,6 +126,6 @@ public class UnitOption extends Model {
 
 	@Override
 	public String toString() {
-		return name;
+		return getLongName();
 	}
 }
