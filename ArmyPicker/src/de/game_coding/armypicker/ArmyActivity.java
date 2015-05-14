@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
+import de.game_coding.armypicker.adapter.UnitStatsListAdapter;
 import de.game_coding.armypicker.adapter.UnitTypeListAdapter;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
@@ -81,6 +82,9 @@ public class ArmyActivity extends Activity {
 			}
 		});
 
+		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		statsList.setAdapter(new UnitStatsListAdapter(this, army.getStats()));
+
 		selectionView = findViewById(R.id.army_available_units_view);
 		UIUtil.show(selectionView, army.getUnits().size() == 0);
 
@@ -90,6 +94,23 @@ public class ArmyActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				UIUtil.hide(selectionView);
+			}
+		});
+
+		final View statsButton = findViewById(R.id.army_show_unit_stats);
+		statsButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				showUnitStats();
+			}
+		});
+		final View unitButton = findViewById(R.id.army_show_unit_lists);
+		unitButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				showUnitList();
 			}
 		});
 	}
@@ -109,6 +130,24 @@ public class ArmyActivity extends Activity {
 		setResult(RESULT_OK, intent);
 
 		super.finish();
+	}
+
+	private void showUnitStats() {
+		final View title = findViewById(R.id.army_title);
+		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		armyList.setVisibility(View.GONE);
+		title.setVisibility(View.GONE);
+		pointLabel.setVisibility(View.GONE);
+		statsList.setVisibility(View.VISIBLE);
+	}
+
+	private void showUnitList() {
+		final View title = findViewById(R.id.army_title);
+		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		statsList.setVisibility(View.GONE);
+		title.setVisibility(View.VISIBLE);
+		pointLabel.setVisibility(View.VISIBLE);
+		armyList.setVisibility(View.VISIBLE);
 	}
 
 	private void restoreSettings() {
@@ -161,6 +200,7 @@ public class ArmyActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.action_add:
 			UIUtil.show(selectionView);
+			showUnitList();
 			break;
 
 		case R.id.action_sort:
@@ -168,6 +208,7 @@ public class ArmyActivity extends Activity {
 			if (showTypes) {
 				sortUnits(army);
 			}
+			showUnitList();
 			armyList.setAdapter(null);
 			armyList.setAdapter(newUnitAdapter());
 			storeSettings();
@@ -175,6 +216,7 @@ public class ArmyActivity extends Activity {
 
 		case R.id.action_show_summary:
 			showSummaries = !showSummaries;
+			showUnitList();
 			armyList.setAdapter(null);
 			armyList.setAdapter(newUnitAdapter());
 			storeSettings();

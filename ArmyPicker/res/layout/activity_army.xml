@@ -30,23 +30,79 @@
 		android:paddingRight="35dp"
 		android:text="1000"
 		/>
-	
+
 	<ListView
 		android:id="@+id/army_unit_selection"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="fill_parent"
 		android:layout_below="@id/army_title"
+		android:layout_above="@+id/army_button_area"
 		android:choiceMode="singleChoice"
 		android:divider="@drawable/navigation_list_separator"
 		android:dividerHeight="1dp" >
 	</ListView>
 
+	<ListView
+		android:id="@+id/army_unit_stats_list"
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent"
+		android:layout_above="@+id/army_button_area"
+		android:choiceMode="singleChoice"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		android:visibility="gone">
+	</ListView>
+
+	<ListView
+		android:id="@+id/army_weapon_stats_list"
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent"
+		android:layout_above="@+id/army_button_area"
+		android:choiceMode="singleChoice"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		android:visibility="gone">
+	</ListView>
+
+	<LinearLayout 
+		android:id="@+id/army_button_area"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<ImageButton
+			android:id="@+id/army_show_unit_lists"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_action_view_as_list" />
+		<ImageButton
+			android:id="@+id/army_show_unit_stats"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_power" />
+		<ImageButton
+			android:id="@+id/army_show_weapon_stats"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_guns" />
+	</LinearLayout>
+
 	<LinearLayout
 		android:id="@+id/army_available_units_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:background="#80000000"
 		android:orientation="vertical"
-		android:background="#80000000">
+		android:visibility="gone" >
+
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="fill_parent"

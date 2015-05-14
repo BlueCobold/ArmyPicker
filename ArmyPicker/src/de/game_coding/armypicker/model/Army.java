@@ -14,6 +14,7 @@ public class Army extends Model {
 	private Unit[] unitTemplates = new Unit[0];
 	private List<Unit> units = new ArrayList<Unit>();
 	private int id;
+	private UnitStats stats = new UnitStats();
 
 	public Army(final String name, final Unit[] unitTemplates) {
 		this.name = name;
@@ -63,6 +64,7 @@ public class Army extends Model {
 		dest.writeTypedArray(unitTemplates, flags);
 
 		dest.writeList(units);
+		stats.writeToParcel(dest, flags);
 	}
 
 	@Override
@@ -80,6 +82,7 @@ public class Army extends Model {
 
 		units = new ArrayList<Unit>();
 		source.readList(units, Unit.class.getClassLoader());
+		stats = new UnitStats(source);
 	}
 
 	@Override
@@ -93,5 +96,14 @@ public class Army extends Model {
 			total += unit.getTotalCosts();
 		}
 		return total;
+	}
+
+	public Army attachStats(final UnitStats stats) {
+		this.stats = stats;
+		return this;
+	}
+
+	public UnitStats getStats() {
+		return stats;
 	}
 }
