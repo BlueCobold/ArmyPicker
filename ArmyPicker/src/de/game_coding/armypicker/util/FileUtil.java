@@ -1,5 +1,6 @@
 package de.game_coding.armypicker.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -10,6 +11,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -35,7 +39,15 @@ public final class FileUtil {
 		try {
 			os = new FileOutputStream(new File(dir.getAbsolutePath(), army.getId() + FILE_SUFFIX));
 			army.writeToParcel(parcel, 0);
-			os.write(parcel.marshall());
+			final Deflater compressor = new Deflater();
+			compressor.setLevel(Deflater.BEST_COMPRESSION);
+			compressor.setInput(parcel.marshall());
+			compressor.finish();
+			final byte[] buffer = new byte[1024];
+			while (!compressor.finished()) {
+				final int count = compressor.deflate(buffer);
+				os.write(buffer, 0, count);
+			}
 		} catch (final FileNotFoundException e) {
 			Log.e(TAG, CANNOT_WRITE_ARMY_FILE, e);
 		} catch (final IOException e) {
@@ -76,15 +88,27 @@ public final class FileUtil {
 		InputStream os = null;
 		try {
 			os = new FileInputStream(file);
-			final int length = os.available();
-			final byte[] buffer = new byte[length];
+			final int available = os.available();
+			byte[] buffer = new byte[available];
 			os.read(buffer);
-			parcel.unmarshall(buffer, 0, length);
+			final Inflater inflater = new Inflater();
+			inflater.setInput(buffer);
+			final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(buffer.length);
+			buffer = new byte[1024];
+			while (!inflater.finished()) {
+				final int count = inflater.inflate(buffer);
+				outputStream.write(buffer, 0, count);
+			}
+			outputStream.close();
+			final byte[] output = outputStream.toByteArray();
+			parcel.unmarshall(output, 0, output.length);
 			parcel.setDataPosition(0);
 			result = Army.CREATOR.createFromParcel(parcel);
 		} catch (final FileNotFoundException e) {
 			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
 		} catch (final IOException e) {
+			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
+		} catch (final DataFormatException e) {
 			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
 		}
 		if (os != null) {
