@@ -333,9 +333,9 @@ public class UnitOptionGroup extends Model {
 		dest.writeInt(groupSize);
 		dest.writeString(expansionTitle);
 		dest.writeInt(expansion.ordinal());
-		dest.writeList(options);
+		writeList(dest, options);
 		dest.writeInt(id);
-		dest.writeTypedList(rules);
+		writeList(dest, rules);
 	}
 
 	@Override
@@ -351,15 +351,11 @@ public class UnitOptionGroup extends Model {
 		expansionTitle = source.readString();
 		expansion = ExpansionState.values()[source.readInt()];
 
-		options = new ArrayList<UnitOption>();
-		source.readList(options, UnitOption.class.getClassLoader());
+		options = readList(source, UnitOption.CREATOR);
 
 		id = source.readInt();
 
-		if (ruleCreator != null) {
-			rules = new ArrayList<IRule>();
-			source.readTypedList(rules, (Parcelable.Creator<IRule>) ruleCreator);
-		}
+		rules = readList(source, (Parcelable.Creator<IRule>) ruleCreator);
 	}
 
 	@Override

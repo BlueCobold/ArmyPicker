@@ -63,7 +63,7 @@ public class Army extends Model {
 		dest.writeInt(unitTemplates.length);
 		dest.writeTypedArray(unitTemplates, flags);
 
-		dest.writeList(units);
+		writeList(dest, units);
 		stats.writeToParcel(dest, flags);
 	}
 
@@ -80,8 +80,7 @@ public class Army extends Model {
 		unitTemplates = new Unit[size];
 		source.readTypedArray(unitTemplates, Unit.CREATOR);
 
-		units = new ArrayList<Unit>();
-		source.readList(units, Unit.class.getClassLoader());
+		units = readList(source, Unit.CREATOR);
 		stats = new UnitStats(source);
 	}
 
