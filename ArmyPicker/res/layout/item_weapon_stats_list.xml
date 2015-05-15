@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:background="@drawable/item_gradient"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"><!--   -->
+
+	<TextView
+		android:id="@+id/list_item_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="20sp"
+		android:layout_marginLeft="10dp"
+		android:textColor="@color/text_color"
+		/>
+	
+	<TableLayout
+		android:id="@+id/item_list_table"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:shrinkColumns="*"
+		android:stretchColumns="*"
+		android:layout_marginLeft="10dp"
+		android:layout_below="@id/list_item_name" >
+	</TableLayout>
+	
+</RelativeLayout>

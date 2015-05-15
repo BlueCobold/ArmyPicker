@@ -40,8 +40,10 @@ public class MainActivity extends Activity {
 		private static final long serialVersionUID = 1493878691032538962L;
 
 		{
-			add(new Army(SPACE_ELVES.getName(), SPACE_ELVES.getTemplates()).attachStats(SPACE_ELVES.getStats()));
-			add(new Army(SPACE_MONKS.getName(), SPACE_MONKS.getTemplates()).attachStats(SPACE_MONKS.getStats()));
+			add(new Army(SPACE_ELVES.getName(), SPACE_ELVES.getTemplates()).attachStats(SPACE_ELVES.getStats())
+				.attachWeapons(SPACE_ELVES.getWeapons()));
+			add(new Army(SPACE_MONKS.getName(), SPACE_MONKS.getTemplates()).attachStats(SPACE_MONKS.getStats())
+				.attachWeapons(SPACE_MONKS.getWeapons()));
 		}
 	};
 

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
 import de.game_coding.armypicker.adapter.UnitStatsListAdapter;
 import de.game_coding.armypicker.adapter.UnitTypeListAdapter;
+import de.game_coding.armypicker.adapter.WeaponStatsListAdapter;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
@@ -85,6 +86,9 @@ public class ArmyActivity extends Activity {
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
 		statsList.setAdapter(new UnitStatsListAdapter(this, army.getStats()));
 
+		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
+		weaponList.setAdapter(new WeaponStatsListAdapter(this, army.getWeapons()));
+
 		selectionView = findViewById(R.id.army_available_units_view);
 		UIUtil.show(selectionView, army.getUnits().size() == 0);
 
@@ -113,6 +117,14 @@ public class ArmyActivity extends Activity {
 				showUnitList();
 			}
 		});
+		final View weaponButton = findViewById(R.id.army_show_weapon_stats);
+		weaponButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				showWeaponList();
+			}
+		});
 	}
 
 	@Override
@@ -135,19 +147,34 @@ public class ArmyActivity extends Activity {
 	private void showUnitStats() {
 		final View title = findViewById(R.id.army_title);
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
 		armyList.setVisibility(View.GONE);
 		title.setVisibility(View.GONE);
 		pointLabel.setVisibility(View.GONE);
 		statsList.setVisibility(View.VISIBLE);
+		weaponList.setVisibility(View.GONE);
 	}
 
 	private void showUnitList() {
 		final View title = findViewById(R.id.army_title);
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
 		statsList.setVisibility(View.GONE);
 		title.setVisibility(View.VISIBLE);
 		pointLabel.setVisibility(View.VISIBLE);
 		armyList.setVisibility(View.VISIBLE);
+		weaponList.setVisibility(View.GONE);
+	}
+
+	private void showWeaponList() {
+		final View title = findViewById(R.id.army_title);
+		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
+		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
+		armyList.setVisibility(View.GONE);
+		title.setVisibility(View.GONE);
+		pointLabel.setVisibility(View.GONE);
+		statsList.setVisibility(View.GONE);
+		weaponList.setVisibility(View.VISIBLE);
 	}
 
 	private void restoreSettings() {

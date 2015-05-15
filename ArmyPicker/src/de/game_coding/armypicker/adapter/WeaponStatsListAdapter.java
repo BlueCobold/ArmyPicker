@@ -13,12 +13,12 @@ import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 
-public class UnitStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
+public class WeaponStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
 
 	private final UnitStats stats;
 
-	public UnitStatsListAdapter(final Context context, final UnitStats stats) {
-		super(context, R.layout.item_unit_stats_list, stats.getEntries());
+	public WeaponStatsListAdapter(final Context context, final UnitStats stats) {
+		super(context, R.layout.item_weapon_stats_list, stats.getEntries());
 		this.stats = stats;
 	}
 
@@ -28,7 +28,7 @@ public class UnitStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
 		if (view == null) {
 			final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.item_unit_stats_list, parent, false);
+			view = inflater.inflate(R.layout.item_weapon_stats_list, parent, false);
 		}
 
 		String entryName = "";
@@ -41,18 +41,32 @@ public class UnitStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
 
 		final TableLayout table = (TableLayout) view.findViewById(R.id.item_list_table);
 		table.removeAllViews();
-		addRow(stats.getHeaders(), table);
-		addRow(entry.getValues(), table);
+		addRow(entry.getValues(), table, parent);
+		for (final StatsEntry weapon : entry.getSecondaries()) {
+			addRow(weapon.getValues(), table, parent);
+		}
 		return view;
 	}
 
-	private void addRow(final String[] values, final TableLayout table) {
+	private void addRow(final String[] values, final TableLayout table, final ViewGroup parent) {
+		boolean empty = true;
+		for (final String value : values) {
+			empty &= value.isEmpty();
+		}
+		if (empty) {
+			return;
+		}
 		final TableRow tableRow = new TableRow(getContext());
-		for (final String statName : values) {
+		final float[] percents = new float[] { 0.22f, 0.20f, 0.12f, 0.12f, 0.34f };
+		for (int i = 0; i < values.length && i < stats.getHeaders().length; i++) {
+			final String value = values[i];
+			final String header = stats.getHeaders()[i];
 			final TextView text = new TextView(getContext());
-			text.setText(statName);
-			text.setGravity(Gravity.CENTER_HORIZONTAL);
-			text.setLayoutParams(new TableRow.LayoutParams(table.getWidth() / values.length,
+			text.setText(header + value);
+			if (i > 0) {
+				text.setGravity(Gravity.CENTER_HORIZONTAL);
+			}
+			text.setLayoutParams(new TableRow.LayoutParams((int) (parent.getWidth() * percents[i]),
 				TableRow.LayoutParams.WRAP_CONTENT));
 			text.setTextColor(text.getResources().getColor(R.color.text_color));
 			tableRow.addView(text);

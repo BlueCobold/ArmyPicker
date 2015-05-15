@@ -9,11 +9,12 @@ public class UnitStats extends Model {
 
 	public static UnitStatsCreator CREATOR = new UnitStatsCreator();
 
-	public class UnitEntry {
+	public static class StatsEntry {
 		private final String name;
 		private final String[] values;
+		private final List<StatsEntry> secondaries = new ArrayList<StatsEntry>();
 
-		public UnitEntry(final String name, final String[] values) {
+		public StatsEntry(final String name, final String... values) {
 			this.name = name;
 			this.values = values;
 		}
@@ -25,11 +26,20 @@ public class UnitStats extends Model {
 		public String[] getValues() {
 			return values;
 		}
+
+		public StatsEntry addSecondary(final String name, final String... values) {
+			secondaries.add(new StatsEntry(name, values));
+			return this;
+		}
+
+		public List<StatsEntry> getSecondaries() {
+			return secondaries;
+		}
 	}
 
 	private String[] headers;
 
-	private final List<UnitEntry> entries = new ArrayList<UnitStats.UnitEntry>();
+	private final List<StatsEntry> entries = new ArrayList<UnitStats.StatsEntry>();
 
 	public UnitStats(final String... headers) {
 		this.headers = headers;
@@ -40,7 +50,12 @@ public class UnitStats extends Model {
 	}
 
 	public UnitStats appendEntry(final String name, final String... values) {
-		entries.add(new UnitEntry(name, values));
+		entries.add(new StatsEntry(name, values));
+		return this;
+	}
+
+	public UnitStats appendEntry(final StatsEntry entry) {
+		entries.add(entry);
 		return this;
 	}
 
@@ -48,7 +63,7 @@ public class UnitStats extends Model {
 		return headers;
 	}
 
-	public List<UnitEntry> getEntries() {
+	public List<StatsEntry> getEntries() {
 		return entries;
 	}
 
@@ -60,10 +75,16 @@ public class UnitStats extends Model {
 		dest.writeStringArray(headers);
 
 		dest.writeInt(entries.size());
-		for (final UnitEntry entry : entries) {
+		for (final StatsEntry entry : entries) {
 			dest.writeString(entry.getName());
 			dest.writeInt(entry.getValues().length);
 			dest.writeStringArray(entry.getValues());
+			dest.writeInt(entry.getSecondaries().size());
+			for (final StatsEntry subentry : entry.getSecondaries()) {
+				dest.writeString(subentry.getName());
+				dest.writeInt(subentry.getValues().length);
+				dest.writeStringArray(subentry.getValues());
+			}
 		}
 	}
 
@@ -77,10 +98,18 @@ public class UnitStats extends Model {
 		entries.clear();
 		final int entryCount = source.readInt();
 		for (int i = 0; i < entryCount; i++) {
-			final String name = source.readString();
+			String name = source.readString();
 			final String[] values = new String[source.readInt()];
 			source.readStringArray(values);
-			appendEntry(name, values);
+			final StatsEntry entry = new StatsEntry(name, values);
+			appendEntry(entry);
+			final int subentryCount = source.readInt();
+			for (int j = 0; j < subentryCount; j++) {
+				name = source.readString();
+				final String[] subvalues = new String[source.readInt()];
+				source.readStringArray(subvalues);
+				entry.addSecondary(name, subvalues);
+			}
 		}
 	}
 

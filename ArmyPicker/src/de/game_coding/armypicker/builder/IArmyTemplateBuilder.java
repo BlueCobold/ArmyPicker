@@ -5,9 +5,11 @@ import de.game_coding.armypicker.model.UnitStats;
 
 public interface IArmyTemplateBuilder {
 
-	public abstract Unit[] getTemplates();
+	Unit[] getTemplates();
 
-	public abstract String getName();
+	String getName();
 
-	public abstract UnitStats getStats();
+	UnitStats getStats();
+
+	UnitStats getWeapons();
 }
