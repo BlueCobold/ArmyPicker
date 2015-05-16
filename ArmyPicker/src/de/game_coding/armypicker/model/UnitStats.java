@@ -13,8 +13,16 @@ public class UnitStats extends Model {
 		private final String name;
 		private final String[] values;
 		private final List<StatsEntry> secondaries = new ArrayList<StatsEntry>();
+		private final int id;
+
+		public StatsEntry(final int id, final String name, final String... values) {
+			this.id = id;
+			this.name = name;
+			this.values = values;
+		}
 
 		public StatsEntry(final String name, final String... values) {
+			id = 0;
 			this.name = name;
 			this.values = values;
 		}
@@ -35,6 +43,10 @@ public class UnitStats extends Model {
 		public List<StatsEntry> getSecondaries() {
 			return secondaries;
 		}
+
+		public int getId() {
+			return id;
+		}
 	}
 
 	private String[] headers;
@@ -47,6 +59,11 @@ public class UnitStats extends Model {
 
 	public UnitStats(final Parcel source) {
 		readFromParcel(source);
+	}
+
+	public UnitStats appendEntry(final int id, final String name, final String... values) {
+		entries.add(new StatsEntry(name, values));
+		return this;
 	}
 
 	public UnitStats appendEntry(final String name, final String... values) {
@@ -74,17 +91,17 @@ public class UnitStats extends Model {
 		dest.writeInt(headers.length);
 		dest.writeStringArray(headers);
 
+		writeSubEntries(entries, dest, flags);
+	}
+
+	private static void writeSubEntries(final List<StatsEntry> entries, final Parcel dest, final int flags) {
 		dest.writeInt(entries.size());
 		for (final StatsEntry entry : entries) {
+			dest.writeInt(entry.getId());
 			dest.writeString(entry.getName());
 			dest.writeInt(entry.getValues().length);
 			dest.writeStringArray(entry.getValues());
-			dest.writeInt(entry.getSecondaries().size());
-			for (final StatsEntry subentry : entry.getSecondaries()) {
-				dest.writeString(subentry.getName());
-				dest.writeInt(subentry.getValues().length);
-				dest.writeStringArray(subentry.getValues());
-			}
+			writeSubEntries(entry.getSecondaries(), dest, flags);
 		}
 	}
 
@@ -96,20 +113,19 @@ public class UnitStats extends Model {
 		source.readStringArray(headers);
 
 		entries.clear();
+		readSubEntries(entries, source);
+	}
+
+	private static void readSubEntries(final List<StatsEntry> result, final Parcel source) {
 		final int entryCount = source.readInt();
 		for (int i = 0; i < entryCount; i++) {
-			String name = source.readString();
+			final int id = source.readInt();
+			final String name = source.readString();
 			final String[] values = new String[source.readInt()];
 			source.readStringArray(values);
-			final StatsEntry entry = new StatsEntry(name, values);
-			appendEntry(entry);
-			final int subentryCount = source.readInt();
-			for (int j = 0; j < subentryCount; j++) {
-				name = source.readString();
-				final String[] subvalues = new String[source.readInt()];
-				source.readStringArray(subvalues);
-				entry.addSecondary(name, subvalues);
-			}
+			final StatsEntry entry = new StatsEntry(id, name, values);
+			result.add(entry);
+			readSubEntries(entry.getSecondaries(), source);
 		}
 	}
 
