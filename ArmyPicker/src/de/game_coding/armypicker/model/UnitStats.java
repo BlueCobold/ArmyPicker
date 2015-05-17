@@ -62,7 +62,7 @@ public class UnitStats extends Model {
 	}
 
 	public UnitStats appendEntry(final int id, final String name, final String... values) {
-		entries.add(new StatsEntry(name, values));
+		entries.add(new StatsEntry(id, name, values));
 		return this;
 	}
 
@@ -137,5 +137,14 @@ public class UnitStats extends Model {
 	@Override
 	protected int getFeatureVersion() {
 		return 0;
+	}
+
+	public StatsEntry find(final int id) {
+		for (final StatsEntry entry : entries) {
+			if (entry.getId() == id) {
+				return entry;
+			}
+		}
+		return null;
 	}
 }

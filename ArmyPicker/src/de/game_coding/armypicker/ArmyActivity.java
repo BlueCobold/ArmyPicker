@@ -2,6 +2,7 @@ package de.game_coding.armypicker;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +26,8 @@ import de.game_coding.armypicker.adapter.WeaponStatsListAdapter;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.model.UnitStats;
+import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
@@ -125,6 +128,16 @@ public class ArmyActivity extends Activity {
 				showWeaponList();
 			}
 		});
+		final View statsView = findViewById(R.id.army_specific_unit_stats_view);
+		statsView.setVisibility(View.VISIBLE);
+		statsView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				statsView.setVisibility(View.GONE);
+			}
+		});
+		statsView.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -212,7 +225,29 @@ public class ArmyActivity extends Activity {
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
+		adapter.setLongClickHandler(new UnitListAdapter.RequestDetailsHandler() {
+
+			@Override
+			public void onUnitClicked(final Unit unit, final int position) {
+				final View statsView = findViewById(R.id.army_specific_unit_stats_view);
+				statsView.setVisibility(View.VISIBLE);
+				final ListView statsList = (ListView) findViewById(R.id.army_specific_unit_stats_list);
+				statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, getStats(army,
+					unit.getStatsReferences())));
+			}
+		});
 		return adapter;
+	}
+
+	private static UnitStats getStats(final Army army, final List<Integer> statsReferences) {
+		final UnitStats result = new UnitStats(army.getStats().getHeaders());
+		for (final Integer id : statsReferences) {
+			final StatsEntry stats = army.getStats().find(id);
+			if (stats != null) {
+				result.appendEntry(stats);
+			}
+		}
+		return result;
 	}
 
 	@Override

@@ -95,6 +95,28 @@
 			android:src="@drawable/ic_guns" />
 	</LinearLayout>
 
+	<RelativeLayout
+		android:id="@+id/army_specific_unit_stats_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+		<ListView
+			android:id="@+id/army_specific_unit_stats_list"
+			android:background="@drawable/army_list_gradient"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="10dp"
+			android:paddingBottom="10dp"
+			android:layout_centerInParent="true"
+			android:choiceMode="singleChoice"
+			android:divider="@drawable/navigation_list_separator"
+			android:dividerHeight="1dp"
+			android:layout_margin="20dp">
+		</ListView>
+	</RelativeLayout>
+
 	<LinearLayout
 		android:id="@+id/army_available_units_view"
 		android:layout_width="match_parent"

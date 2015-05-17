@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -24,12 +25,14 @@ public class UnitListAdapter extends BaseUnitAdapter {
 		void onDelete(Unit unit, int position);
 	}
 
+	public interface RequestDetailsHandler {
+		void onUnitClicked(Unit unit, int position);
+	}
+
 	private IValueChangedNotifier notifier;
-
 	private DeleteHandler deleteHandler;
-
+	private RequestDetailsHandler longClickHandler;
 	private final boolean showHeader;
-
 	private final boolean showSummaries;
 
 	public UnitListAdapter(final Context context, final List<Unit> units, final boolean showHeader,
@@ -141,6 +144,17 @@ public class UnitListAdapter extends BaseUnitAdapter {
 				openCloseOptions(v, unit);
 			}
 		});
+		view.setLongClickable(true);
+		view.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(final View v) {
+				if (longClickHandler != null) {
+					longClickHandler.onUnitClicked(unit, position);
+				}
+				return true;
+			}
+		});
 		return view;
 	}
 
@@ -231,5 +245,9 @@ public class UnitListAdapter extends BaseUnitAdapter {
 
 	public void setDeleteHandler(final DeleteHandler deleteHandler) {
 		this.deleteHandler = deleteHandler;
+	}
+
+	public void setLongClickHandler(final RequestDetailsHandler longClickHandler) {
+		this.longClickHandler = longClickHandler;
 	}
 }

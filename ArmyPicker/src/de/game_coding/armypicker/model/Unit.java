@@ -18,6 +18,7 @@ public class Unit extends Model {
 	private int initialAmount = 1;
 	private int maxAmount = 1;
 	private List<UnitOptionGroup> options = new ArrayList<UnitOptionGroup>();
+	private final List<Integer> statsReferences = new ArrayList<Integer>();
 
 	public Unit(final String name, final Type type, final int points, final int amount, final int maxAmount,
 		final UnitOptionGroup... options) {
@@ -95,6 +96,15 @@ public class Unit extends Model {
 		return options;
 	}
 
+	public Unit addStatsRef(final int id) {
+		statsReferences.add(id);
+		return this;
+	}
+
+	public List<Integer> getStatsReferences() {
+		return statsReferences;
+	}
+
 	public int getTotalCosts() {
 		return amount * points + getTotalOptionCosts();
 	}
@@ -123,6 +133,10 @@ public class Unit extends Model {
 		dest.writeInt(initialAmount);
 
 		dest.writeTypedList(options);
+		dest.writeInt(statsReferences.size());
+		for (final Integer i : statsReferences) {
+			dest.writeInt(i);
+		}
 	}
 
 	@Override
@@ -144,6 +158,12 @@ public class Unit extends Model {
 			for (final IRule rule : group.getRules()) {
 				((OptionRule) rule).setTargets(options);
 			}
+		}
+
+		statsReferences.clear();
+		final int refCount = source.readInt();
+		for (int i = 0; i < refCount; i++) {
+			statsReferences.add(source.readInt());
 		}
 	}
 
