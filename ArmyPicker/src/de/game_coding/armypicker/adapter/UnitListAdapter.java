@@ -25,13 +25,8 @@ public class UnitListAdapter extends BaseUnitAdapter {
 		void onDelete(Unit unit, int position);
 	}
 
-	public interface RequestDetailsHandler {
-		void onUnitClicked(Unit unit, int position);
-	}
-
 	private IValueChangedNotifier notifier;
 	private DeleteHandler deleteHandler;
-	private RequestDetailsHandler longClickHandler;
 	private final boolean showHeader;
 	private final boolean showSummaries;
 
@@ -149,8 +144,9 @@ public class UnitListAdapter extends BaseUnitAdapter {
 
 			@Override
 			public boolean onLongClick(final View v) {
-				if (longClickHandler != null) {
-					longClickHandler.onUnitClicked(unit, position);
+				final RequestDetailsHandler handler = getLongClickHandler();
+				if (handler != null) {
+					handler.onUnitClicked(unit, position);
 				}
 				return true;
 			}
@@ -245,9 +241,5 @@ public class UnitListAdapter extends BaseUnitAdapter {
 
 	public void setDeleteHandler(final DeleteHandler deleteHandler) {
 		this.deleteHandler = deleteHandler;
-	}
-
-	public void setLongClickHandler(final RequestDetailsHandler longClickHandler) {
-		this.longClickHandler = longClickHandler;
 	}
 }

@@ -14,6 +14,7 @@ public class UnitStats extends Model {
 		private final String[] values;
 		private final List<StatsEntry> secondaries = new ArrayList<StatsEntry>();
 		private final int id;
+		private final List<Integer> gearReferences = new ArrayList<Integer>();
 
 		public StatsEntry(final int id, final String name, final String... values) {
 			this.id = id;
@@ -46,6 +47,10 @@ public class UnitStats extends Model {
 
 		public int getId() {
 			return id;
+		}
+
+		public List<Integer> getGearReferences() {
+			return gearReferences;
 		}
 	}
 
@@ -101,6 +106,11 @@ public class UnitStats extends Model {
 			dest.writeInt(entry.getValues().length);
 			dest.writeStringArray(entry.getValues());
 			writeSubEntries(entry.getSecondaries(), dest, flags);
+
+			dest.writeInt(entry.gearReferences.size());
+			for (final Integer i : entry.gearReferences) {
+				dest.writeInt(i);
+			}
 		}
 	}
 
@@ -125,6 +135,11 @@ public class UnitStats extends Model {
 			final StatsEntry entry = new StatsEntry(id, name, values);
 			result.add(entry);
 			readSubEntries(entry.getSecondaries(), source);
+			entry.gearReferences.clear();
+			final int refCount = source.readInt();
+			for (int j = 0; j < refCount; j++) {
+				entry.gearReferences.add(source.readInt());
+			}
 		}
 	}
 
@@ -145,5 +160,16 @@ public class UnitStats extends Model {
 			}
 		}
 		return null;
+	}
+
+	public UnitStats withGear(final int... ids) {
+		if (entries.isEmpty()) {
+			return this;
+		}
+		final StatsEntry stats = entries.get(entries.size() - 1);
+		for (final Integer id : ids) {
+			stats.getGearReferences().add(id);
+		}
+		return this;
 	}
 }

@@ -10,6 +10,12 @@ import de.game_coding.armypicker.model.Unit;
 
 public class BaseUnitAdapter extends ArrayAdapter<Unit> {
 
+	public interface RequestDetailsHandler {
+		void onUnitClicked(Unit unit, int position);
+	}
+
+	private RequestDetailsHandler longClickHandler;
+
 	public BaseUnitAdapter(final Context context, final int resource) {
 		super(context, resource);
 	}
@@ -54,4 +60,11 @@ public class BaseUnitAdapter extends ArrayAdapter<Unit> {
 		return "";
 	}
 
+	public void setLongClickHandler(final RequestDetailsHandler longClickHandler) {
+		this.longClickHandler = longClickHandler;
+	}
+
+	protected RequestDetailsHandler getLongClickHandler() {
+		return longClickHandler;
+	}
 }

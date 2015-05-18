@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import de.game_coding.armypicker.adapter.BaseUnitAdapter;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
 import de.game_coding.armypicker.adapter.UnitStatsListAdapter;
 import de.game_coding.armypicker.adapter.UnitTypeListAdapter;
@@ -69,7 +71,8 @@ public class ArmyActivity extends Activity {
 		pointLabel.setText(String.valueOf(army.getTotalCosts()));
 
 		final ListView newUnitList = (ListView) findViewById(R.id.army_available_unit_selection);
-		newUnitList.setAdapter(new UnitTypeListAdapter(this, army.getUnitTemplates()));
+		final UnitTypeListAdapter unitTypeListAdapter = new UnitTypeListAdapter(this, army.getUnitTemplates());
+		newUnitList.setAdapter(unitTypeListAdapter);
 		newUnitList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -85,9 +88,27 @@ public class ArmyActivity extends Activity {
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
+		newUnitList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
+				final long id) {
+				showStatsWindow(army.getUnitTemplates()[position]);
+				return true;
+			}
+		});
 
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
 		statsList.setAdapter(new UnitStatsListAdapter(this, army.getStats()));
+		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
+				final long id) {
+				showGearWindow(army.getStats().getEntries().get(position));
+				return true;
+			}
+		});
 
 		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
 		weaponList.setAdapter(new WeaponStatsListAdapter(this, army.getWeapons()));
@@ -129,7 +150,6 @@ public class ArmyActivity extends Activity {
 			}
 		});
 		final View statsView = findViewById(R.id.army_specific_unit_stats_view);
-		statsView.setVisibility(View.VISIBLE);
 		statsView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -137,7 +157,14 @@ public class ArmyActivity extends Activity {
 				statsView.setVisibility(View.GONE);
 			}
 		});
-		statsView.setVisibility(View.GONE);
+		final View gearView = findViewById(R.id.army_specific_unit_gear_view);
+		gearView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				gearView.setVisibility(View.GONE);
+			}
+		});
 	}
 
 	@Override
@@ -225,21 +252,68 @@ public class ArmyActivity extends Activity {
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
-		adapter.setLongClickHandler(new UnitListAdapter.RequestDetailsHandler() {
+		addDetailListener(adapter);
+		return adapter;
+	}
+
+	private void addDetailListener(final BaseUnitAdapter unitAdapter) {
+		unitAdapter.setLongClickHandler(new UnitTypeListAdapter.RequestDetailsHandler() {
 
 			@Override
 			public void onUnitClicked(final Unit unit, final int position) {
-				final View statsView = findViewById(R.id.army_specific_unit_stats_view);
-				statsView.setVisibility(View.VISIBLE);
-				final ListView statsList = (ListView) findViewById(R.id.army_specific_unit_stats_list);
-				statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, getStats(unit.getStatsReferences(),
-					army.getStats())));
-				final ListView weaponList = (ListView) findViewById(R.id.army_specific_weapon_stats_list);
-				weaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getStats(
-					unit.getWeaponReferences(), army.getWeapons())));
+				showStatsWindow(unit);
 			}
 		});
-		return adapter;
+	}
+
+	private void showStatsWindow(final Unit unit) {
+		final View statsView = findViewById(R.id.army_specific_unit_stats_view);
+		statsView.setVisibility(View.VISIBLE);
+		final ListView statsList = (ListView) findViewById(R.id.army_specific_unit_stats_list);
+		final UnitStats stats = getStats(unit.getStatsReferences(), army.getStats());
+		statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats));
+		statsList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				statsView.setVisibility(View.GONE);
+			}
+		});
+		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
+				final long id) {
+				showGearWindow(stats.getEntries().get(position));
+				return true;
+			}
+		});
+	}
+
+	private void showGearWindow(final StatsEntry statsEntry) {
+		final View gearView = findViewById(R.id.army_specific_unit_gear_view);
+		gearView.setVisibility(View.VISIBLE);
+		final ListView weaponList = (ListView) findViewById(R.id.army_specific_weapon_stats_list);
+		weaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getGear(army.getWeapons(), statsEntry)));
+		final OnItemClickListener closeHandler = new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				gearView.setVisibility(View.GONE);
+			}
+		};
+		weaponList.setOnItemClickListener(closeHandler);
+	}
+
+	private UnitStats getGear(final UnitStats lookupList, final StatsEntry statsEntry) {
+		final UnitStats result = new UnitStats(lookupList.getHeaders());
+		for (final Integer refId : statsEntry.getGearReferences()) {
+			final StatsEntry gear = lookupList.find(refId);
+			if (gear != null) {
+				result.appendEntry(gear);
+			}
+		}
+		return result;
 	}
 
 	private static UnitStats getStats(final List<Integer> references, final UnitStats statsType) {
