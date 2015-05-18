@@ -232,17 +232,20 @@ public class ArmyActivity extends Activity {
 				final View statsView = findViewById(R.id.army_specific_unit_stats_view);
 				statsView.setVisibility(View.VISIBLE);
 				final ListView statsList = (ListView) findViewById(R.id.army_specific_unit_stats_list);
-				statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, getStats(army,
-					unit.getStatsReferences())));
+				statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, getStats(unit.getStatsReferences(),
+					army.getStats())));
+				final ListView weaponList = (ListView) findViewById(R.id.army_specific_weapon_stats_list);
+				weaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getStats(
+					unit.getWeaponReferences(), army.getWeapons())));
 			}
 		});
 		return adapter;
 	}
 
-	private static UnitStats getStats(final Army army, final List<Integer> statsReferences) {
-		final UnitStats result = new UnitStats(army.getStats().getHeaders());
-		for (final Integer id : statsReferences) {
-			final StatsEntry stats = army.getStats().find(id);
+	private static UnitStats getStats(final List<Integer> references, final UnitStats statsType) {
+		final UnitStats result = new UnitStats(statsType.getHeaders());
+		for (final Integer id : references) {
+			final StatsEntry stats = statsType.find(id);
 			if (stats != null) {
 				result.appendEntry(stats);
 			}

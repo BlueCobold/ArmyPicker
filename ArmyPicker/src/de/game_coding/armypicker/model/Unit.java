@@ -19,6 +19,7 @@ public class Unit extends Model {
 	private int maxAmount = 1;
 	private List<UnitOptionGroup> options = new ArrayList<UnitOptionGroup>();
 	private final List<Integer> statsReferences = new ArrayList<Integer>();
+	private final List<Integer> weaponReferences = new ArrayList<Integer>();
 
 	public Unit(final String name, final Type type, final int points, final int amount, final int maxAmount,
 		final UnitOptionGroup... options) {
@@ -96,13 +97,22 @@ public class Unit extends Model {
 		return options;
 	}
 
-	public Unit addStatsRef(final int id) {
+	public Unit withStatsRef(final int id) {
 		statsReferences.add(id);
 		return this;
 	}
 
 	public List<Integer> getStatsReferences() {
 		return statsReferences;
+	}
+
+	public Unit withWeaponRef(final int id) {
+		weaponReferences.add(id);
+		return this;
+	}
+
+	public List<Integer> getWeaponReferences() {
+		return weaponReferences;
 	}
 
 	public int getTotalCosts() {
@@ -137,6 +147,10 @@ public class Unit extends Model {
 		for (final Integer i : statsReferences) {
 			dest.writeInt(i);
 		}
+		dest.writeInt(weaponReferences.size());
+		for (final Integer i : weaponReferences) {
+			dest.writeInt(i);
+		}
 	}
 
 	@Override
@@ -161,9 +175,14 @@ public class Unit extends Model {
 		}
 
 		statsReferences.clear();
-		final int refCount = source.readInt();
+		int refCount = source.readInt();
 		for (int i = 0; i < refCount; i++) {
 			statsReferences.add(source.readInt());
+		}
+		weaponReferences.clear();
+		refCount = source.readInt();
+		for (int i = 0; i < refCount; i++) {
+			weaponReferences.add(source.readInt());
 		}
 	}
 

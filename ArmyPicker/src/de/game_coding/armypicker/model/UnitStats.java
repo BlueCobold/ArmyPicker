@@ -50,7 +50,6 @@ public class UnitStats extends Model {
 	}
 
 	private String[] headers;
-
 	private final List<StatsEntry> entries = new ArrayList<UnitStats.StatsEntry>();
 
 	public UnitStats(final String... headers) {
