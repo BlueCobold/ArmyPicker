@@ -166,6 +166,15 @@
 				android:divider="@drawable/navigation_list_separator"
 				android:dividerHeight="1dp">
 			</ListView>
+			<ListView
+				android:id="@+id/army_specific_weapon_stats_inline_list"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:choiceMode="singleChoice"
+				android:clickable="false"
+				android:divider="@drawable/navigation_list_separator"
+				android:dividerHeight="1dp">
+			</ListView>
 		</LinearLayout>
 	</RelativeLayout>
 

@@ -272,22 +272,34 @@ public class ArmyActivity extends Activity {
 		final ListView statsList = (ListView) findViewById(R.id.army_specific_unit_stats_list);
 		final UnitStats stats = getStats(unit.getStatsReferences(), army.getStats());
 		statsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats));
-		statsList.setOnItemClickListener(new OnItemClickListener() {
+		final OnItemClickListener closeListener = new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 				statsView.setVisibility(View.GONE);
 			}
-		});
-		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+		};
+		statsList.setOnItemClickListener(closeListener);
+		final ListView weaponList = (ListView) findViewById(R.id.army_specific_weapon_stats_inline_list);
+		if (stats.getEntries().size() > 1) {
+			statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
-			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
-				final long id) {
-				showGearWindow(stats.getEntries().get(position));
-				return true;
+				@Override
+				public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
+					final long id) {
+					showGearWindow(stats.getEntries().get(position));
+					return true;
+				}
+			});
+			weaponList.setVisibility(View.GONE);
+		} else {
+			weaponList.setVisibility(stats.getEntries().size() > 0 ? View.VISIBLE : View.GONE);
+			if (stats.getEntries().size() > 0) {
+				weaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getGear(army.getWeapons(), stats
+					.getEntries().toArray(new StatsEntry[stats.getEntries().size()]))));
+				weaponList.setOnItemClickListener(closeListener);
 			}
-		});
+		}
 	}
 
 	private void showGearWindow(final StatsEntry statsEntry) {
@@ -305,12 +317,14 @@ public class ArmyActivity extends Activity {
 		weaponList.setOnItemClickListener(closeHandler);
 	}
 
-	private UnitStats getGear(final UnitStats lookupList, final StatsEntry statsEntry) {
+	private UnitStats getGear(final UnitStats lookupList, final StatsEntry... statsEntries) {
 		final UnitStats result = new UnitStats(lookupList.getHeaders());
-		for (final Integer refId : statsEntry.getGearReferences()) {
-			final StatsEntry gear = lookupList.find(refId);
-			if (gear != null) {
-				result.appendEntry(gear);
+		for (final StatsEntry statsEntry : statsEntries) {
+			for (final Integer refId : statsEntry.getGearReferences()) {
+				final StatsEntry gear = lookupList.find(refId);
+				if (gear != null) {
+					result.appendEntry(gear);
+				}
 			}
 		}
 		return result;

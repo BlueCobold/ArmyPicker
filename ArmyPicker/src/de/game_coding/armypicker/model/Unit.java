@@ -97,8 +97,10 @@ public class Unit extends Model {
 		return options;
 	}
 
-	public Unit withStatsRef(final int id) {
-		statsReferences.add(id);
+	public Unit withStatsRef(final int... ids) {
+		for (final int id : ids) {
+			statsReferences.add(id);
+		}
 		return this;
 	}
 
@@ -106,8 +108,10 @@ public class Unit extends Model {
 		return statsReferences;
 	}
 
-	public Unit withWeaponRef(final int id) {
-		weaponReferences.add(id);
+	public Unit withWeaponRef(final int... ids) {
+		for (final int id : ids) {
+			weaponReferences.add(id);
+		}
 		return this;
 	}
 
