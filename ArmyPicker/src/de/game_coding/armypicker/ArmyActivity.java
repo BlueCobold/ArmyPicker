@@ -99,7 +99,9 @@ public class ArmyActivity extends Activity {
 		});
 
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
-		statsList.setAdapter(new UnitStatsListAdapter(this, army.getStats()));
+		UnitStats stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
+		sortStatsByName(stats);
+		statsList.setAdapter(new UnitStatsListAdapter(this, stats));
 		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -111,7 +113,9 @@ public class ArmyActivity extends Activity {
 		});
 
 		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
-		weaponList.setAdapter(new WeaponStatsListAdapter(this, army.getWeapons()));
+		stats = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
+		sortStatsByName(stats);
+		weaponList.setAdapter(new WeaponStatsListAdapter(this, stats));
 
 		selectionView = findViewById(R.id.army_available_units_view);
 		UIUtil.show(selectionView, army.getUnits().size() == 0);
@@ -344,6 +348,16 @@ public class ArmyActivity extends Activity {
 			}
 		}
 		return result;
+	}
+
+	private static void sortStatsByName(final UnitStats result) {
+		Collections.sort(result.getEntries(), new Comparator<StatsEntry>() {
+
+			@Override
+			public int compare(final StatsEntry lhs, final StatsEntry rhs) {
+				return lhs.getName().compareTo(rhs.getName());
+			}
+		});
 	}
 
 	@Override
