@@ -43,7 +43,7 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 		adapters.add(adapter);
 
 		final TextView collapseHeader = (TextView) view.findViewById(R.id.option_collapse_header);
-		collapseHeader.setVisibility(!group.isCollapsable() ? View.GONE : View.VISIBLE);
+		collapseHeader.setVisibility(!group.isCollapsable() || !group.isEnabled() ? View.GONE : View.VISIBLE);
 		if (group.isCollapsable()) {
 			collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle());
 			collapseHeader.setOnClickListener(new OnClickListener() {
@@ -83,11 +83,17 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 			@Override
 			public void onValueChanged() {
 				updateWarnings(rootView, group);
+				updateCollapseHeader(rootView, group);
 			}
 		});
 		adapter.setNotifier(handler);
 
 		return view;
+	}
+
+	private void updateCollapseHeader(final View rootView, final UnitOptionGroup group) {
+		final TextView collapseHeader = (TextView) rootView.findViewById(R.id.option_collapse_header);
+		collapseHeader.setVisibility(!group.isCollapsable() || !group.isEnabled() ? View.GONE : View.VISIBLE);
 	}
 
 	private void updateWarnings(final View rootView, final UnitOptionGroup group) {
