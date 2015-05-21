@@ -32,8 +32,6 @@
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
 		android:orientation="vertical"
-		android:divider="@drawable/navigation_list_separator"
-		android:dividerHeight="1dp"
 		>
 	</LinearLayout>
 

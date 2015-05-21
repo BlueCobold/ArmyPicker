@@ -240,7 +240,7 @@ public class UnitOptionGroup extends Model {
 		return warnings;
 	}
 
-	public boolean isCollapsable() {
+	public boolean isCollapsible() {
 		return expansion != ExpansionState.ALWAYS_EXPANDED;
 	}
 
