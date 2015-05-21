@@ -42,23 +42,22 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 		final OptionListAdapter adapter = new OptionListAdapter(getContext(), group);
 		adapters.add(adapter);
 
+		final View rootView = view;
+
 		final TextView collapseHeader = (TextView) view.findViewById(R.id.option_collapse_header);
-		collapseHeader.setVisibility(!group.isCollapsable() || !group.isEnabled() ? View.GONE : View.VISIBLE);
+		updateCollapseHeader(rootView, group);
 		if (group.isCollapsable()) {
-			collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle());
 			collapseHeader.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(final View v) {
 					group.collapse(!group.isCollapsed());
-					collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle());
+					updateCollapseHeader(rootView, group);
 					buildEntries(options, adapter, group);
 				}
 			});
 		}
 		buildEntries(options, adapter, group);
-
-		final View rootView = view;
 		updateWarnings(rootView, group);
 
 		final IValueChangedNotifier handler = new IValueChangedNotifier() {
@@ -71,6 +70,7 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 				for (final IValueChangedNotifier warningHandler : warningHandlers) {
 					warningHandler.onValueChanged();
 				}
+				updateCollapseHeader(rootView, group);
 				for (final OptionListAdapter other : adapters) {
 					if (!other.equals(adapter)) {
 						other.refreshViews();
@@ -94,6 +94,8 @@ public class OptionGroupListAdapter extends ArrayAdapter<UnitOptionGroup> {
 	private void updateCollapseHeader(final View rootView, final UnitOptionGroup group) {
 		final TextView collapseHeader = (TextView) rootView.findViewById(R.id.option_collapse_header);
 		collapseHeader.setVisibility(!group.isCollapsable() || !group.isEnabled() ? View.GONE : View.VISIBLE);
+		collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle() + " ["
+			+ group.getAmountSelected() + "]");
 	}
 
 	private void updateWarnings(final View rootView, final UnitOptionGroup group) {
