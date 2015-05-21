@@ -34,6 +34,10 @@ public class UnitOptionGroup extends Model {
 		 */
 		UP_TO_X_OF_EACH_PER_Y_MODELS,
 		/**
+		 * Can take each upgrade in this group X-times per unit
+		 */
+		UP_TO_X_OF_EACH_PER_UNIT,
+		/**
 		 * Can only be taken once for the entire unit and must always be taken
 		 */
 		X_PER_UNIT,
@@ -129,8 +133,8 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
-		if (this.optionNumberPerGroup != optionNumberPerGroup) {
-			this.optionNumberPerGroup = optionNumberPerGroup;
+		if (this.optionNumberPerGroup != Math.max(0, optionNumberPerGroup)) {
+			this.optionNumberPerGroup = Math.max(0, optionNumberPerGroup);
 			validateAmounts();
 		}
 	}
@@ -148,17 +152,19 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void setLimit(final int limit) {
-		this.limit = limit;
-		validateAmounts();
+		if (this.limit != Math.max(0, limit)) {
+			this.limit = Math.max(0, limit);
+			validateAmounts();
+		}
 	}
 
 	public void validateAmounts() {
-		final int max = enabled ? getMaxAmount() : 0;
+		final int max = enabled || type == GroupType.X_PER_UNIT ? getMaxAmount() : 0;
 		int current = 0;
 		for (final UnitOption option : options) {
 			if (type == GroupType.ONE_PER_MODEL || type == GroupType.ONE_PER_MODEL_EXEPT_ONE) {
 				option.setAmountSelected(option.getAmountSelected() > 0 ? max : 0);
-			} else if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
+			} else if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS || type == GroupType.UP_TO_X_OF_EACH_PER_UNIT) {
 				option.setAmountSelected(Math.min(option.getAmountSelected(), max));
 				continue;
 			} else if (type == GroupType.X_PER_UNIT) {
@@ -210,8 +216,10 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void setEnabled(final boolean enabled) {
-		this.enabled = enabled;
-		validateAmounts();
+		if (this.enabled != enabled) {
+			this.enabled = enabled;
+			validateAmounts();
+		}
 	}
 
 	public boolean isEnabled() {
@@ -257,6 +265,9 @@ public class UnitOptionGroup extends Model {
 	private int getMaxAmount() {
 		int max = limit;
 		switch (type) {
+		case X_PER_UNIT:
+			return optionNumberPerGroup;
+
 		case ONE_PER_MODEL:
 			max = limit;
 			break;
@@ -266,6 +277,7 @@ public class UnitOptionGroup extends Model {
 			break;
 
 		case UP_TO_X_PER_UNIT:
+		case UP_TO_X_OF_EACH_PER_UNIT:
 			max = optionNumberPerGroup;
 			break;
 
@@ -280,7 +292,7 @@ public class UnitOptionGroup extends Model {
 		if (!enabled) {
 			return false;
 		}
-		if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
+		if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS || type == GroupType.UP_TO_X_OF_EACH_PER_UNIT) {
 			return option.getAmountSelected() < getMaxAmount();
 		}
 		final int max = getMaxAmount();

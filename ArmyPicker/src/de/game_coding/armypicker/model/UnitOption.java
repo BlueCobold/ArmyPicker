@@ -126,6 +126,6 @@ public class UnitOption extends Model {
 
 	@Override
 	public String toString() {
-		return getLongName();
+		return getLongName() + " x" + amountSelected;
 	}
 }

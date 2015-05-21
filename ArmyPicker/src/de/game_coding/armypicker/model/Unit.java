@@ -52,6 +52,13 @@ public class Unit extends Model {
 	public Unit(final Parcel source) {
 		readFromParcel(source);
 		setOptionAmounts();
+		forceRuleCheck();
+	}
+
+	private void forceRuleCheck() {
+		for (final UnitOptionGroup group : options) {
+			group.validateAmounts();
+		}
 	}
 
 	private void setOptionAmounts() {
