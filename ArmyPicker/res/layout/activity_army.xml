@@ -93,6 +93,15 @@
 			android:padding="5dp"
 			android:scaleType="fitCenter"
 			android:src="@drawable/ic_guns" />
+		
+		<ImageButton
+			android:id="@+id/army_show_chance_calculator"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_dice" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -204,5 +213,20 @@
 				android:dividerHeight="1dp">
 			</ListView>
 		</LinearLayout>
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/chance_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+		<include
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/chance_view"
+			android:layout_margin="20dp"
+		/>
 	</RelativeLayout>
 </RelativeLayout>

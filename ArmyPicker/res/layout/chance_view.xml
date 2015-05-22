@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/RelativeLayout1"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/army_list_gradient"
+	android:orientation="vertical"
+	android:paddingLeft="10dp"
+	android:paddingRight="10dp"
+	android:paddingTop="10dp" >
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_rolls"
+		android:layout_toLeftOf="@+id/chance_edit_t"
+		android:text="Rolls"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_rolls"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_alignParentTop="true"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="10"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_wounds"
+		android:layout_toLeftOf="@+id/chance_edit_t"
+		android:text="Kills"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_wounds"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_below="@id/chance_edit_rolls"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="5"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_bs"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_below="@id/chance_edit_wounds"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="4"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_s"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_below="@+id/chance_edit_bs"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="4"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/textView3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_t"
+		android:layout_alignParentLeft="true"
+		android:text="Toughness"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_t"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/chance_edit_s"
+		android:layout_marginLeft="10dp"
+		android:layout_toEndOf="@id/textView3"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="4"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_save"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_below="@+id/chance_edit_t"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="3"
+		android:textColor="@color/text_color" />
+
+	<EditText
+		android:id="@+id/chance_edit_fpn"
+		android:layout_width="40dp"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/chance_edit_t"
+		android:layout_below="@+id/chance_edit_save"
+		android:inputType="number"
+		android:padding="5dp"
+		android:text="0"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/textView1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_rolls"
+		android:layout_alignBottom="@+id/chance_edit_rolls"
+		android:layout_marginLeft="20dp"
+		android:layout_toRightOf="@+id/chance_edit_rolls"
+		android:text="Chance"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_result"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/textView1"
+		android:layout_alignBottom="@+id/textView1"
+		android:layout_marginLeft="5dp"
+		android:layout_toRightOf="@+id/textView1"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/textView4"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_s"
+		android:layout_alignBottom="@+id/chance_edit_s"
+		android:layout_toLeftOf="@+id/chance_edit_t"
+		android:text="Strength"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_bs"
+		android:layout_alignBottom="@+id/chance_edit_bs"
+		android:layout_alignRight="@+id/textView4"
+		android:text="BS"
+		android:textColor="@color/text_color" />
+
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_save"
+		android:layout_alignBottom="@+id/chance_edit_save"
+		android:layout_toLeftOf="@+id/chance_edit_t"
+		android:text="Save"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_fpn"
+		android:layout_alignBottom="@+id/chance_edit_fpn"
+		android:layout_toLeftOf="@+id/chance_edit_t"
+		android:text="FNP"
+		android:textColor="@color/text_color" />
+
+
+	<TextView
+		android:id="@+id/TextView01"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_wounds"
+		android:layout_alignBottom="@+id/chance_edit_wounds"
+		android:layout_alignRight="@+id/textView1"
+		android:text="Average"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_average"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/TextView01"
+		android:layout_alignBottom="@+id/TextView01"
+		android:layout_alignLeft="@+id/chance_result"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_hit_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_bs"
+		android:layout_alignBottom="@+id/chance_edit_bs"
+		android:layout_alignRight="@+id/TextView01"
+		android:text="Hits"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/TextView02"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_s"
+		android:layout_alignBottom="@+id/chance_edit_s"
+		android:layout_alignRight="@+id/chance_hit_label"
+		android:text="Wounds"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/TextView03"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_save"
+		android:layout_alignBottom="@+id/chance_edit_save"
+		android:layout_alignRight="@+id/TextView02"
+		android:text="Saved"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/TextView04"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_edit_fpn"
+		android:layout_alignBottom="@+id/chance_edit_fpn"
+		android:layout_toLeftOf="@+id/chance_result"
+		android:text="Saved"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_hits"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_hit_label"
+		android:layout_alignBottom="@+id/chance_hit_label"
+		android:layout_alignLeft="@+id/chance_average"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_wounds"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/TextView02"
+		android:layout_alignBottom="@+id/TextView02"
+		android:layout_alignLeft="@+id/chance_hits"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_saved_armours"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/TextView03"
+		android:layout_alignBottom="@+id/TextView03"
+		android:layout_alignLeft="@+id/chance_wounds"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_saved_fnp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/TextView04"
+		android:layout_alignBottom="@+id/TextView04"
+		android:layout_alignLeft="@+id/chance_saved_armours"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_per"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_average"
+		android:layout_alignBottom="@+id/chance_average"
+		android:layout_marginLeft="20dp"
+		android:layout_toRightOf="@+id/chance_average"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_hit_percent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_hits"
+		android:layout_alignBottom="@+id/chance_hits"
+		android:layout_alignLeft="@+id/chance_per"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_wounds_percent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_wounds"
+		android:layout_alignBottom="@+id/chance_wounds"
+		android:layout_alignLeft="@+id/chance_hit_percent"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_saved_percent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_saved_armours"
+		android:layout_alignBottom="@+id/chance_saved_armours"
+		android:layout_alignLeft="@+id/chance_wounds_percent"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+	<TextView
+		android:id="@+id/chance_fnp_percent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/chance_saved_fnp"
+		android:layout_alignBottom="@+id/chance_saved_fnp"
+		android:layout_alignLeft="@+id/chance_saved_percent"
+		android:text="-"
+		android:textColor="@color/text_color" />
+
+</RelativeLayout>

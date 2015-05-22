@@ -51,6 +51,7 @@ public class ArmyActivity extends Activity {
 
 	private boolean showTypes;
 	private boolean showSummaries;
+	private ChanceCalculator calculator;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -167,6 +168,23 @@ public class ArmyActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				gearView.setVisibility(View.GONE);
+			}
+		});
+		final View chanceView = findViewById(R.id.chance_view);
+		calculator = new ChanceCalculator(chanceView);
+		final View chanceButton = findViewById(R.id.army_show_chance_calculator);
+		chanceButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				chanceView.setVisibility(View.VISIBLE);
+			}
+		});
+		chanceView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				chanceView.setVisibility(View.GONE);
 			}
 		});
 	}
