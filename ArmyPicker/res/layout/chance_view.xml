@@ -14,7 +14,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/chance_edit_rolls"
 		android:layout_toLeftOf="@+id/chance_edit_t"
-		android:text="Rolls"
+		android:text="@string/rolls"
 		android:textColor="@color/text_color" />
 
 	<EditText
@@ -33,7 +33,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/chance_edit_wounds"
 		android:layout_toLeftOf="@+id/chance_edit_t"
-		android:text="Kills"
+		android:text="@string/kills"
 		android:textColor="@color/text_color" />
 
 	<EditText
@@ -75,7 +75,7 @@
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@+id/chance_edit_t"
 		android:layout_alignParentLeft="true"
-		android:text="Toughness"
+		android:text="@string/toughness"
 		android:textColor="@color/text_color" />
 
 	<EditText
@@ -120,7 +120,7 @@
 		android:layout_alignBottom="@+id/chance_edit_rolls"
 		android:layout_marginLeft="20dp"
 		android:layout_toRightOf="@+id/chance_edit_rolls"
-		android:text="Chance"
+		android:text="@string/chance"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -131,7 +131,7 @@
 		android:layout_alignBottom="@+id/textView1"
 		android:layout_marginLeft="5dp"
 		android:layout_toRightOf="@+id/textView1"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -141,7 +141,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_s"
 		android:layout_alignBottom="@+id/chance_edit_s"
 		android:layout_toLeftOf="@+id/chance_edit_t"
-		android:text="Strength"
+		android:text="@string/strength"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -150,7 +150,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_bs"
 		android:layout_alignBottom="@+id/chance_edit_bs"
 		android:layout_alignRight="@+id/textView4"
-		android:text="BS"
+		android:text="@string/bs"
 		android:textColor="@color/text_color" />
 
 
@@ -160,7 +160,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_save"
 		android:layout_alignBottom="@+id/chance_edit_save"
 		android:layout_toLeftOf="@+id/chance_edit_t"
-		android:text="Save"
+		android:text="@string/save"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -169,7 +169,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_fpn"
 		android:layout_alignBottom="@+id/chance_edit_fpn"
 		android:layout_toLeftOf="@+id/chance_edit_t"
-		android:text="FNP"
+		android:text="@string/fnp"
 		android:textColor="@color/text_color" />
 
 
@@ -180,7 +180,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_wounds"
 		android:layout_alignBottom="@+id/chance_edit_wounds"
 		android:layout_alignRight="@+id/textView1"
-		android:text="Average"
+		android:text="@string/average"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -190,7 +190,7 @@
 		android:layout_alignBaseline="@+id/TextView01"
 		android:layout_alignBottom="@+id/TextView01"
 		android:layout_alignLeft="@+id/chance_result"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -200,7 +200,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_bs"
 		android:layout_alignBottom="@+id/chance_edit_bs"
 		android:layout_alignRight="@+id/TextView01"
-		android:text="Hits"
+		android:text="@string/hits"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -210,7 +210,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_s"
 		android:layout_alignBottom="@+id/chance_edit_s"
 		android:layout_alignRight="@+id/chance_hit_label"
-		android:text="Wounds"
+		android:text="@string/wounds"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -220,7 +220,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_save"
 		android:layout_alignBottom="@+id/chance_edit_save"
 		android:layout_alignRight="@+id/TextView02"
-		android:text="Saved"
+		android:text="@string/saved"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -230,7 +230,7 @@
 		android:layout_alignBaseline="@+id/chance_edit_fpn"
 		android:layout_alignBottom="@+id/chance_edit_fpn"
 		android:layout_toLeftOf="@+id/chance_result"
-		android:text="Saved"
+		android:text="@string/saved"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -240,7 +240,7 @@
 		android:layout_alignBaseline="@+id/chance_hit_label"
 		android:layout_alignBottom="@+id/chance_hit_label"
 		android:layout_alignLeft="@+id/chance_average"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -250,7 +250,7 @@
 		android:layout_alignBaseline="@+id/TextView02"
 		android:layout_alignBottom="@+id/TextView02"
 		android:layout_alignLeft="@+id/chance_hits"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -260,7 +260,7 @@
 		android:layout_alignBaseline="@+id/TextView03"
 		android:layout_alignBottom="@+id/TextView03"
 		android:layout_alignLeft="@+id/chance_wounds"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -270,7 +270,7 @@
 		android:layout_alignBaseline="@+id/TextView04"
 		android:layout_alignBottom="@+id/TextView04"
 		android:layout_alignLeft="@+id/chance_saved_armours"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -281,7 +281,7 @@
 		android:layout_alignBottom="@+id/chance_average"
 		android:layout_marginLeft="20dp"
 		android:layout_toRightOf="@+id/chance_average"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -291,7 +291,7 @@
 		android:layout_alignBaseline="@+id/chance_hits"
 		android:layout_alignBottom="@+id/chance_hits"
 		android:layout_alignLeft="@+id/chance_per"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -301,7 +301,7 @@
 		android:layout_alignBaseline="@+id/chance_wounds"
 		android:layout_alignBottom="@+id/chance_wounds"
 		android:layout_alignLeft="@+id/chance_hit_percent"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -311,7 +311,7 @@
 		android:layout_alignBaseline="@+id/chance_saved_armours"
 		android:layout_alignBottom="@+id/chance_saved_armours"
 		android:layout_alignLeft="@+id/chance_wounds_percent"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 	<TextView
@@ -321,7 +321,7 @@
 		android:layout_alignBaseline="@+id/chance_saved_fnp"
 		android:layout_alignBottom="@+id/chance_saved_fnp"
 		android:layout_alignLeft="@+id/chance_saved_percent"
-		android:text="-"
+		android:text="@string/no_value"
 		android:textColor="@color/text_color" />
 
 </RelativeLayout>

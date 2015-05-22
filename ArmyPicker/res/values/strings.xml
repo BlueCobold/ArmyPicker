@@ -19,5 +19,18 @@
 	<string name="type_heavy">Heavy Support</string>
 	<string name="sort_by_class">Sort by class</string>
 	<string name="show_option_summaries">Show option summaries</string>
+	<string name="rolls">Rolls</string>
+	<string name="kills">Kills</string>
+	<string name="toughness">Toughness</string>
+	<string name="chance">Chance</string>
+	<string name="strength">Strength</string>
+	<string name="bs">BS</string>
+	<string name="save">Save</string>
+	<string name="fnp">FNP</string>
+	<string name="average">Average</string>
+	<string name="hits">Hits</string>
+	<string name="no_value">-</string>
+	<string name="saved">Saved</string>
+	<string name="wounds">Wounds</string>
 
 </resources>
