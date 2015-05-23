@@ -3,6 +3,9 @@ package de.game_coding.armypicker;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,6 +29,7 @@ public class ChanceCalculator {
 	private final TextView savedPercent;
 	private final TextView fnpSaved;
 	private final TextView fnpSavedPercent;
+	private final CheckBox rending;
 
 	public ChanceCalculator(final View rootView) {
 		fieldWounds = (EditText) rootView.findViewById(R.id.chance_edit_wounds);
@@ -53,7 +57,19 @@ public class ChanceCalculator {
 		savedPercent = (TextView) rootView.findViewById(R.id.chance_saved_percent);
 		fnpSaved = (TextView) rootView.findViewById(R.id.chance_saved_fnp);
 		fnpSavedPercent = (TextView) rootView.findViewById(R.id.chance_fnp_percent);
+		rending = (CheckBox) rootView.findViewById(R.id.chance_rending);
+		register(rending);
 		calculate();
+	}
+
+	private void register(final CheckBox box) {
+		box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+				calculate();
+			}
+		});
 	}
 
 	private void register(final EditText field) {
@@ -110,7 +126,8 @@ public class ChanceCalculator {
 			fnpSavedPercent.setText(Double.toString(((int) ((1 - sfnp) * 1000)) / 10.0) + "%");
 			fnpSaved.setText(Double.toString(((int) (rolls * (1 - sfnp) * 10)) / 10.0));
 		}
-		return sd * sfnp;
+		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
+		return rendChance + (1 - rendChance) * sd * sfnp;
 	}
 
 	private double calcToWound(final int rolls) {
