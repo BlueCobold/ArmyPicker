@@ -100,10 +100,12 @@ public class ChanceCalculator {
 	}
 
 	private double calcChance(final int rolls) {
-		return calcToHit(rolls) * calcToWound(rolls) * calcToFailSave(rolls);
+		final double hitChance = calcToHit(rolls);
+		final double woundChance = calcToWound(hitChance * rolls);
+		return hitChance * woundChance * calcToFailSave(hitChance * woundChance * rolls);
 	}
 
-	private double calcToFailSave(final int rolls) {
+	private double calcToFailSave(final double rolls) {
 		final int s = get(fieldSave);
 		double sd;
 		if (s <= 0 || s >= 6) {
@@ -130,7 +132,7 @@ public class ChanceCalculator {
 		return rendChance + (1 - rendChance) * sd * sfnp;
 	}
 
-	private double calcToWound(final int rolls) {
+	private double calcToWound(final double rolls) {
 		final int t = get(fieldToughness);
 		final int s = get(fieldStrength);
 		int x = 4 + t - s;
