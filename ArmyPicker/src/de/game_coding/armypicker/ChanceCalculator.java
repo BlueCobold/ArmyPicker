@@ -108,6 +108,7 @@ public class ChanceCalculator {
 	private double calcToFailSave(final double rolls) {
 		final int s = get(fieldSave);
 		double sd;
+		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
 		if (s <= 0 || s >= 6) {
 			sd = 1;
 			savedPercent.setText("-");
@@ -115,7 +116,7 @@ public class ChanceCalculator {
 		} else {
 			sd = (Math.max(s, 2) - 1) / 6.0;
 			savedPercent.setText(Double.toString(((int) ((1 - sd) * 1000)) / 10.0) + "%");
-			saved.setText(Double.toString(((int) (rolls * (1 - sd) * 10)) / 10.0));
+			saved.setText(Double.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * sd)) * 10)) / 10.0));
 		}
 		final int fnp = get(fieldFnp);
 		double sfnp = fnp / 6.0;
@@ -126,9 +127,9 @@ public class ChanceCalculator {
 		} else {
 			sfnp = (Math.max(fnp, 2) - 1) / 6.0;
 			fnpSavedPercent.setText(Double.toString(((int) ((1 - sfnp) * 1000)) / 10.0) + "%");
-			fnpSaved.setText(Double.toString(((int) (rolls * (1 - sfnp) * 10)) / 10.0));
+			fnpSaved.setText(Double
+				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * sfnp)) * 10)) / 10.0));
 		}
-		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
 		return rendChance + (1 - rendChance) * sd * sfnp;
 	}
 
