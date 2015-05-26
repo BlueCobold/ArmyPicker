@@ -100,7 +100,7 @@ public class ArmyActivity extends Activity {
 		});
 
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
-		UnitStats stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
+		final UnitStats stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
 		sortStatsByName(stats);
 		statsList.setAdapter(new UnitStatsListAdapter(this, stats));
 		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -108,15 +108,15 @@ public class ArmyActivity extends Activity {
 			@Override
 			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
 				final long id) {
-				showGearWindow(army.getStats().getEntries().get(position));
+				showGearWindow(stats.getEntries().get(position));
 				return true;
 			}
 		});
 
 		final ListView weaponList = (ListView) findViewById(R.id.army_weapon_stats_list);
-		stats = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
-		sortStatsByName(stats);
-		weaponList.setAdapter(new WeaponStatsListAdapter(this, stats));
+		final UnitStats weapons = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
+		sortStatsByName(weapons);
+		weaponList.setAdapter(new WeaponStatsListAdapter(this, weapons));
 
 		selectionView = findViewById(R.id.army_available_units_view);
 		UIUtil.show(selectionView, army.getUnits().size() == 0);
