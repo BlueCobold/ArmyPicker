@@ -180,6 +180,7 @@ public class ChanceCalculator {
 
 	private void updateChance(final int rolls, final int atLeast, final double p) {
 		if (rolls < atLeast || p <= 0 || p >= 1) {
+			resultView.setText("-");
 			return;
 		}
 		final int n = atLeast;
