@@ -109,7 +109,7 @@ public class ChanceCalculator {
 		final int s = get(fieldSave);
 		double sd;
 		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
-		if (s <= 0 || s >= 6) {
+		if (s <= 0 || s > 6) {
 			sd = 1;
 			savedPercent.setText("-");
 			saved.setText("-");
@@ -120,7 +120,7 @@ public class ChanceCalculator {
 		}
 		final int fnp = get(fieldFnp);
 		double sfnp = fnp / 6.0;
-		if (fnp <= 0 || fnp >= 6) {
+		if (fnp <= 0 || fnp > 6) {
 			sfnp = 1;
 			fnpSavedPercent.setText("-");
 			fnpSaved.setText("-");
