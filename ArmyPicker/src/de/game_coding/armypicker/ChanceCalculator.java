@@ -30,6 +30,7 @@ public class ChanceCalculator {
 	private final TextView fnpSaved;
 	private final TextView fnpSavedPercent;
 	private final CheckBox rending;
+	private final CheckBox reRollToWound;
 
 	public ChanceCalculator(final View rootView) {
 		fieldWounds = (EditText) rootView.findViewById(R.id.chance_edit_wounds);
@@ -59,6 +60,8 @@ public class ChanceCalculator {
 		fnpSavedPercent = (TextView) rootView.findViewById(R.id.chance_fnp_percent);
 		rending = (CheckBox) rootView.findViewById(R.id.chance_rending);
 		register(rending);
+		reRollToWound = (CheckBox) rootView.findViewById(R.id.chance_reroll_to_wound);
+		register(reRollToWound);
 		calculate();
 	}
 
@@ -146,7 +149,10 @@ public class ChanceCalculator {
 		if (x < 2) {
 			x = 2;
 		}
-		final double chance = (7 - x) / 6.0;
+		double chance = (7 - x) / 6.0;
+		if (reRollToWound.isChecked()) {
+			chance = 1 - Math.pow(1 - chance, 2);
+		}
 		woundsPercent.setText(Double.toString(((int) (chance * 1000)) / 10.0) + "%");
 		wounds.setText(Double.toString(((int) (rolls * chance * 10)) / 10.0));
 		return chance;
