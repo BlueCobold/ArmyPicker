@@ -6,4 +6,5 @@ public enum Type {
 	STANDARD, //
 	FAST_ATTACK, //
 	SUPPORT, //
+	LORD_OF_WAR, //
 }

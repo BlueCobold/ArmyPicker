@@ -53,6 +53,8 @@ public class BaseUnitAdapter extends ArrayAdapter<Unit> {
 			return view.getResources().getString(R.string.type_standard);
 		case SUPPORT:
 			return view.getResources().getString(R.string.type_heavy);
+		case LORD_OF_WAR:
+			return view.getResources().getString(R.string.type_low);
 
 		default:
 			break;
