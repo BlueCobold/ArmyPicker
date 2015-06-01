@@ -16,7 +16,8 @@ public class OptionRule extends Model implements IRule {
 		REDUCE_GROUP_AMOUNT, //
 		REDUCE_GROUP_AMOUNT_BY, //
 		REDUCE_GROUP_AMOUNT_BY_OPTION, //
-		ADD_WARNING
+		ADD_WARNING, //
+		LIMIT_OPTION_TO
 	}
 
 	private enum ConditionType {
@@ -80,8 +81,17 @@ public class OptionRule extends Model implements IRule {
 		case ADD_WARNING:
 			handleAddWarning();
 			break;
+		case LIMIT_OPTION_TO:
+			handleOptionLimit();
 		default:
 			break;
+		}
+	}
+
+	private void handleOptionLimit() {
+		for (final int id : targetIds) {
+			final UnitOption option = getOption(id);
+			option.setAmountSelected(Math.max(option.getAmountSelected(), value));
 		}
 	}
 
@@ -265,6 +275,11 @@ public class OptionRule extends Model implements IRule {
 		return new GroupAmountReducer();
 	}
 
+	public OptionAmountReducer limitAmountOfOption(final int... groupIds) {
+		targetIds = groupIds;
+		return new OptionAmountReducer();
+	}
+
 	public Enabler addWarning(final String text) {
 		actionType = ActionType.ADD_WARNING;
 		this.text = text;
@@ -420,6 +435,15 @@ public class OptionRule extends Model implements IRule {
 			sourceIds = optionIds;
 			actionType = ActionType.REDUCE_GROUP_AMOUNT_BY_OPTION;
 			return OptionRule.this;
+		}
+	}
+
+	public class OptionAmountReducer {
+
+		public Enabler to(final int number) {
+			OptionRule.this.value = number;
+			actionType = ActionType.LIMIT_OPTION_TO;
+			return new Enabler();
 		}
 	}
 
