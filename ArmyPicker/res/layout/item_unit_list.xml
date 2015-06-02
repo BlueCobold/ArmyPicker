@@ -17,18 +17,16 @@
 		/>
 
 	<TextView
-		android:id="@+id/unit_name"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentLeft="true"
-		android:layout_below="@id/unit_type_header"
-		android:textSize="20sp"
-		android:paddingTop="10dp"
-		android:paddingBottom="10dp"
-		android:paddingLeft="30dp"
-		android:textColor="#A0FFFFFF"
-		android:text="Unit name"
-		/>
+	    android:id="@+id/unit_name"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@id/unit_type_header"
+	    android:paddingLeft="30dp"
+	    android:paddingTop="10dp"
+	    android:text="Unit name"
+	    android:textColor="#A0FFFFFF"
+	    android:textSize="20sp" />
 
 	<ImageButton
 		android:id="@+id/unit_delete"
@@ -81,6 +79,24 @@
 		android:textColor="#A0FFFFFF"
 		android:textSize="20sp" />
 
+	<TextView
+		android:id="@+id/unit_source"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_below="@id/unit_name"
+		android:textSize="12sp"
+		android:paddingLeft="30dp"
+		android:textColor="#A0FFFFFF"
+		/>
+	
+	<View
+		android:id="@+id/unit_gap"
+		android:layout_width="match_parent"
+		android:layout_height="10dp"
+		android:layout_below="@id/unit_source"
+		/>
+
 	<LinearLayout
 		android:id="@+id/unit_options_list"
 		android:layout_width="match_parent"
@@ -91,7 +107,7 @@
 		android:divider="@drawable/navigation_list_separator"
 		android:dividerHeight="1dp"
 		android:layout_alignParentLeft="true"
-		android:layout_below="@+id/unit_name" >
+		android:layout_below="@+id/unit_gap" >
 	</LinearLayout>
 
 	<TextView

@@ -31,6 +31,14 @@ public class UnitTypeListAdapter extends BaseUnitAdapter {
 		final TextView points = (TextView) view.findViewById(R.id.list_item_points);
 		points.setText(String.valueOf(unit.getTotalCosts()));
 
+		final TextView source = (TextView) view.findViewById(R.id.list_item_source);
+		if (unit.getSubtitle() != null && !unit.getSubtitle().isEmpty()) {
+			source.setText(unit.getSubtitle());
+			source.setVisibility(View.VISIBLE);
+		} else {
+			source.setVisibility(View.GONE);
+		}
+
 		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
 		if (position == 0 || unit.getType() != getItem(position - 1).getType()) {
 			type.setText("== " + getUnitTypeName(unit, view) + " ==");

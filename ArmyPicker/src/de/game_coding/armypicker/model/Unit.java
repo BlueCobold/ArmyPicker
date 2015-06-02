@@ -17,6 +17,7 @@ public class Unit extends Model {
 	private int amount = 1;
 	private int initialAmount = 1;
 	private int maxAmount = 1;
+	private String subtitle = "";
 	private List<UnitOptionGroup> options = new ArrayList<UnitOptionGroup>();
 	private final List<Integer> statsReferences = new ArrayList<Integer>();
 	private final List<Integer> weaponReferences = new ArrayList<Integer>();
@@ -126,6 +127,15 @@ public class Unit extends Model {
 		return weaponReferences;
 	}
 
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public Unit withSubtitle(final String subtitle) {
+		this.subtitle = subtitle;
+		return this;
+	}
+
 	public int getTotalCosts() {
 		return amount * points + getTotalOptionCosts();
 	}
@@ -147,6 +157,7 @@ public class Unit extends Model {
 	public void writeToParcel(final Parcel dest, final int flags) {
 		super.writeToParcel(dest, flags);
 		dest.writeString(name);
+		dest.writeString(subtitle);
 		dest.writeInt(points);
 		dest.writeInt(type.ordinal());
 		dest.writeInt(amount);
@@ -171,6 +182,7 @@ public class Unit extends Model {
 			return;
 		}
 		name = source.readString();
+		subtitle = source.readString();
 		points = source.readInt();
 		type = Type.values()[source.readInt()];
 		amount = source.readInt();

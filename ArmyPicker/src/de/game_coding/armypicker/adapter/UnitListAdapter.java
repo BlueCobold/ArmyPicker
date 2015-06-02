@@ -53,6 +53,14 @@ public class UnitListAdapter extends BaseUnitAdapter {
 		final TextView costs = (TextView) view.findViewById(R.id.unit_points);
 		costs.setText(String.valueOf(unit.getTotalCosts()));
 
+		final TextView source = (TextView) view.findViewById(R.id.unit_source);
+		if (unit.getSubtitle() != null && !unit.getSubtitle().isEmpty()) {
+			source.setText(unit.getSubtitle());
+			source.setVisibility(View.VISIBLE);
+		} else {
+			source.setVisibility(View.GONE);
+		}
+
 		final TextView amount = (TextView) view.findViewById(R.id.unit_amount);
 		amount.setText("[" + unit.getAmount() + "]");
 		UIUtil.show(amount, unit.getMaxAmount() > 1);
