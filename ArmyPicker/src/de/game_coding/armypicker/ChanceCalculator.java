@@ -109,31 +109,32 @@ public class ChanceCalculator {
 	}
 
 	private double calcToFailSave(final double rolls) {
-		final int s = get(fieldSave);
-		double sd;
+		final int save = get(fieldSave);
+		double save_chance;
 		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
-		if (s <= 0 || s > 6) {
-			sd = 1;
+		if (save <= 0 || save > 6) {
+			save_chance = 1;
 			savedPercent.setText("-");
 			saved.setText("-");
 		} else {
-			sd = (Math.max(s, 2) - 1) / 6.0;
-			savedPercent.setText(Double.toString(((int) ((1 - sd) * 1000)) / 10.0) + "%");
-			saved.setText(Double.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * sd)) * 10)) / 10.0));
+			save_chance = (Math.max(save, 2) - 1) / 6.0;
+			savedPercent.setText(Double.toString(((int) ((1 - save_chance) * 1000)) / 10.0) + "%");
+			saved.setText(Double
+				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * save_chance)) * 10)) / 10.0));
 		}
 		final int fnp = get(fieldFnp);
-		double sfnp = fnp / 6.0;
+		double fnp_chance = fnp / 6.0;
 		if (fnp <= 0 || fnp > 6) {
-			sfnp = 1;
+			fnp_chance = 1;
 			fnpSavedPercent.setText("-");
 			fnpSaved.setText("-");
 		} else {
-			sfnp = (Math.max(fnp, 2) - 1) / 6.0;
-			fnpSavedPercent.setText(Double.toString(((int) ((1 - sfnp) * 1000)) / 10.0) + "%");
+			fnp_chance = (Math.max(fnp, 2) - 1) / 6.0;
+			fnpSavedPercent.setText(Double.toString(((int) ((1 - fnp_chance) * 1000)) / 10.0) + "%");
 			fnpSaved.setText(Double
-				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * sfnp)) * 10)) / 10.0));
+				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * fnp_chance)) * 10)) / 10.0));
 		}
-		return rendChance + (1 - rendChance) * sd * sfnp;
+		return fnp_chance * (rendChance + (1 - rendChance) * save_chance);
 	}
 
 	private double calcToWound(final double rolls) {
