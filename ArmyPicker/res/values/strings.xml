@@ -34,5 +34,7 @@
 	<string name="saved">Saved</string>
 	<string name="wounds">Wounds</string>
 	<string name="rending">Rending</string>
+	<string name="inv_cover">Inv/Cover</string>
+	<string name="shred">Shred</string>
 
 </resources>

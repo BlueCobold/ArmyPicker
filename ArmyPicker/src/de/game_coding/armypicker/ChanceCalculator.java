@@ -31,6 +31,8 @@ public class ChanceCalculator {
 	private final TextView fnpSavedPercent;
 	private final CheckBox rending;
 	private final CheckBox reRollToWound;
+	private final EditText fieldCover;
+	private final TextView coverLabel;
 
 	public ChanceCalculator(final View rootView) {
 		fieldWounds = (EditText) rootView.findViewById(R.id.chance_edit_wounds);
@@ -47,6 +49,9 @@ public class ChanceCalculator {
 		register(fieldSave);
 		fieldFnp = (EditText) rootView.findViewById(R.id.chance_edit_fpn);
 		register(fieldFnp);
+		fieldCover = (EditText) rootView.findViewById(R.id.chance_edit_cover);
+		register(fieldCover);
+		coverLabel = (TextView) rootView.findViewById(R.id.chance_cover_label);
 		resultView = (TextView) rootView.findViewById(R.id.chance_result);
 		average = (TextView) rootView.findViewById(R.id.chance_average);
 		chancePer = (TextView) rootView.findViewById(R.id.chance_per);
@@ -70,6 +75,8 @@ public class ChanceCalculator {
 
 			@Override
 			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+				coverLabel.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
+				fieldCover.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
 				calculate();
 			}
 		});
@@ -109,7 +116,11 @@ public class ChanceCalculator {
 	}
 
 	private double calcToFailSave(final double rolls) {
+		final int cover = get(fieldCover);
 		final int save = get(fieldSave);
+		if (cover > 0 || save == 0) {
+			Math.min(save, cover);
+		}
 		double save_chance;
 		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
 		if (save <= 0 || save > 6) {
@@ -134,7 +145,13 @@ public class ChanceCalculator {
 			fnpSaved.setText(Double
 				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * fnp_chance)) * 10)) / 10.0));
 		}
-		return fnp_chance * (rendChance + (1 - rendChance) * save_chance);
+		double cover_chance = cover / 6.0;
+		if (cover <= 0 || cover > 6) {
+			cover_chance = 1;
+		} else {
+			cover_chance = (Math.max(cover, 2) - 1) / 6.0;
+		}
+		return fnp_chance * (rendChance * cover_chance + (1 - rendChance) * save_chance);
 	}
 
 	private double calcToWound(final double rolls) {
