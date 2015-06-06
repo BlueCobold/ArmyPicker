@@ -63,6 +63,8 @@ public class MainActivity extends Activity {
 
 	private EditText editArmyName;
 
+	private ChanceCalculator calculator;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -117,6 +119,24 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				selectionView.setVisibility(View.INVISIBLE);
+			}
+		});
+
+		final View chanceView = findViewById(R.id.chance_view);
+		calculator = new ChanceCalculator(chanceView);
+		final View chanceButton = findViewById(R.id.army_show_chance_calculator);
+		chanceButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				chanceView.setVisibility(View.VISIBLE);
+			}
+		});
+		chanceView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				chanceView.setVisibility(View.GONE);
 			}
 		});
 	}
