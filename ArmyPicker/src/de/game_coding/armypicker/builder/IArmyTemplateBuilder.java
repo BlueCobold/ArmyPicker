@@ -9,7 +9,7 @@ public interface IArmyTemplateBuilder {
 
 	String getName();
 
-	UnitStats getStats();
+	UnitStats[] getStats();
 
 	UnitStats getWeapons();
 }

@@ -35,7 +35,7 @@ public class SpaceElveBuilder implements IArmyTemplateBuilder {
 	}
 
 	@Override
-	public UnitStats getStats() {
-		return new UnitStats();
+	public UnitStats[] getStats() {
+		return new UnitStats[0];
 	}
 }

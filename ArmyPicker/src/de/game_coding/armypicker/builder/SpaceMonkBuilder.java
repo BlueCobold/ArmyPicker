@@ -18,7 +18,7 @@ public class SpaceMonkBuilder implements IArmyTemplateBuilder {
 	}
 
 	@Override
-	public UnitStats getStats() {
-		return new UnitStats();
+	public UnitStats[] getStats() {
+		return new UnitStats[0];
 	}
 }

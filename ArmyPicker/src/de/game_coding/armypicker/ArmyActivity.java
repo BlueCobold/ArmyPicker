@@ -100,7 +100,7 @@ public class ArmyActivity extends Activity {
 		});
 
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
-		final UnitStats stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
+		final List<UnitStats> stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
 		sortStatsByName(stats);
 		statsList.setAdapter(new UnitStatsListAdapter(this, stats));
 		statsList.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -108,7 +108,7 @@ public class ArmyActivity extends Activity {
 			@Override
 			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
 				final long id) {
-				showGearWindow(stats.getEntries().get(position));
+				showGearWindow(findByIndex(stats, position));
 				return true;
 			}
 		});
@@ -204,6 +204,19 @@ public class ArmyActivity extends Activity {
 		setResult(RESULT_OK, intent);
 
 		super.finish();
+	}
+
+	private StatsEntry findByIndex(final List<UnitStats> stats, final int position) {
+		int skipped = 0;
+		int types = 0;
+		while (types < stats.size()) {
+			if (position - skipped < stats.get(types).getEntries().size()) {
+				return stats.get(types).getEntries().get(position - skipped);
+			}
+			skipped += stats.get(types).getEntries().size();
+			types++;
+		}
+		return null;
 	}
 
 	private void showUnitStats() {
@@ -357,19 +370,33 @@ public class ArmyActivity extends Activity {
 		return result;
 	}
 
-	private static UnitStats getStats(final List<Integer> references, final UnitStats statsType) {
-		final UnitStats result = new UnitStats(statsType.getHeaders());
-		for (final Integer id : references) {
-			final StatsEntry stats = statsType.find(id);
-			if (stats != null) {
-				result.appendEntry(stats);
+	private static UnitStats getStats(final List<Integer> references, final List<UnitStats> list) {
+		UnitStats result = null;
+		for (final UnitStats statsType : list) {
+			for (final Integer id : references) {
+				final StatsEntry stats = statsType.find(id);
+				if (stats != null) {
+					if (result == null) {
+						result = new UnitStats(statsType.getHeaders());
+					}
+					result.appendEntry(stats);
+				}
+			}
+			if (result != null) {
+				return result;
 			}
 		}
-		return result;
+		return new UnitStats();
 	}
 
-	private static void sortStatsByName(final UnitStats result) {
-		Collections.sort(result.getEntries(), new Comparator<StatsEntry>() {
+	private static void sortStatsByName(final List<UnitStats> stats) {
+		for (final UnitStats stat : stats) {
+			sortStatsByName(stat);
+		}
+	}
+
+	private static void sortStatsByName(final UnitStats stats) {
+		Collections.sort(stats.getEntries(), new Comparator<StatsEntry>() {
 
 			@Override
 			public int compare(final StatsEntry lhs, final StatsEntry rhs) {

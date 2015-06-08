@@ -1,5 +1,8 @@
 package de.game_coding.armypicker.adapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,11 +18,25 @@ import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 
 public class UnitStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
 
-	private final UnitStats stats;
+	private final List<UnitStats> stats;
 
 	public UnitStatsListAdapter(final Context context, final UnitStats stats) {
 		super(context, R.layout.item_unit_stats_list, stats.getEntries());
+		this.stats = new ArrayList<UnitStats>();
+		this.stats.add(stats);
+	}
+
+	public UnitStatsListAdapter(final Context context, final List<UnitStats> stats) {
+		super(context, R.layout.item_unit_stats_list, merge(stats));
 		this.stats = stats;
+	}
+
+	private static List<StatsEntry> merge(final List<UnitStats> stats) {
+		final List<StatsEntry> merged = new ArrayList<UnitStats.StatsEntry>();
+		for (final UnitStats stat : stats) {
+			merged.addAll(stat.getEntries());
+		}
+		return merged;
 	}
 
 	@Override
@@ -41,9 +58,22 @@ public class UnitStatsListAdapter extends ArrayAdapter<UnitStats.StatsEntry> {
 
 		final TableLayout table = (TableLayout) view.findViewById(R.id.item_list_table);
 		table.removeAllViews();
-		addRow(stats.getHeaders(), table);
+		addRow(findByIndex(stats, position).getHeaders(), table);
 		addRow(entry.getValues(), table);
 		return view;
+	}
+
+	private UnitStats findByIndex(final List<UnitStats> stats, final int position) {
+		int skipped = 0;
+		int types = 0;
+		while (types < stats.size()) {
+			if (position - skipped < stats.get(types).getEntries().size()) {
+				return stats.get(types);
+			}
+			skipped += stats.get(types).getEntries().size();
+			types++;
+		}
+		return null;
 	}
 
 	private void addRow(final String[] values, final TableLayout table) {
