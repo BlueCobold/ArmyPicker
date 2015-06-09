@@ -10,11 +10,14 @@
     android:paddingTop="10dp" >
 
     <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-         <RelativeLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp" >
 
             <TextView
                 android:id="@+id/textView2"
@@ -348,6 +351,15 @@
                 android:text="@string/shred"
                 android:textColor="@color/text_color" />
 
+            <CheckBox
+                android:id="@+id/chance_reroll_to_hit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chance_reroll_to_wound"
+                android:layout_alignLeft="@+id/chance_rending"
+                android:text="@string/twin_linked"
+                android:textColor="@color/text_color" />
+
             <EditText
                 android:id="@+id/chance_edit_cover"
                 android:layout_width="40dp"
@@ -356,8 +368,8 @@
                 android:layout_below="@+id/chance_edit_fpn"
                 android:inputType="number"
                 android:padding="5dp"
-                android:visibility="gone"
-                android:textColor="@color/text_color" />
+                android:textColor="@color/text_color"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/chance_cover_label"
@@ -367,9 +379,9 @@
                 android:layout_alignBottom="@+id/chance_edit_cover"
                 android:layout_toLeftOf="@+id/chance_edit_t"
                 android:text="@string/inv_cover"
-                android:visibility="gone"
-                android:textColor="@color/text_color" />
-
-         </RelativeLayout>
+                android:textColor="@color/text_color"
+                android:visibility="gone" />
+        </RelativeLayout>
     </ScrollView>
+
 </RelativeLayout>
