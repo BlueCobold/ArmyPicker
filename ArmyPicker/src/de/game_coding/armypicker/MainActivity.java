@@ -22,6 +22,7 @@ import de.game_coding.armypicker.adapter.ArmyListAdapter.DeleteHandler;
 import de.game_coding.armypicker.adapter.ArmyListAdapter.EditHandler;
 import de.game_coding.armypicker.adapter.ArmyTypeListAdapter;
 import de.game_coding.armypicker.builder.IArmyTemplateBuilder;
+import de.game_coding.armypicker.builder.SpaceClownBuilder;
 import de.game_coding.armypicker.builder.SpaceElveBuilder;
 import de.game_coding.armypicker.builder.SpaceMonkBuilder;
 import de.game_coding.armypicker.model.Army;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
 
 	private static final IArmyTemplateBuilder SPACE_ELVES = new SpaceElveBuilder();
 	private static final IArmyTemplateBuilder SPACE_MONKS = new SpaceMonkBuilder();
+	private static final IArmyTemplateBuilder SPACE_CLOWNS = new SpaceClownBuilder();
 
 	private static final List<Army> ARMY_TEMPLATES = new ArrayList<Army>() {
 		private static final long serialVersionUID = 1493878691032538962L;
@@ -42,6 +44,8 @@ public class MainActivity extends Activity {
 		{
 			add(new Army(SPACE_ELVES.getName(), SPACE_ELVES.getTemplates()).attachStats(SPACE_ELVES.getStats())
 				.attachWeapons(SPACE_ELVES.getWeapons()));
+			add(new Army(SPACE_CLOWNS.getName(), SPACE_CLOWNS.getTemplates()).attachStats(SPACE_CLOWNS.getStats())
+				.attachWeapons(SPACE_CLOWNS.getWeapons()));
 			add(new Army(SPACE_MONKS.getName(), SPACE_MONKS.getTemplates()).attachStats(SPACE_MONKS.getStats())
 				.attachWeapons(SPACE_MONKS.getWeapons()));
 		}
