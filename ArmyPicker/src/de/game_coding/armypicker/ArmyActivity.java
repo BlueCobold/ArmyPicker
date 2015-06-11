@@ -50,7 +50,9 @@ public class ArmyActivity extends Activity {
 	private ListView armyList;
 
 	private boolean showTypes;
+
 	private boolean showSummaries;
+
 	private ChanceCalculator calculator;
 
 	@Override
@@ -71,33 +73,7 @@ public class ArmyActivity extends Activity {
 		pointLabel = (TextView) findViewById(R.id.army_points);
 		pointLabel.setText(String.valueOf(army.getTotalCosts()));
 
-		final ListView newUnitList = (ListView) findViewById(R.id.army_available_unit_selection);
-		final UnitTypeListAdapter unitTypeListAdapter = new UnitTypeListAdapter(this, army.getUnitTemplates());
-		newUnitList.setAdapter(unitTypeListAdapter);
-		newUnitList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-				armyList.setAdapter(null);
-				army.getUnits().add(CloneUtil.clone((Unit) parent.getAdapter().getItem(position), Unit.CREATOR));
-				if (showTypes) {
-					sortUnits(army);
-				}
-				armyList.setAdapter(newUnitAdapter());
-				pointLabel.setText(String.valueOf(army.getTotalCosts()));
-				UIUtil.hide(selectionView);
-				FileUtil.storeArmy(army, ArmyActivity.this);
-			}
-		});
-		newUnitList.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
-				final long id) {
-				showStatsWindow(army.getUnitTemplates()[position]);
-				return true;
-			}
-		});
+		initPickerView();
 
 		final ListView statsList = (ListView) findViewById(R.id.army_unit_stats_list);
 		final List<UnitStats> stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
@@ -154,22 +130,10 @@ public class ArmyActivity extends Activity {
 				showWeaponList();
 			}
 		});
-		final View statsView = findViewById(R.id.army_specific_unit_stats_view);
-		statsView.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(final View v) {
-				statsView.setVisibility(View.GONE);
-			}
-		});
-		final View gearView = findViewById(R.id.army_specific_unit_gear_view);
-		gearView.setOnClickListener(new OnClickListener() {
+		hideOnClick(findViewById(R.id.army_specific_unit_stats_view));
+		hideOnClick(findViewById(R.id.army_specific_unit_gear_view));
 
-			@Override
-			public void onClick(final View v) {
-				gearView.setVisibility(View.GONE);
-			}
-		});
 		final View chanceView = findViewById(R.id.chance_view);
 		calculator = new ChanceCalculator(chanceView);
 		final View chanceButton = findViewById(R.id.army_show_chance_calculator);
@@ -180,11 +144,45 @@ public class ArmyActivity extends Activity {
 				chanceView.setVisibility(View.VISIBLE);
 			}
 		});
-		chanceView.setOnClickListener(new OnClickListener() {
+		hideOnClick(chanceView);
+	}
+
+	private void initPickerView() {
+		final ListView newUnitList = (ListView) findViewById(R.id.army_available_unit_selection);
+		final UnitTypeListAdapter unitTypeListAdapter = new UnitTypeListAdapter(this, army.getUnitTemplates());
+		newUnitList.setAdapter(unitTypeListAdapter);
+		newUnitList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				armyList.setAdapter(null);
+				army.getUnits().add(CloneUtil.clone((Unit) parent.getAdapter().getItem(position), Unit.CREATOR));
+				if (showTypes) {
+					sortUnits(army);
+				}
+				armyList.setAdapter(newUnitAdapter());
+				pointLabel.setText(String.valueOf(army.getTotalCosts()));
+				UIUtil.hide(selectionView);
+				FileUtil.storeArmy(army, ArmyActivity.this);
+			}
+		});
+		newUnitList.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position,
+				final long id) {
+				showStatsWindow(army.getUnitTemplates()[position]);
+				return true;
+			}
+		});
+	}
+
+	private void hideOnClick(final View view) {
+		view.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(final View v) {
-				chanceView.setVisibility(View.GONE);
+				view.setVisibility(View.GONE);
 			}
 		});
 	}

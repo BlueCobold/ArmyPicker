@@ -82,22 +82,7 @@ public class MainActivity extends Activity {
 		armyListView = (ListView) findViewById(R.id.army_selection);
 		armyListView.setAdapter(newArmyAdapter(armyListView));
 
-		final ListView newArmyList = (ListView) findViewById(R.id.army_available_army_selection);
-		newArmyList.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
-		newArmyList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-				armyListView.setAdapter(null);
-				final Army army = CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR);
-				armies.add(army);
-				army.setId(getUniqueArmyId());
-				final ArmyListAdapter adapter = newArmyAdapter(armyListView);
-				armyListView.setAdapter(adapter);
-				switchToArmy(armies.size() - 1);
-				selectionView.setVisibility(View.INVISIBLE);
-			}
-		});
+		initArmyList();
 
 		editView = findViewById(R.id.army_edit_army);
 		UIUtil.hide(editView);
@@ -141,6 +126,25 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				chanceView.setVisibility(View.GONE);
+			}
+		});
+	}
+
+	private void initArmyList() {
+		final ListView newArmyList = (ListView) findViewById(R.id.army_available_army_selection);
+		newArmyList.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
+		newArmyList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+				armyListView.setAdapter(null);
+				final Army army = CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR);
+				armies.add(army);
+				army.setId(getUniqueArmyId());
+				final ArmyListAdapter adapter = newArmyAdapter(armyListView);
+				armyListView.setAdapter(adapter);
+				switchToArmy(armies.size() - 1);
+				selectionView.setVisibility(View.INVISIBLE);
 			}
 		});
 	}
