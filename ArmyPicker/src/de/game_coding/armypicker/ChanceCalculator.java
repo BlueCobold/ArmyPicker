@@ -34,6 +34,7 @@ public class ChanceCalculator {
 	private final EditText fieldCover;
 	private final TextView coverLabel;
 	private final CheckBox reRollToHit;
+	private final CheckBox reRollAllOnes;
 
 	public ChanceCalculator(final View rootView) {
 		fieldWounds = (EditText) rootView.findViewById(R.id.chance_edit_wounds);
@@ -70,6 +71,8 @@ public class ChanceCalculator {
 		register(reRollToWound);
 		reRollToHit = (CheckBox) rootView.findViewById(R.id.chance_reroll_to_hit);
 		register(reRollToHit);
+		reRollAllOnes = (CheckBox) rootView.findViewById(R.id.chance_reroll_all_ones);
+		register(reRollAllOnes);
 		calculate();
 	}
 
@@ -173,6 +176,8 @@ public class ChanceCalculator {
 		double chance = (7 - x) / 6.0;
 		if (reRollToWound.isChecked()) {
 			chance = 1 - Math.pow(1 - chance, 2);
+		} else if (reRollAllOnes.isChecked()) {
+			chance += 1 / 6.0 * chance;
 		}
 		woundsPercent.setText(Double.toString(((int) (chance * 1000)) / 10.0) + "%");
 		wounds.setText(Double.toString(((int) (rolls * chance * 10)) / 10.0));
@@ -192,7 +197,11 @@ public class ChanceCalculator {
 			5 / 6.0,//
 			5 / 6.0 };
 		double chance = chances[get(fieldBs)];
-		chance = reRollToHit.isChecked() ? 1 - Math.pow(1 - chance, 2) : chance;
+		if (reRollToHit.isChecked()) {
+			chance = 1 - Math.pow(1 - chance, 2);
+		} else if (reRollAllOnes.isChecked()) {
+			chance += 1 / 6.0 * chance;
+		}
 		hits.setText(Double.toString(((int) (rolls * chance * 10)) / 10.0));
 		hitsPercent.setText(Double.toString(((int) (chance * 1000)) / 10.0) + "%");
 		return chance;
