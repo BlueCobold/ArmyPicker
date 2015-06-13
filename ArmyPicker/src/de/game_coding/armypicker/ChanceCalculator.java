@@ -128,7 +128,19 @@ public class ChanceCalculator {
 			Math.min(save, cover);
 		}
 		double save_chance;
-		final double rendChance = rending.isChecked() ? 1 / 6.0 : 0;
+		double rendChance = 0;
+		if (rending.isChecked()) {
+			final double w = calcBasicWoundChance();
+			// Chance to rend is based on chance to wound. Simple example: 6+ to
+			// wound automatically also always rends for each wound and not just
+			// with 1/6
+			rendChance = (1 / w) / 6;
+			if (reRollToWound.isChecked()) {
+				rendChance = (2 - w) / 6;
+			} else if (reRollAllOnes.isChecked()) {
+				rendChance = 7 / 36.0;
+			}
+		}
 		if (save <= 0 || save > 6) {
 			save_chance = 1;
 			savedPercent.setText("-");
@@ -161,6 +173,18 @@ public class ChanceCalculator {
 	}
 
 	private double calcToWound(final double rolls) {
+		double chance = calcBasicWoundChance();
+		if (reRollToWound.isChecked()) {
+			chance += (1 - chance) * chance;
+		} else if (reRollAllOnes.isChecked()) {
+			chance += 1 / 6.0 * chance;
+		}
+		woundsPercent.setText(Double.toString(((int) (chance * 1000)) / 10.0) + "%");
+		wounds.setText(Double.toString(((int) (rolls * chance * 10)) / 10.0));
+		return chance;
+	}
+
+	private double calcBasicWoundChance() {
 		final int t = get(fieldToughness);
 		final int s = get(fieldStrength);
 		int x = 4 + t - s;
@@ -173,14 +197,7 @@ public class ChanceCalculator {
 		if (x < 2) {
 			x = 2;
 		}
-		double chance = (7 - x) / 6.0;
-		if (reRollToWound.isChecked()) {
-			chance = 1 - Math.pow(1 - chance, 2);
-		} else if (reRollAllOnes.isChecked()) {
-			chance += 1 / 6.0 * chance;
-		}
-		woundsPercent.setText(Double.toString(((int) (chance * 1000)) / 10.0) + "%");
-		wounds.setText(Double.toString(((int) (rolls * chance * 10)) / 10.0));
+		final double chance = (7 - x) / 6.0;
 		return chance;
 	}
 
@@ -198,7 +215,7 @@ public class ChanceCalculator {
 			5 / 6.0 };
 		double chance = chances[get(fieldBs)];
 		if (reRollToHit.isChecked()) {
-			chance = 1 - Math.pow(1 - chance, 2);
+			chance += (1 - chance) * chance;
 		} else if (reRollAllOnes.isChecked()) {
 			chance += 1 / 6.0 * chance;
 		}
