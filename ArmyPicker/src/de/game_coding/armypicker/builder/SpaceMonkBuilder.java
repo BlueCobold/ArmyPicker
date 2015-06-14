@@ -21,4 +21,9 @@ public class SpaceMonkBuilder implements IArmyTemplateBuilder {
 	public UnitStats[] getStats() {
 		return new UnitStats[0];
 	}
+
+	@Override
+	public UnitStats getWeapons() {
+		return new UnitStats();
+	}
 }
