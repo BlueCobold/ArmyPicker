@@ -122,7 +122,7 @@ public class ChanceCalculator {
 	}
 
 	private double calcToFailSave(final double rolls) {
-		final int cover = get(fieldCover);
+		final int cover = rending.isChecked() ? get(fieldCover) : 0;
 		final int save = get(fieldSave);
 		if (cover > 0 || save == 0) {
 			Math.min(save, cover);
