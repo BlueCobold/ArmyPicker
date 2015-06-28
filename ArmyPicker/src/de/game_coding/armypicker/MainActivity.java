@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -31,6 +35,7 @@ import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
 
+@EActivity(R.layout.activity_main)
 public class MainActivity extends Activity {
 
 	protected static final String TAG = MainActivity.class.getName();
@@ -59,79 +64,61 @@ public class MainActivity extends Activity {
 
 	private final List<Army> armies = new ArrayList<Army>();
 
-	private View selectionView;
+	protected Army editArmy;
 
 	private int editedArmyIndex;
 
-	private ListView armyListView;
+	@ViewById(R.id.army_available_armies_view)
+	View selectionView;
 
-	private View editView;
+	@ViewById(R.id.army_selection)
+	ListView armyListView;
 
-	protected Army editArmy;
+	@ViewById(R.id.army_edit_army)
+	View editView;
 
-	private EditText editArmyName;
+	@ViewById(R.id.army_name_edit)
+	EditText editArmyName;
+
+	@ViewById(R.id.chance_view)
+	View chanceView;
 
 	private ChanceCalculator calculator;
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	@AfterViews
+	protected void init() {
 
 		final List<Army> army = FileUtil.readArmies(this);
 		if (army != null) {
 			armies.addAll(army);
 		}
-		setContentView(R.layout.activity_main);
 
-		armyListView = (ListView) findViewById(R.id.army_selection);
 		armyListView.setAdapter(newArmyAdapter(armyListView));
-
 		initArmyList();
-
-		editView = findViewById(R.id.army_edit_army);
 		UIUtil.hide(editView);
-
-		editArmyName = (EditText) findViewById(R.id.army_name_edit);
-
-		final View editOk = findViewById(R.id.army_edit_ok);
-		editOk.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View v) {
-				editArmy.setName(editArmyName.getText().toString());
-				UIUtil.hide(editView);
-			}
-		});
-
-		selectionView = findViewById(R.id.army_available_armies_view);
 		selectionView.setVisibility(View.INVISIBLE);
-
-		final View abort = findViewById(R.id.army_select_abort);
-		abort.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View v) {
-				selectionView.setVisibility(View.INVISIBLE);
-			}
-		});
-
-		final View chanceView = findViewById(R.id.chance_view);
 		calculator = new ChanceCalculator(chanceView);
-		final View chanceButton = findViewById(R.id.army_show_chance_calculator);
-		chanceButton.setOnClickListener(new OnClickListener() {
+	}
 
-			@Override
-			public void onClick(final View v) {
-				chanceView.setVisibility(View.VISIBLE);
-			}
-		});
-		chanceView.setOnClickListener(new OnClickListener() {
+	@Click(R.id.army_show_chance_calculator)
+	void onShowChanceView() {
+		chanceView.setVisibility(View.VISIBLE);
+	}
 
-			@Override
-			public void onClick(final View v) {
-				chanceView.setVisibility(View.GONE);
-			}
-		});
+	@Click(R.id.chance_view)
+	void onHideChanceView() {
+		chanceView.setVisibility(View.GONE);
+	}
+
+	@Click(R.id.army_select_abort)
+	void onAbortArmySelection() {
+		selectionView.setVisibility(View.INVISIBLE);
+	}
+
+	@Click(R.id.army_edit_ok)
+	void onEditFinished() {
+		editArmy.setName(editArmyName.getText().toString());
+		UIUtil.hide(editView);
 	}
 
 	private void initArmyList() {
