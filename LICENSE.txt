@@ -1,0 +1,25 @@
+====================================================
+ArmyPicker is available under the following license:
+====================================================
+
+Licensed under the Apache License, Version 2.0 (the "License");
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+
+====================================================
+3rd party libraries
+====================================================
+This project uses AndroidAnnotations
+(https://github.com/excilys/androidannotations), which
+is distributed under Apache License, Version 2.0.
+
+
+AndroidAnnotations uses an unmodified version of
+CodeModel (http://codemodel.java.net/),
+which is distributed under the GlassFish Dual License,
+which means CodeModel is subject to the terms of either
+the GNU General Public License Version 2 only ("GPL")
+or the Common Development and Distribution License("CDDL").
+
+http://www.opensource.org/licenses/cddl1.php
