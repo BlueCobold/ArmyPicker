@@ -222,7 +222,7 @@
 		android:background="#80000000"
 		android:orientation="vertical"
 		android:visibility="gone" >
-		<include
+		<de.game_coding.armypicker.ChanceCalculator_
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			layout="@layout/chance_view"

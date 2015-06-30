@@ -7,18 +7,16 @@ import java.util.Random;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.game_coding.armypicker.adapter.ArmyListAdapter;
@@ -36,6 +34,7 @@ import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
 
 @EActivity(R.layout.activity_main)
+@OptionsMenu(R.menu.main_activity_menu)
 public class MainActivity extends Activity {
 
 	protected static final String TAG = MainActivity.class.getName();
@@ -74,6 +73,9 @@ public class MainActivity extends Activity {
 	@ViewById(R.id.army_selection)
 	ListView armyListView;
 
+	@ViewById(R.id.army_available_army_selection)
+	ListView availableArmies;
+
 	@ViewById(R.id.army_edit_army)
 	View editView;
 
@@ -83,10 +85,8 @@ public class MainActivity extends Activity {
 	@ViewById(R.id.chance_view)
 	View chanceView;
 
-	private ChanceCalculator calculator;
-
 	@AfterViews
-	protected void init() {
+	void init() {
 
 		final List<Army> army = FileUtil.readArmies(this);
 		if (army != null) {
@@ -94,10 +94,9 @@ public class MainActivity extends Activity {
 		}
 
 		armyListView.setAdapter(newArmyAdapter(armyListView));
-		initArmyList();
+		availableArmies.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
 		UIUtil.hide(editView);
 		selectionView.setVisibility(View.INVISIBLE);
-		calculator = new ChanceCalculator(chanceView);
 	}
 
 	@Click(R.id.army_show_chance_calculator)
@@ -121,23 +120,16 @@ public class MainActivity extends Activity {
 		UIUtil.hide(editView);
 	}
 
-	private void initArmyList() {
-		final ListView newArmyList = (ListView) findViewById(R.id.army_available_army_selection);
-		newArmyList.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
-		newArmyList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-				armyListView.setAdapter(null);
-				final Army army = CloneUtil.clone((Army) parent.getAdapter().getItem(position), Army.CREATOR);
-				armies.add(army);
-				army.setId(getUniqueArmyId());
-				final ArmyListAdapter adapter = newArmyAdapter(armyListView);
-				armyListView.setAdapter(adapter);
-				switchToArmy(armies.size() - 1);
-				selectionView.setVisibility(View.INVISIBLE);
-			}
-		});
+	@ItemClick(R.id.army_available_army_selection)
+	void onNewArmySelected(final Army army) {
+		armyListView.setAdapter(null);
+		final Army newArmy = CloneUtil.clone(army, Army.CREATOR);
+		armies.add(newArmy);
+		newArmy.setId(getUniqueArmyId());
+		final ArmyListAdapter adapter = newArmyAdapter(armyListView);
+		armyListView.setAdapter(adapter);
+		switchToArmy(armies.get(armies.size() - 1));
+		selectionView.setVisibility(View.INVISIBLE);
 	}
 
 	private int getUniqueArmyId() {
@@ -157,24 +149,15 @@ public class MainActivity extends Activity {
 		return id;
 	}
 
-	private void switchToArmy(final int position) {
-		final Army army = armies.get(position);
+	@ItemClick(R.id.army_selection)
+	void switchToArmy(final Army army) {
 		Log.d(TAG, "Clicked on item " + army.getName());
-		editedArmyIndex = position;
-		final Intent intent = new Intent(MainActivity.this, ArmyActivity.class);
-		intent.putExtra(ArmyActivity.EXTRA_ARMY, army);
-		startActivityForResult(intent, EDIT_ARMY);
+		editedArmyIndex = armies.indexOf(army);
+		ArmyActivity_.intent(this).extra(ArmyActivity.EXTRA_ARMY, army).startForResult(EDIT_ARMY);
 	}
 
 	private ArmyListAdapter newArmyAdapter(final ListView armyList) {
 		final ArmyListAdapter adapter = new ArmyListAdapter(this, armies);
-		armyList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-				switchToArmy(position);
-			}
-		});
 		adapter.setDeleteHandler(new DeleteHandler() {
 
 			@Override
@@ -212,23 +195,8 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		final MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_activity_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_add:
-			selectionView.setVisibility(View.VISIBLE);
-			break;
-
-		default:
-			break;
-		}
-		return true;
+	@OptionsItem(R.id.action_add)
+	void addNewArmy() {
+		selectionView.setVisibility(View.VISIBLE);
 	}
 }

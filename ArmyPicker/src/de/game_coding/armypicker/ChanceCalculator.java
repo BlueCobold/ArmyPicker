@@ -1,112 +1,87 @@
 package de.game_coding.armypicker;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.TextChange;
+import org.androidannotations.annotations.ViewById;
+
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ChanceCalculator {
+@EViewGroup(R.layout.chance_view)
+public class ChanceCalculator extends RelativeLayout {
 
-	private final EditText fieldBs;
-	private final EditText fieldStrength;
-	private final EditText fieldToughness;
-	private final EditText fieldSave;
-	private final EditText fieldFnp;
-	private final EditText fieldRolls;
-	private final TextView resultView;
-	private final EditText fieldWounds;
-	private final TextView average;
-	private final TextView chancePer;
-	private final TextView hits;
-	private final TextView hitsPercent;
-	private final TextView wounds;
-	private final TextView woundsPercent;
-	private final TextView saved;
-	private final TextView savedPercent;
-	private final TextView fnpSaved;
-	private final TextView fnpSavedPercent;
-	private final CheckBox rending;
-	private final CheckBox reRollToWound;
-	private final EditText fieldCover;
-	private final TextView coverLabel;
-	private final CheckBox reRollToHit;
-	private final CheckBox reRollAllOnes;
+	@ViewById(R.id.chance_edit_bs)
+	EditText fieldBs;
+	@ViewById(R.id.chance_edit_s)
+	EditText fieldStrength;
+	@ViewById(R.id.chance_edit_t)
+	EditText fieldToughness;
+	@ViewById(R.id.chance_edit_save)
+	EditText fieldSave;
+	@ViewById(R.id.chance_edit_fpn)
+	EditText fieldFnp;
+	@ViewById(R.id.chance_edit_rolls)
+	EditText fieldRolls;
+	@ViewById(R.id.chance_result)
+	TextView resultView;
+	@ViewById(R.id.chance_edit_wounds)
+	EditText fieldWounds;
+	@ViewById(R.id.chance_average)
+	TextView average;
+	@ViewById(R.id.chance_per)
+	TextView chancePer;
+	@ViewById(R.id.chance_hits)
+	TextView hits;
+	@ViewById(R.id.chance_hit_percent)
+	TextView hitsPercent;
+	@ViewById(R.id.chance_wounds)
+	TextView wounds;
+	@ViewById(R.id.chance_wounds_percent)
+	TextView woundsPercent;
+	@ViewById(R.id.chance_saved_armours)
+	TextView saved;
+	@ViewById(R.id.chance_saved_percent)
+	TextView savedPercent;
+	@ViewById(R.id.chance_saved_fnp)
+	TextView fnpSaved;
+	@ViewById(R.id.chance_fnp_percent)
+	TextView fnpSavedPercent;
+	@ViewById(R.id.chance_rending)
+	CheckBox rending;
+	@ViewById(R.id.chance_reroll_to_wound)
+	CheckBox reRollToWound;
+	@ViewById(R.id.chance_edit_cover)
+	EditText fieldCover;
+	@ViewById(R.id.chance_cover_label)
+	TextView coverLabel;
+	@ViewById(R.id.chance_reroll_to_hit)
+	CheckBox reRollToHit;
+	@ViewById(R.id.chance_reroll_all_ones)
+	CheckBox reRollAllOnes;
 
-	public ChanceCalculator(final View rootView) {
-		fieldWounds = (EditText) rootView.findViewById(R.id.chance_edit_wounds);
-		register(fieldWounds);
-		fieldRolls = (EditText) rootView.findViewById(R.id.chance_edit_rolls);
-		register(fieldRolls);
-		fieldBs = (EditText) rootView.findViewById(R.id.chance_edit_bs);
-		register(fieldBs);
-		fieldStrength = (EditText) rootView.findViewById(R.id.chance_edit_s);
-		register(fieldStrength);
-		fieldToughness = (EditText) rootView.findViewById(R.id.chance_edit_t);
-		register(fieldToughness);
-		fieldSave = (EditText) rootView.findViewById(R.id.chance_edit_save);
-		register(fieldSave);
-		fieldFnp = (EditText) rootView.findViewById(R.id.chance_edit_fpn);
-		register(fieldFnp);
-		fieldCover = (EditText) rootView.findViewById(R.id.chance_edit_cover);
-		register(fieldCover);
-		coverLabel = (TextView) rootView.findViewById(R.id.chance_cover_label);
-		resultView = (TextView) rootView.findViewById(R.id.chance_result);
-		average = (TextView) rootView.findViewById(R.id.chance_average);
-		chancePer = (TextView) rootView.findViewById(R.id.chance_per);
-		hits = (TextView) rootView.findViewById(R.id.chance_hits);
-		hitsPercent = (TextView) rootView.findViewById(R.id.chance_hit_percent);
-		wounds = (TextView) rootView.findViewById(R.id.chance_wounds);
-		woundsPercent = (TextView) rootView.findViewById(R.id.chance_wounds_percent);
-		saved = (TextView) rootView.findViewById(R.id.chance_saved_armours);
-		savedPercent = (TextView) rootView.findViewById(R.id.chance_saved_percent);
-		fnpSaved = (TextView) rootView.findViewById(R.id.chance_saved_fnp);
-		fnpSavedPercent = (TextView) rootView.findViewById(R.id.chance_fnp_percent);
-		rending = (CheckBox) rootView.findViewById(R.id.chance_rending);
-		register(rending);
-		reRollToWound = (CheckBox) rootView.findViewById(R.id.chance_reroll_to_wound);
-		register(reRollToWound);
-		reRollToHit = (CheckBox) rootView.findViewById(R.id.chance_reroll_to_hit);
-		register(reRollToHit);
-		reRollAllOnes = (CheckBox) rootView.findViewById(R.id.chance_reroll_all_ones);
-		register(reRollAllOnes);
+	public ChanceCalculator(final Context context, final AttributeSet attrs) {
+		super(context, attrs);
+	}
+
+	@CheckedChange({ R.id.chance_rending, R.id.chance_reroll_to_wound, R.id.chance_reroll_to_hit,
+		R.id.chance_reroll_all_ones })
+	void onCheckedChanged() {
+		coverLabel.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
+		fieldCover.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
 		calculate();
 	}
 
-	private void register(final CheckBox box) {
-		box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-				coverLabel.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
-				fieldCover.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
-				calculate();
-			}
-		});
-	}
-
-	private void register(final EditText field) {
-		field.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-			}
-
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s) {
-				calculate();
-			}
-		});
-	}
-
-	private void calculate() {
+	@AfterViews
+	@TextChange({ R.id.chance_edit_bs, R.id.chance_edit_cover, R.id.chance_edit_fpn, R.id.chance_edit_rolls,
+		R.id.chance_edit_s, R.id.chance_edit_save, R.id.chance_edit_t, R.id.chance_edit_wounds })
+	void calculate() {
 		final int rolls = get(fieldRolls);
 		final int wounds = get(fieldWounds);
 		final double chance = calcChance(rolls);

@@ -28,7 +28,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="de.game_coding.armypicker.ArmyActivity"
+			android:name="de.game_coding.armypicker.ArmyActivity_"
 			android:label="@string/title_activity_army" >
 		</activity>
 	</application>
