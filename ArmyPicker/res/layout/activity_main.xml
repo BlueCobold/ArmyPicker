@@ -50,7 +50,7 @@
 		android:background="#80000000"
 		android:orientation="vertical"
 		android:visibility="gone" >
-		<de.game_coding.armypicker.ChanceCalculator_
+		<de.game_coding.armypicker.viewgroups.ChanceCalculator_
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			layout="@layout/chance_view"

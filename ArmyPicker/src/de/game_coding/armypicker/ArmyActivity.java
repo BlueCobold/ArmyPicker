@@ -26,6 +26,8 @@ import de.game_coding.armypicker.adapter.UnitListAdapter;
 import de.game_coding.armypicker.adapter.UnitStatsListAdapter;
 import de.game_coding.armypicker.adapter.UnitTypeListAdapter;
 import de.game_coding.armypicker.adapter.WeaponStatsListAdapter;
+import de.game_coding.armypicker.listener.DeleteHandler;
+import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
@@ -215,10 +217,10 @@ public class ArmyActivity extends Activity {
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
-		adapter.setDeleteHandler(new UnitListAdapter.DeleteHandler() {
+		adapter.setDeleteHandler(new DeleteHandler<Unit>() {
 
 			@Override
-			public void onDelete(final Unit unit, final int position) {
+			public void onDelete(final Unit unit) {
 				armyList.setAdapter(null);
 				army.getUnits().remove(unit);
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
@@ -226,10 +228,10 @@ public class ArmyActivity extends Activity {
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
-		adapter.setLongClickHandler(new UnitTypeListAdapter.RequestDetailsHandler() {
+		adapter.setLongClickHandler(new ItemClickedListener<Unit>() {
 
 			@Override
-			public void onUnitClicked(final Unit unit, final int position) {
+			public void onItemClicked(final Unit unit) {
 				showStatsWindow(unit);
 			}
 		});

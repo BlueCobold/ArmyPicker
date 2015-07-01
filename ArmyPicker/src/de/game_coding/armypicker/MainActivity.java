@@ -20,14 +20,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.game_coding.armypicker.adapter.ArmyListAdapter;
-import de.game_coding.armypicker.adapter.ArmyListAdapter.DeleteHandler;
-import de.game_coding.armypicker.adapter.ArmyListAdapter.EditHandler;
 import de.game_coding.armypicker.adapter.ArmyTypeListAdapter;
 import de.game_coding.armypicker.builder.GreenSpaceMonkBuilder;
 import de.game_coding.armypicker.builder.IArmyTemplateBuilder;
 import de.game_coding.armypicker.builder.SpaceClownBuilder;
 import de.game_coding.armypicker.builder.SpaceElveBuilder;
 import de.game_coding.armypicker.builder.SpaceMonkBuilder;
+import de.game_coding.armypicker.listener.DeleteHandler;
+import de.game_coding.armypicker.listener.EditHandler;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
@@ -158,10 +158,10 @@ public class MainActivity extends Activity {
 
 	private ArmyListAdapter newArmyAdapter(final ListView armyList) {
 		final ArmyListAdapter adapter = new ArmyListAdapter(this, armies);
-		adapter.setDeleteHandler(new DeleteHandler() {
+		adapter.setDeleteHandler(new DeleteHandler<Army>() {
 
 			@Override
-			public void onDelete(final Army army, final int position) {
+			public void onDelete(final Army army) {
 				armyList.setAdapter(null);
 				adapter.remove(army);
 				armyList.setAdapter(adapter);
@@ -169,10 +169,10 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		adapter.setEditHandler(new EditHandler() {
+		adapter.setEditHandler(new EditHandler<Army>() {
 
 			@Override
-			public void onEdit(final Army army, final int position) {
+			public void onEdit(final Army army) {
 				editArmy = army;
 				editArmyName.setText(army.getName());
 				editView.setVisibility(View.VISIBLE);

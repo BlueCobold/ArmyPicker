@@ -1,4 +1,4 @@
-package de.game_coding.armypicker;
+package de.game_coding.armypicker.viewgroups;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.game_coding.armypicker.R;
 
 @EViewGroup(R.layout.chance_view)
 public class ChanceCalculator extends RelativeLayout {

@@ -3,34 +3,23 @@ package de.game_coding.armypicker.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.model.Army;
+import de.game_coding.armypicker.viewgroups.ArmySelectionListItem;
+import de.game_coding.armypicker.viewgroups.ArmySelectionListItem_;
 
-public class ArmyTypeListAdapter extends ArrayAdapter<Army> {
+public class ArmyTypeListAdapter extends BaseAdapter<Army, ArmySelectionListItem> {
 
 	public ArmyTypeListAdapter(final Context context, final List<Army> armies) {
-		super(context, R.layout.item_unit_type_list, armies);
+		super(context, armies);
 	}
 
 	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		View view = convertView;
-		if (view == null) {
-			final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-				Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.item_unit_type_list, parent, false);
-		}
-		final TextView title = (TextView) view.findViewById(R.id.list_item_name);
-		title.setText(getItem(position).getName());
+	protected ArmySelectionListItem buildNewView() {
+		return ArmySelectionListItem_.build(getContext());
+	}
 
-		final TextView type = (TextView) view.findViewById(R.id.unit_type_header);
-		type.setVisibility(View.GONE);
-
-		return view;
+	@Override
+	protected void fillView(final ArmySelectionListItem view, final Army item, final int position) {
+		view.bind(item);
 	}
 }

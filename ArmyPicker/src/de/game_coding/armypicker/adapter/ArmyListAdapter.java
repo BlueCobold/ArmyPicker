@@ -3,78 +3,38 @@ package de.game_coding.armypicker.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.listener.DeleteHandler;
+import de.game_coding.armypicker.listener.EditHandler;
 import de.game_coding.armypicker.model.Army;
+import de.game_coding.armypicker.viewgroups.ArmyListItem;
+import de.game_coding.armypicker.viewgroups.ArmyListItem_;
 
-public class ArmyListAdapter extends ArrayAdapter<Army> {
+public class ArmyListAdapter extends BaseAdapter<Army, ArmyListItem> {
 
-	public interface DeleteHandler {
-		void onDelete(Army army, int position);
-	}
-
-	public interface EditHandler {
-		void onEdit(Army army, int position);
-	}
-
-	private DeleteHandler deleteHandler;
-	private EditHandler editHandler;
+	private DeleteHandler<Army> deleteHandler;
+	private EditHandler<Army> editHandler;
 
 	public ArmyListAdapter(final Context context, final List<Army> armies) {
-		super(context, R.layout.item_army_list, armies);
+		super(context, armies);
 	}
 
 	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		View view = convertView;
-		if (view == null) {
-			final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-				Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.item_army_list, parent, false);
-		}
-
-		final Army army = getItem(position);
-
-		final TextView title = (TextView) view.findViewById(R.id.list_item_name);
-		title.setText(getItem(position).getName());
-
-		final TextView points = (TextView) view.findViewById(R.id.list_item_points);
-		points.setText(String.valueOf(army.getTotalCosts()));
-
-		final View delete = view.findViewById(R.id.list_item_delete);
-		delete.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View view) {
-				if (deleteHandler != null) {
-					deleteHandler.onDelete(army, position);
-				}
-			}
-		});
-
-		final View edit = view.findViewById(R.id.list_item_edit);
-		edit.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(final View view) {
-				if (editHandler != null) {
-					editHandler.onEdit(army, position);
-				}
-			}
-		});
-		return view;
+	protected ArmyListItem buildNewView() {
+		return ArmyListItem_.build(getContext());
 	}
 
-	public void setDeleteHandler(final DeleteHandler handler) {
+	@Override
+	protected void fillView(final ArmyListItem view, final Army item, final int position) {
+		view.bind(item);
+		view.setEditHandler(editHandler);
+		view.setDeleteHandler(deleteHandler);
+	}
+
+	public void setDeleteHandler(final DeleteHandler<Army> handler) {
 		deleteHandler = handler;
 	}
 
-	public void setEditHandler(final EditHandler handler) {
+	public void setEditHandler(final EditHandler<Army> handler) {
 		editHandler = handler;
 	}
 }

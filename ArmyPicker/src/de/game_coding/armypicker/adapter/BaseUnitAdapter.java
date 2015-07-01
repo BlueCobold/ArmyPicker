@@ -4,41 +4,20 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.Unit;
 
-public class BaseUnitAdapter extends ArrayAdapter<Unit> {
+public abstract class BaseUnitAdapter<V extends View> extends BaseAdapter<Unit, V> {
 
-	public interface RequestDetailsHandler {
-		void onUnitClicked(Unit unit, int position);
+	private ItemClickedListener<Unit> longClickHandler;
+
+	public BaseUnitAdapter(final Context context, final Unit[] objects) {
+		super(context, objects);
 	}
 
-	private RequestDetailsHandler longClickHandler;
-
-	public BaseUnitAdapter(final Context context, final int resource) {
-		super(context, resource);
-	}
-
-	public BaseUnitAdapter(final Context context, final int resource, final int textViewResourceId) {
-		super(context, resource, textViewResourceId);
-	}
-
-	public BaseUnitAdapter(final Context context, final int resource, final Unit[] objects) {
-		super(context, resource, objects);
-	}
-
-	public BaseUnitAdapter(final Context context, final int resource, final List<Unit> objects) {
-		super(context, resource, objects);
-	}
-
-	public BaseUnitAdapter(final Context context, final int resource, final int textViewResourceId, final Unit[] objects) {
-		super(context, resource, textViewResourceId, objects);
-	}
-
-	public BaseUnitAdapter(final Context context, final int resource, final int textViewResourceId,
-		final List<Unit> objects) {
-		super(context, resource, textViewResourceId, objects);
+	public BaseUnitAdapter(final Context context, final List<Unit> objects) {
+		super(context, objects);
 	}
 
 	protected String getUnitTypeName(final Unit unit, final View view) {
@@ -62,11 +41,11 @@ public class BaseUnitAdapter extends ArrayAdapter<Unit> {
 		return "";
 	}
 
-	public void setLongClickHandler(final RequestDetailsHandler longClickHandler) {
+	public void setLongClickHandler(final ItemClickedListener<Unit> longClickHandler) {
 		this.longClickHandler = longClickHandler;
 	}
 
-	protected RequestDetailsHandler getLongClickHandler() {
+	protected ItemClickedListener<Unit> getLongClickHandler() {
 		return longClickHandler;
 	}
 }
