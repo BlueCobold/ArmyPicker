@@ -15,17 +15,17 @@ import de.game_coding.armypicker.model.Army;
 public class ArmySelectionListItem extends RelativeLayout {
 
 	@ViewById(R.id.list_item_name)
-	TextView title;
+	protected TextView title;
 
 	@ViewById(R.id.unit_type_header)
-	TextView type;
+	protected TextView type;
 
 	public ArmySelectionListItem(final Context context) {
 		super(context);
 	}
 
 	@AfterViews
-	void init() {
+	protected void init() {
 		type.setVisibility(View.GONE);
 	}
 

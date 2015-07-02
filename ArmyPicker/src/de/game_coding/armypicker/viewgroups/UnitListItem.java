@@ -26,34 +26,34 @@ import de.game_coding.armypicker.util.UIUtil;
 public class UnitListItem extends RelativeLayout {
 
 	@ViewById(R.id.unit_name)
-	TextView title;
+	protected TextView title;
 
 	@ViewById(R.id.unit_points)
-	TextView costs;
+	protected TextView costs;
 
 	@ViewById(R.id.unit_source)
-	TextView source;
+	protected TextView source;
 
 	@ViewById(R.id.unit_amount)
-	TextView amount;
+	protected TextView amount;
 
 	@ViewById(R.id.unit_options_list)
-	LinearLayout options;
+	protected LinearLayout options;
 
 	@ViewById(R.id.unit_options_points)
-	TextView optionPoints;
+	protected TextView optionPoints;
 
 	@ViewById(R.id.unit_options_summary)
-	TextView summary;
+	protected TextView summary;
 
 	@ViewById(R.id.unit_type_header)
-	TextView type;
+	protected TextView type;
 
 	@ViewById(R.id.unit_add)
-	View add;
+	protected View add;
 
 	@ViewById(R.id.unit_delete)
-	View delete;
+	protected View delete;
 
 	private Unit unit;
 
@@ -116,7 +116,7 @@ public class UnitListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.unit_amount)
-	void onAmountClicked() {
+	protected void onAmountClicked() {
 
 		if (unit.getAmount() < unit.getMaxAmount()) {
 			unit.setAmount(unit.getMaxAmount());
@@ -127,7 +127,7 @@ public class UnitListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.unit_add)
-	void onAddClicked() {
+	protected void onAddClicked() {
 		if (unit.getAmount() < unit.getMaxAmount()) {
 			unit.setAmount(unit.getAmount() + 1);
 			updateValues();
@@ -135,7 +135,7 @@ public class UnitListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.unit_delete)
-	void onDeleteClicked() {
+	protected void onDeleteClicked() {
 
 		if (unit.getAmount() == unit.getInitialAmount()) {
 			if (deleteHandler != null) {

@@ -16,10 +16,10 @@ import de.game_coding.armypicker.model.Army;
 public class ArmyListItem extends RelativeLayout {
 
 	@ViewById(R.id.list_item_name)
-	TextView title;
+	protected TextView title;
 
 	@ViewById(R.id.list_item_points)
-	TextView points;
+	protected TextView points;
 
 	private DeleteHandler<Army> deleteHandler;
 
@@ -40,14 +40,14 @@ public class ArmyListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.list_item_delete)
-	void onDeleteArmy() {
+	protected void onDeleteArmy() {
 		if (deleteHandler != null) {
 			deleteHandler.onDelete(army);
 		}
 	}
 
 	@Click(R.id.list_item_edit)
-	void onEditArmy() {
+	protected void onEditArmy() {
 		if (editHandler != null) {
 			editHandler.onEdit(army);
 		}

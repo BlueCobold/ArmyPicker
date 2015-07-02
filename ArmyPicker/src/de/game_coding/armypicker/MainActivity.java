@@ -37,7 +37,7 @@ import de.game_coding.armypicker.util.UIUtil;
 @OptionsMenu(R.menu.main_activity_menu)
 public class MainActivity extends Activity {
 
-	protected static final String TAG = MainActivity.class.getName();
+	private static final String TAG = MainActivity.class.getName();
 
 	private static final IArmyTemplateBuilder SPACE_ELVES = new SpaceElveBuilder();
 	private static final IArmyTemplateBuilder SPACE_MONKS = new SpaceMonkBuilder();
@@ -59,34 +59,34 @@ public class MainActivity extends Activity {
 		}
 	};
 
-	protected static final int EDIT_ARMY = 10;
+	private static final int EDIT_ARMY = 10;
 
 	private final List<Army> armies = new ArrayList<Army>();
 
-	protected Army editArmy;
+	private Army editArmy;
 
 	private int editedArmyIndex;
 
 	@ViewById(R.id.army_available_armies_view)
-	View selectionView;
+	protected View selectionView;
 
 	@ViewById(R.id.army_selection)
-	ListView armyListView;
+	protected ListView armyListView;
 
 	@ViewById(R.id.army_available_army_selection)
-	ListView availableArmies;
+	protected ListView availableArmies;
 
 	@ViewById(R.id.army_edit_army)
-	View editView;
+	protected View editView;
 
 	@ViewById(R.id.army_name_edit)
-	EditText editArmyName;
+	protected EditText editArmyName;
 
 	@ViewById(R.id.chance_view)
-	View chanceView;
+	protected View chanceView;
 
 	@AfterViews
-	void init() {
+	protected void init() {
 
 		final List<Army> army = FileUtil.readArmies(this);
 		if (army != null) {
@@ -100,28 +100,28 @@ public class MainActivity extends Activity {
 	}
 
 	@Click(R.id.army_show_chance_calculator)
-	void onShowChanceView() {
+	protected void onShowChanceView() {
 		chanceView.setVisibility(View.VISIBLE);
 	}
 
 	@Click(R.id.chance_view)
-	void onHideChanceView() {
+	protected void onHideChanceView() {
 		chanceView.setVisibility(View.GONE);
 	}
 
 	@Click(R.id.army_select_abort)
-	void onAbortArmySelection() {
+	protected void onAbortArmySelection() {
 		selectionView.setVisibility(View.INVISIBLE);
 	}
 
 	@Click(R.id.army_edit_ok)
-	void onEditFinished() {
+	protected void onEditFinished() {
 		editArmy.setName(editArmyName.getText().toString());
 		UIUtil.hide(editView);
 	}
 
 	@ItemClick(R.id.army_available_army_selection)
-	void onNewArmySelected(final Army army) {
+	protected void onNewArmySelected(final Army army) {
 		armyListView.setAdapter(null);
 		final Army newArmy = CloneUtil.clone(army, Army.CREATOR);
 		armies.add(newArmy);
@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
 	}
 
 	@ItemClick(R.id.army_selection)
-	void switchToArmy(final Army army) {
+	protected void switchToArmy(final Army army) {
 		Log.d(TAG, "Clicked on item " + army.getName());
 		editedArmyIndex = armies.indexOf(army);
 		ArmyActivity_.intent(this).extra(ArmyActivity.EXTRA_ARMY, army).startForResult(EDIT_ARMY);
@@ -196,7 +196,7 @@ public class MainActivity extends Activity {
 	}
 
 	@OptionsItem(R.id.action_add)
-	void addNewArmy() {
+	protected void addNewArmy() {
 		selectionView.setVisibility(View.VISIBLE);
 	}
 }

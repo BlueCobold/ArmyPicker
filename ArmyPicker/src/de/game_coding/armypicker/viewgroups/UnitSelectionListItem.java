@@ -16,23 +16,23 @@ import de.game_coding.armypicker.util.UIUtil;
 public class UnitSelectionListItem extends RelativeLayout {
 
 	@ViewById(R.id.list_item_name)
-	TextView title;
+	protected TextView title;
 
 	@ViewById(R.id.unit_type_header)
-	TextView type;
+	protected TextView type;
 
 	@ViewById(R.id.list_item_source)
-	TextView source;
+	protected TextView source;
 
 	@ViewById(R.id.list_item_points)
-	TextView points;
+	protected TextView points;
 
 	public UnitSelectionListItem(final Context context) {
 		super(context);
 	}
 
 	@AfterViews
-	void init() {
+	protected void init() {
 		type.setVisibility(View.GONE);
 	}
 

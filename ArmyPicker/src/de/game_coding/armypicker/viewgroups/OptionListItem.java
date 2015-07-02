@@ -19,22 +19,22 @@ import de.game_coding.armypicker.util.UIUtil;
 public class OptionListItem extends RelativeLayout {
 
 	@ViewById(R.id.option_name)
-	TextView name;
+	protected TextView name;
 
 	@ViewById(R.id.option_points)
-	TextView costs;
+	protected TextView costs;
 
 	@ViewById(R.id.option_amount)
-	TextView amount;
+	protected TextView amount;
 
 	@ViewById(R.id.option_points_total)
-	TextView total;
+	protected TextView total;
 
 	@ViewById(R.id.option_delete)
-	View delete;
+	protected View delete;
 
 	@ViewById(R.id.option_add)
-	View add;
+	protected View add;
 
 	private UnitOption option;
 
@@ -57,7 +57,7 @@ public class OptionListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.option_add)
-	void onAddClicked() {
+	protected void onAddClicked() {
 		if (optionGroup.canSelectMore(option)) {
 			option.setAmountSelected(option.getAmountSelected()
 				+ (optionGroup.getType() == GroupType.ONE_PER_MODEL ? optionGroup.getLimit() : 1));
@@ -66,7 +66,7 @@ public class OptionListItem extends RelativeLayout {
 	}
 
 	@Click(R.id.option_delete)
-	void onDeleteClicked() {
+	protected void onDeleteClicked() {
 		option
 			.setAmountSelected((optionGroup.getType() == GroupType.ONE_PER_MODEL || optionGroup.getType() == GroupType.ONE_PER_MODEL_EXEPT_ONE) ? 0
 				: Math.max(0, option.getAmountSelected() - 1));

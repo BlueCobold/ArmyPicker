@@ -18,10 +18,10 @@ import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 public class WeaponStatsListItem extends RelativeLayout {
 
 	@ViewById(R.id.list_item_name)
-	TextView title;
+	protected TextView title;
 
 	@ViewById(R.id.item_list_table)
-	TableLayout table;
+	protected TableLayout table;
 
 	private UnitStats stats;
 

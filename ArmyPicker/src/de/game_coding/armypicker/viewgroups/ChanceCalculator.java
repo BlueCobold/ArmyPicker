@@ -19,53 +19,76 @@ import de.game_coding.armypicker.R;
 public class ChanceCalculator extends RelativeLayout {
 
 	@ViewById(R.id.chance_edit_bs)
-	EditText fieldBs;
+	protected EditText fieldBs;
+
 	@ViewById(R.id.chance_edit_s)
-	EditText fieldStrength;
+	protected EditText fieldStrength;
+
 	@ViewById(R.id.chance_edit_t)
-	EditText fieldToughness;
+	protected EditText fieldToughness;
+
 	@ViewById(R.id.chance_edit_save)
-	EditText fieldSave;
+	protected EditText fieldSave;
+
 	@ViewById(R.id.chance_edit_fpn)
-	EditText fieldFnp;
+	protected EditText fieldFnp;
+
 	@ViewById(R.id.chance_edit_rolls)
-	EditText fieldRolls;
+	protected EditText fieldRolls;
+
 	@ViewById(R.id.chance_result)
-	TextView resultView;
+	protected TextView resultView;
+
 	@ViewById(R.id.chance_edit_wounds)
-	EditText fieldWounds;
+	protected EditText fieldWounds;
+
 	@ViewById(R.id.chance_average)
-	TextView average;
+	protected TextView average;
+
 	@ViewById(R.id.chance_per)
-	TextView chancePer;
+	protected TextView chancePer;
+
 	@ViewById(R.id.chance_hits)
-	TextView hits;
+	protected TextView hits;
+
 	@ViewById(R.id.chance_hit_percent)
-	TextView hitsPercent;
+	protected TextView hitsPercent;
+
 	@ViewById(R.id.chance_wounds)
-	TextView wounds;
+	protected TextView wounds;
+
 	@ViewById(R.id.chance_wounds_percent)
-	TextView woundsPercent;
+	protected TextView woundsPercent;
+
 	@ViewById(R.id.chance_saved_armours)
-	TextView saved;
+	protected TextView saved;
+
 	@ViewById(R.id.chance_saved_percent)
-	TextView savedPercent;
+	protected TextView savedPercent;
+
 	@ViewById(R.id.chance_saved_fnp)
-	TextView fnpSaved;
+	protected TextView fnpSaved;
+
 	@ViewById(R.id.chance_fnp_percent)
-	TextView fnpSavedPercent;
+	protected TextView fnpSavedPercent;
+
 	@ViewById(R.id.chance_rending)
-	CheckBox rending;
+	protected CheckBox rending;
+
 	@ViewById(R.id.chance_reroll_to_wound)
-	CheckBox reRollToWound;
+	protected CheckBox reRollToWound;
+
 	@ViewById(R.id.chance_edit_cover)
-	EditText fieldCover;
+	protected EditText fieldCover;
+
 	@ViewById(R.id.chance_cover_label)
-	TextView coverLabel;
+	protected TextView coverLabel;
+
 	@ViewById(R.id.chance_reroll_to_hit)
-	CheckBox reRollToHit;
+	protected CheckBox reRollToHit;
+
 	@ViewById(R.id.chance_reroll_all_ones)
-	CheckBox reRollAllOnes;
+	protected CheckBox reRollAllOnes;
 
 	public ChanceCalculator(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
@@ -73,7 +96,7 @@ public class ChanceCalculator extends RelativeLayout {
 
 	@CheckedChange({ R.id.chance_rending, R.id.chance_reroll_to_wound, R.id.chance_reroll_to_hit,
 		R.id.chance_reroll_all_ones })
-	void onCheckedChanged() {
+	protected void onCheckedChanged() {
 		coverLabel.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
 		fieldCover.setVisibility(rending.isChecked() ? View.VISIBLE : View.GONE);
 		calculate();
@@ -82,7 +105,7 @@ public class ChanceCalculator extends RelativeLayout {
 	@AfterViews
 	@TextChange({ R.id.chance_edit_bs, R.id.chance_edit_cover, R.id.chance_edit_fpn, R.id.chance_edit_rolls,
 		R.id.chance_edit_s, R.id.chance_edit_save, R.id.chance_edit_t, R.id.chance_edit_wounds })
-	void calculate() {
+	protected void calculate() {
 		final int rolls = get(fieldRolls);
 		final int wounds = get(fieldWounds);
 		final double chance = calcChance(rolls);

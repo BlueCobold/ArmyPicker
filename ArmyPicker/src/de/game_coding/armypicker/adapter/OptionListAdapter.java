@@ -16,7 +16,7 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 
 	private IValueChangedNotifier notifier;
 
-	private final List<IValueChangedNotifier> onValidate = new ArrayList<IValueChangedNotifier>();
+	private final List<OptionListItem> views = new ArrayList<OptionListItem>();
 
 	public OptionListAdapter(final Context context, final UnitOptionGroup optionGroup) {
 		super(context, optionGroup.getOptions());
@@ -32,20 +32,16 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 	protected void fillView(final OptionListItem view, final UnitOption item, final int position) {
 		view.bind(item, optionGroup);
 
-		final IValueChangedNotifier handler = new IValueChangedNotifier() {
-			@Override
-			public void onValueChanged() {
-				view.refresh();
-			}
-		};
-		onValidate.add(handler);
+		if (!views.contains(view)) {
+			views.add(view);
+		}
 
 		view.setNotifier(new IValueChangedNotifier() {
 			@Override
 			public void onValueChanged() {
-				for (final IValueChangedNotifier h : onValidate) {
-					if (h != handler) {
-						h.onValueChanged();
+				for (final OptionListItem v : views) {
+					if (v != view) {
+						v.refresh();
 					}
 				}
 				if (notifier != null) {
@@ -60,8 +56,8 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 	}
 
 	public void refreshViews() {
-		for (final IValueChangedNotifier handler : onValidate) {
-			handler.onValueChanged();
+		for (final OptionListItem view : views) {
+			view.refresh();
 		}
 	}
 }
