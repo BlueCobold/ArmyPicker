@@ -1,18 +1,19 @@
 package de.game_coding.armypicker.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.UnitOptionGroup;
+import de.game_coding.armypicker.util.WeakArrayList;
+import de.game_coding.armypicker.util.WeakList;
 import de.game_coding.armypicker.viewgroups.OptionGroupListItem;
 import de.game_coding.armypicker.viewgroups.OptionGroupListItem_;
 
 public class OptionGroupListAdapter extends BaseAdapter<UnitOptionGroup, OptionGroupListItem> {
 
 	private IValueChangedNotifier notifier;
-	private final List<OptionGroupListItem> views = new ArrayList<OptionGroupListItem>();
+	private final WeakList<OptionGroupListItem> views = new WeakArrayList<OptionGroupListItem>();
 
 	public OptionGroupListAdapter(final Context context, final List<UnitOptionGroup> optionGroups) {
 		super(context, optionGroups);
@@ -27,15 +28,13 @@ public class OptionGroupListAdapter extends BaseAdapter<UnitOptionGroup, OptionG
 	protected void fillView(final OptionGroupListItem view, final UnitOptionGroup item, final int position) {
 		view.bind(item);
 
-		if (!views.contains(view)) {
-			views.add(view);
-		}
+		views.addItem(view);
 
 		view.setNotifier(new IValueChangedNotifier() {
 
 			@Override
 			public void onValueChanged() {
-				for (final OptionGroupListItem other : views) {
+				for (final OptionGroupListItem other : views.get()) {
 					if (other != view) {
 						other.notifyValueChanged();
 					}

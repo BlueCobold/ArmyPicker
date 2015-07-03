@@ -1,12 +1,11 @@
 package de.game_coding.armypicker.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.UnitOption;
 import de.game_coding.armypicker.model.UnitOptionGroup;
+import de.game_coding.armypicker.util.WeakArrayList;
+import de.game_coding.armypicker.util.WeakList;
 import de.game_coding.armypicker.viewgroups.OptionListItem;
 import de.game_coding.armypicker.viewgroups.OptionListItem_;
 
@@ -16,7 +15,7 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 
 	private IValueChangedNotifier notifier;
 
-	private final List<OptionListItem> views = new ArrayList<OptionListItem>();
+	private final WeakList<OptionListItem> views = new WeakArrayList<OptionListItem>();
 
 	public OptionListAdapter(final Context context, final UnitOptionGroup optionGroup) {
 		super(context, optionGroup.getOptions());
@@ -33,13 +32,13 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 		view.bind(item, optionGroup);
 
 		if (!views.contains(view)) {
-			views.add(view);
+			views.addItem(view);
 		}
 
 		view.setNotifier(new IValueChangedNotifier() {
 			@Override
 			public void onValueChanged() {
-				for (final OptionListItem v : views) {
+				for (final OptionListItem v : views.get()) {
 					if (v != view) {
 						v.refresh();
 					}
@@ -56,7 +55,7 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 	}
 
 	public void refreshViews() {
-		for (final OptionListItem view : views) {
+		for (final OptionListItem view : views.get()) {
 			view.refresh();
 		}
 	}
