@@ -17,7 +17,8 @@ public class Army extends Model {
 	private List<UnitStats> stats = new ArrayList<UnitStats>();
 	private UnitStats weapons = new UnitStats();
 
-	public Army(final String name, final Unit[] unitTemplates) {
+	private String templateVersion;
+
 		this.name = name;
 		this.unitTemplates = unitTemplates;
 	}
@@ -119,5 +120,9 @@ public class Army extends Model {
 
 	public UnitStats getWeapons() {
 		return weapons;
+	}
+
+	public String getTemplateVersion() {
+		return templateVersion;
 	}
 }

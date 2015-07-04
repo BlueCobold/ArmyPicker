@@ -20,6 +20,9 @@ public class ArmySelectionListItem extends RelativeLayout {
 	@ViewById(R.id.unit_type_header)
 	protected TextView type;
 
+	@ViewById(R.id.list_item_points)
+	protected TextView points;
+
 	public ArmySelectionListItem(final Context context) {
 		super(context);
 	}
@@ -31,5 +34,6 @@ public class ArmySelectionListItem extends RelativeLayout {
 
 	public void bind(final Army army) {
 		title.setText(army.getName());
+		points.setText("v" + army.getTemplateVersion());
 	}
 }
