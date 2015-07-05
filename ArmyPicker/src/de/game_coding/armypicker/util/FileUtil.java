@@ -83,32 +83,17 @@ public final class FileUtil {
 	}
 
 	public static Army readArmy(final File file, final Context context) {
-		final Parcel parcel = Parcel.obtain();
 		Army result = null;
 		InputStream os = null;
 		try {
 			os = new FileInputStream(file);
 			final int available = os.available();
-			byte[] buffer = new byte[available];
+			final byte[] buffer = new byte[available];
 			os.read(buffer);
-			final Inflater inflater = new Inflater();
-			inflater.setInput(buffer);
-			final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(buffer.length);
-			buffer = new byte[1024];
-			while (!inflater.finished()) {
-				final int count = inflater.inflate(buffer);
-				outputStream.write(buffer, 0, count);
-			}
-			outputStream.close();
-			final byte[] output = outputStream.toByteArray();
-			parcel.unmarshall(output, 0, output.length);
-			parcel.setDataPosition(0);
-			result = Army.CREATOR.createFromParcel(parcel);
+			result = readArmy(buffer);
 		} catch (final FileNotFoundException e) {
 			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
 		} catch (final IOException e) {
-			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
-		} catch (final DataFormatException e) {
 			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
 		}
 		if (os != null) {
@@ -118,6 +103,30 @@ public final class FileUtil {
 				Log.e(TAG, CANNOT_CLOSE_ARMY_FILE, e);
 			}
 		}
+		return result;
+	}
+
+	public static Army readArmy(byte[] buffer) {
+		final Parcel parcel = Parcel.obtain();
+		final Inflater inflater = new Inflater();
+		inflater.setInput(buffer);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(buffer.length);
+		buffer = new byte[1024];
+		try {
+			while (!inflater.finished()) {
+				final int count = inflater.inflate(buffer);
+				outputStream.write(buffer, 0, count);
+			}
+			outputStream.close();
+		} catch (final DataFormatException e) {
+			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
+		} catch (final IOException e) {
+			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
+		}
+		final byte[] output = outputStream.toByteArray();
+		parcel.unmarshall(output, 0, output.length);
+		parcel.setDataPosition(0);
+		final Army result = Army.CREATOR.createFromParcel(parcel);
 		parcel.recycle();
 		return result;
 	}

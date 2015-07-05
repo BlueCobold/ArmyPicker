@@ -24,4 +24,9 @@ public class SpaceClownBuilder implements IArmyTemplateBuilder {
 	public UnitStats getWeapons() {
 		return new UnitStats();
 	}
+
+	@Override
+	public String getVersion() {
+		return "3.7.0";
+	}
 }

@@ -11,16 +11,26 @@ public class Army extends Model {
 	public static final Parcelable.Creator<Army> CREATOR = new ArmyCreator();
 
 	private String name = "";
+
+	private String templateName = "";
+
 	private Unit[] unitTemplates = new Unit[0];
+
 	private List<Unit> units = new ArrayList<Unit>();
+
 	private int id;
+
 	private List<UnitStats> stats = new ArrayList<UnitStats>();
+
 	private UnitStats weapons = new UnitStats();
 
 	private String templateVersion;
 
+	public Army(final String name, final Unit[] unitTemplates, final String templateVersion) {
 		this.name = name;
+		this.templateName = name;
 		this.unitTemplates = unitTemplates;
+		this.templateVersion = templateVersion;
 	}
 
 	public Army(final Parcel source) {
@@ -37,6 +47,12 @@ public class Army extends Model {
 
 	public Unit[] getUnitTemplates() {
 		return unitTemplates;
+	}
+
+	public void setUnitTemplates(final Unit[] entries) {
+		if (entries != null) {
+			unitTemplates = entries.clone();
+		}
 	}
 
 	public List<Unit> getUnits() {
@@ -60,6 +76,8 @@ public class Army extends Model {
 	public void writeToParcel(final Parcel dest, final int flags) {
 		super.writeToParcel(dest, flags);
 		dest.writeString(name);
+		dest.writeString(templateName);
+		dest.writeString(templateVersion);
 		dest.writeInt(id);
 
 		dest.writeInt(unitTemplates.length);
@@ -77,6 +95,8 @@ public class Army extends Model {
 			return;
 		}
 		name = source.readString();
+		templateName = source.readString();
+		templateVersion = source.readString();
 		id = source.readInt();
 
 		final int size = source.readInt();
@@ -113,6 +133,11 @@ public class Army extends Model {
 		return stats;
 	}
 
+	public void setStats(final List<UnitStats> stats) {
+		this.stats.clear();
+		this.stats.addAll(stats);
+	}
+
 	public Army attachWeapons(final UnitStats weapons) {
 		this.weapons = weapons;
 		return this;
@@ -122,7 +147,19 @@ public class Army extends Model {
 		return weapons;
 	}
 
+	public void setWeapons(final UnitStats weapons) {
+		this.weapons = weapons;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
 	public String getTemplateVersion() {
 		return templateVersion;
+	}
+
+	public void setTemplateVersion(final String templateVersion) {
+		this.templateVersion = templateVersion;
 	}
 }

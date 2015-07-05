@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 
 public final class CloneUtil {
 	private CloneUtil() {
@@ -25,5 +26,13 @@ public final class CloneUtil {
 			result.add(clone(model, creator));
 		}
 		return result;
+	}
+
+	public static <T extends Parcelable> T[] clone(final T[] original, final Creator<T> creator) {
+		final T[] copy = creator.newArray(original.length);
+		for (int i = 0; i < original.length; i++) {
+			copy[i] = clone(original[i], creator);
+		}
+		return copy;
 	}
 }

@@ -26,4 +26,9 @@ public class SpaceMonkBuilder implements IArmyTemplateBuilder {
 	public UnitStats getWeapons() {
 		return new UnitStats();
 	}
+
+	@Override
+	public String getVersion() {
+		return "2.7.0";
+	}
 }

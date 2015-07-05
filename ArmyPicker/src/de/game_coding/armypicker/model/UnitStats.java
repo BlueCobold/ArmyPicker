@@ -172,4 +172,16 @@ public class UnitStats extends Model {
 		}
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		for (int i = 0; i < entries.size(); i++) {
+			result += entries.get(i).getName();
+			if (i != entries.size() - 1) {
+				result += ", ";
+			}
+		}
+		return "[" + result + "]";
+	}
 }

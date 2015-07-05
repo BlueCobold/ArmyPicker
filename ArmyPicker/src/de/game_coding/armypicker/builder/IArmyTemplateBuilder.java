@@ -9,6 +9,8 @@ public interface IArmyTemplateBuilder {
 
 	String getName();
 
+	String getVersion();
+
 	UnitStats[] getStats();
 
 	UnitStats getWeapons();

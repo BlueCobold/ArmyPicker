@@ -58,6 +58,22 @@
 		/>
 	</RelativeLayout>
 
+	<RelativeLayout
+		android:id="@+id/army_download_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+		<de.game_coding.armypicker.viewgroups.DownloadView_
+			android:id="@+id/army_download_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/chance_view"
+			android:layout_margin="20dp"
+		/>
+	</RelativeLayout>
+
 	<LinearLayout
 		android:id="@+id/army_available_armies_view"
 		android:layout_width="match_parent"

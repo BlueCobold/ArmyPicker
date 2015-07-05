@@ -8,6 +8,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
+import org.androidannotations.annotations.ItemLongClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
@@ -29,9 +30,12 @@ import de.game_coding.armypicker.builder.SpaceMonkBuilder;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.EditHandler;
 import de.game_coding.armypicker.model.Army;
+import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
+import de.game_coding.armypicker.viewgroups.DownloadView;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main_activity_menu)
@@ -48,14 +52,16 @@ public class MainActivity extends Activity {
 		private static final long serialVersionUID = 1493878691032538962L;
 
 		{
-			add(new Army(SPACE_ELVES.getName(), SPACE_ELVES.getTemplates()).attachStats(SPACE_ELVES.getStats())
-				.attachWeapons(SPACE_ELVES.getWeapons()));
-			add(new Army(SPACE_CLOWNS.getName(), SPACE_CLOWNS.getTemplates()).attachStats(SPACE_CLOWNS.getStats())
-				.attachWeapons(SPACE_CLOWNS.getWeapons()));
-			add(new Army(SPACE_MONKS.getName(), SPACE_MONKS.getTemplates()).attachStats(SPACE_MONKS.getStats())
-				.attachWeapons(SPACE_MONKS.getWeapons()));
-			add(new Army(GREEN_SPACE_MONKS.getName(), GREEN_SPACE_MONKS.getTemplates()).attachStats(
-				GREEN_SPACE_MONKS.getStats()).attachWeapons(GREEN_SPACE_MONKS.getWeapons()));
+			add(build(SPACE_ELVES));
+			add(build(SPACE_CLOWNS));
+			add(build(SPACE_MONKS));
+			add(build(GREEN_SPACE_MONKS));
+		}
+
+		private Army build(final IArmyTemplateBuilder builder) {
+			return new Army(builder.getName(), builder.getTemplates(), builder.getVersion())//
+				.attachStats(builder.getStats())//
+				.attachWeapons(builder.getWeapons());
 		}
 	};
 
@@ -66,6 +72,8 @@ public class MainActivity extends Activity {
 	private Army editArmy;
 
 	private int editedArmyIndex;
+
+	private boolean changingTemplate;
 
 	@ViewById(R.id.army_available_armies_view)
 	protected View selectionView;
@@ -85,6 +93,12 @@ public class MainActivity extends Activity {
 	@ViewById(R.id.chance_view)
 	protected View chanceView;
 
+	@ViewById(R.id.army_download_view)
+	protected DownloadView downloadView;
+
+	@ViewById(R.id.army_download_container)
+	protected View downloadContainer;
+
 	@AfterViews
 	protected void init() {
 
@@ -93,8 +107,8 @@ public class MainActivity extends Activity {
 			armies.addAll(army);
 		}
 
+		downloadView.setArmies(ARMY_TEMPLATES);
 		armyListView.setAdapter(newArmyAdapter(armyListView));
-		availableArmies.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
 		UIUtil.hide(editView);
 		selectionView.setVisibility(View.INVISIBLE);
 	}
@@ -118,18 +132,29 @@ public class MainActivity extends Activity {
 	protected void onEditFinished() {
 		editArmy.setName(editArmyName.getText().toString());
 		UIUtil.hide(editView);
+		FileUtil.storeArmy(editArmy, this);
 	}
 
 	@ItemClick(R.id.army_available_army_selection)
 	protected void onNewArmySelected(final Army army) {
-		armyListView.setAdapter(null);
-		final Army newArmy = CloneUtil.clone(army, Army.CREATOR);
-		armies.add(newArmy);
-		newArmy.setId(getUniqueArmyId());
-		final ArmyListAdapter adapter = newArmyAdapter(armyListView);
-		armyListView.setAdapter(adapter);
-		switchToArmy(armies.get(armies.size() - 1));
-		selectionView.setVisibility(View.INVISIBLE);
+		if (!changingTemplate) {
+			armyListView.setAdapter(null);
+			final Army newArmy = CloneUtil.clone(army, Army.CREATOR);
+			armies.add(newArmy);
+			newArmy.setId(getUniqueArmyId());
+			final ArmyListAdapter adapter = newArmyAdapter(armyListView);
+			armyListView.setAdapter(adapter);
+			switchToArmy(armies.get(armies.size() - 1));
+			selectionView.setVisibility(View.INVISIBLE);
+		} else {
+			final Army oldArmy = armies.get(editedArmyIndex);
+			oldArmy.setUnitTemplates(CloneUtil.clone(army.getUnitTemplates(), Unit.CREATOR));
+			oldArmy.setWeapons(CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR));
+			oldArmy.setStats(CloneUtil.clone(army.getStats(), UnitStats.CREATOR));
+			oldArmy.setTemplateVersion(army.getTemplateVersion());
+			changingTemplate = false;
+			selectionView.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	private int getUniqueArmyId() {
@@ -154,6 +179,13 @@ public class MainActivity extends Activity {
 		Log.d(TAG, "Clicked on item " + army.getName());
 		editedArmyIndex = armies.indexOf(army);
 		ArmyActivity_.intent(this).extra(ArmyActivity.EXTRA_ARMY, army).startForResult(EDIT_ARMY);
+	}
+
+	@ItemLongClick(R.id.army_selection)
+	protected void switchArmyTemplate(final Army army) {
+		changingTemplate = true;
+		editedArmyIndex = armies.indexOf(army);
+		addNewArmy();
 	}
 
 	private ArmyListAdapter newArmyAdapter(final ListView armyList) {
@@ -197,6 +229,13 @@ public class MainActivity extends Activity {
 
 	@OptionsItem(R.id.action_add)
 	protected void addNewArmy() {
+
+		availableArmies.setAdapter(new ArmyTypeListAdapter(this, ARMY_TEMPLATES));
 		selectionView.setVisibility(View.VISIBLE);
+	}
+
+	@OptionsItem(R.id.action_download)
+	protected void downloadTemplate() {
+		downloadContainer.setVisibility(View.VISIBLE);
 	}
 }

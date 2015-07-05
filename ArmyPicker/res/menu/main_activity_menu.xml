@@ -4,4 +4,8 @@
 		android:icon="@drawable/ic_action_new"
 		android:title="@string/new_item"
 		android:showAsAction="ifRoom" />
+	<item android:id="@+id/action_download" 
+		android:icon="@drawable/ic_action_download"
+		android:title="@string/download"
+		android:showAsAction="ifRoom"/>
 </menu>

@@ -26,4 +26,9 @@ public class GreenSpaceMonkBuilder implements IArmyTemplateBuilder {
 	public UnitStats getWeapons() {
 		return new UnitStats();
 	}
+
+	@Override
+	public String getVersion() {
+		return "4.7.0";
+	}
 }

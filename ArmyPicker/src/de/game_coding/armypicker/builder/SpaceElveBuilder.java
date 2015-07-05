@@ -38,4 +38,9 @@ public class SpaceElveBuilder implements IArmyTemplateBuilder {
 	public UnitStats getWeapons() {
 		return new UnitStats();
 	}
+
+	@Override
+	public String getVersion() {
+		return "1.7.0";
+	}
 }
