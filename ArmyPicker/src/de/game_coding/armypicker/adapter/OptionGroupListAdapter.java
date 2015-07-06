@@ -3,6 +3,7 @@ package de.game_coding.armypicker.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.UnitOptionGroup;
 import de.game_coding.armypicker.util.WeakArrayList;
@@ -25,7 +26,8 @@ public class OptionGroupListAdapter extends BaseAdapter<UnitOptionGroup, OptionG
 	}
 
 	@Override
-	protected void fillView(final OptionGroupListItem view, final UnitOptionGroup item, final int position) {
+	protected void fillView(final OptionGroupListItem view, final UnitOptionGroup item, final int position,
+		final ViewGroup parent) {
 		view.bind(item);
 
 		views.addItem(view);

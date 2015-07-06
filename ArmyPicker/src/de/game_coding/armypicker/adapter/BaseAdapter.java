@@ -28,12 +28,12 @@ public abstract class BaseAdapter<T, V extends View> extends ArrayAdapter<T> {
 			view = (V) convertView;
 		}
 
-		fillView(view, getItem(position), position);
+		fillView(view, getItem(position), position, parent);
 
 		return view;
 	}
 
-	protected void fillView(final V view, final T item, final int position) {
+	protected void fillView(final V view, final T item, final int position, final ViewGroup parent) {
 	}
 
 	protected abstract V buildNewView();

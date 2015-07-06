@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.viewgroups.UnitStatsListItem;
@@ -38,7 +39,8 @@ public class UnitStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, Unit
 	}
 
 	@Override
-	protected void fillView(final UnitStatsListItem view, final StatsEntry item, final int position) {
+	protected void fillView(final UnitStatsListItem view, final StatsEntry item, final int position,
+		final ViewGroup parent) {
 		view.bind(item, findByIndex(stats, position).getHeaders());
 	}
 

@@ -5,7 +5,6 @@ import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -31,7 +30,7 @@ public class WeaponStatsListItem extends RelativeLayout {
 		super(context);
 	}
 
-	public void bind(final UnitStats stats, final StatsEntry statsEntry) {
+	public void bind(final UnitStats stats, final StatsEntry statsEntry, final int width) {
 		entry = statsEntry;
 		this.stats = stats;
 		String entryName = "";
@@ -40,13 +39,13 @@ public class WeaponStatsListItem extends RelativeLayout {
 		}
 		title.setText(entryName);
 		table.removeAllViews();
-		addRow(entry.getValues(), table, this);
+		addRow(entry.getValues(), width);
 		for (final StatsEntry weapon : entry.getSecondaries()) {
-			addRow(weapon.getValues(), table, this);
+			addRow(weapon.getValues(), width);
 		}
 	}
 
-	private void addRow(final String[] values, final TableLayout table, final ViewGroup parent) {
+	private void addRow(final String[] values, final int width) {
 		boolean empty = true;
 		for (final String value : values) {
 			empty &= value.isEmpty();
@@ -56,6 +55,7 @@ public class WeaponStatsListItem extends RelativeLayout {
 		}
 		final TableRow tableRow = new TableRow(getContext());
 		final float[] percents = new float[] { 0.22f, 0.20f, 0.12f, 0.12f, 0.34f };
+
 		for (int i = 0; i < values.length && i < stats.getHeaders().length; i++) {
 			final String value = values[i];
 			final String header = stats.getHeaders()[i];
@@ -64,9 +64,9 @@ public class WeaponStatsListItem extends RelativeLayout {
 			if (i > 0) {
 				text.setGravity(Gravity.CENTER_HORIZONTAL);
 			}
-			text.setLayoutParams(new TableRow.LayoutParams((int) (parent.getWidth() * percents[i]),
-				TableRow.LayoutParams.WRAP_CONTENT));
 			text.setTextColor(text.getResources().getColor(R.color.text_color));
+			text.setLayoutParams(new TableRow.LayoutParams((int) (width * percents[i]),
+				TableRow.LayoutParams.WRAP_CONTENT));
 			tableRow.addView(text);
 		}
 		table.addView(tableRow);

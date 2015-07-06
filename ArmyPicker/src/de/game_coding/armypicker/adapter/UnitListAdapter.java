@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
@@ -32,7 +33,7 @@ public class UnitListAdapter extends BaseUnitAdapter<UnitListItem> {
 	}
 
 	@Override
-	protected void fillView(final UnitListItem view, final Unit item, final int position) {
+	protected void fillView(final UnitListItem view, final Unit item, final int position, final ViewGroup parent) {
 
 		view.bind(item, showSummaries);
 		view.setDeleteHandler(deleteHandler);

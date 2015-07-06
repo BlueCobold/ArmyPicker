@@ -1,6 +1,7 @@
 package de.game_coding.armypicker.adapter;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.UnitOption;
 import de.game_coding.armypicker.model.UnitOptionGroup;
@@ -28,7 +29,7 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 	}
 
 	@Override
-	protected void fillView(final OptionListItem view, final UnitOption item, final int position) {
+	protected void fillView(final OptionListItem view, final UnitOption item, final int position, final ViewGroup parent) {
 		view.bind(item, optionGroup);
 
 		if (!views.contains(view)) {

@@ -3,6 +3,7 @@ package de.game_coding.armypicker.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.EditHandler;
 import de.game_coding.armypicker.model.Army;
@@ -24,7 +25,7 @@ public class ArmyListAdapter extends BaseAdapter<Army, ArmyListItem> {
 	}
 
 	@Override
-	protected void fillView(final ArmyListItem view, final Army item, final int position) {
+	protected void fillView(final ArmyListItem view, final Army item, final int position, final ViewGroup parent) {
 		view.bind(item);
 		view.setEditHandler(editHandler);
 		view.setDeleteHandler(deleteHandler);

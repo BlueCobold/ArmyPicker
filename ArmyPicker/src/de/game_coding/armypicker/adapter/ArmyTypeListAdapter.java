@@ -3,6 +3,7 @@ package de.game_coding.armypicker.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.viewgroups.ArmySelectionListItem;
 import de.game_coding.armypicker.viewgroups.ArmySelectionListItem_;
@@ -19,7 +20,8 @@ public class ArmyTypeListAdapter extends BaseAdapter<Army, ArmySelectionListItem
 	}
 
 	@Override
-	protected void fillView(final ArmySelectionListItem view, final Army item, final int position) {
+	protected void fillView(final ArmySelectionListItem view, final Army item, final int position,
+		final ViewGroup parent) {
 		view.bind(item);
 	}
 }

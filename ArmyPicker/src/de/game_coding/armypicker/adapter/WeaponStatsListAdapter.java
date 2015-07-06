@@ -1,6 +1,7 @@
 package de.game_coding.armypicker.adapter;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.viewgroups.WeaponStatsListItem;
@@ -21,7 +22,8 @@ public class WeaponStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, We
 	}
 
 	@Override
-	protected void fillView(final WeaponStatsListItem view, final StatsEntry item, final int position) {
-		view.bind(stats, item);
+	protected void fillView(final WeaponStatsListItem view, final StatsEntry item, final int position,
+		final ViewGroup parent) {
+		view.bind(stats, item, parent.getWidth());
 	}
 }
