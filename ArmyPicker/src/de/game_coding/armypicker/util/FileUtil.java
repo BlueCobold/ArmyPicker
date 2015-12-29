@@ -17,6 +17,7 @@ import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import de.game_coding.armypicker.model.Army;
 
@@ -32,13 +33,13 @@ public final class FileUtil {
 	private FileUtil() {
 	}
 
-	public static void storeArmy(final Army army, final Context context) {
+	public static void storeToFile(final Parcelable data, final String fileName, final Context context) {
 		final File dir = getFilePath(context);
 		final Parcel parcel = Parcel.obtain();
 		OutputStream os = null;
 		try {
-			os = new FileOutputStream(new File(dir.getAbsolutePath(), army.getId() + FILE_SUFFIX));
-			army.writeToParcel(parcel, 0);
+			os = new FileOutputStream(new File(dir.getAbsolutePath(), fileName));
+			data.writeToParcel(parcel, 0);
 			final Deflater compressor = new Deflater();
 			compressor.setLevel(Deflater.BEST_COMPRESSION);
 			compressor.setInput(parcel.marshall());
@@ -63,6 +64,10 @@ public final class FileUtil {
 		parcel.recycle();
 	}
 
+	public static void storeArmy(final Army army, final Context context) {
+		storeToFile(null, army.getId() + FILE_SUFFIX, context);
+	}
+
 	public static List<Army> readArmies(final Context context) {
 		final List<Army> results = new ArrayList<Army>();
 		final File dir = getFilePath(context);
@@ -74,7 +79,7 @@ public final class FileUtil {
 			}
 		});
 		for (final File armyFile : armies) {
-			final Army army = readArmy(armyFile, context);
+			final Army army = readFromFile(armyFile, context, Army.CREATOR);
 			if (army != null) {
 				results.add(army);
 			}
@@ -82,15 +87,20 @@ public final class FileUtil {
 		return results;
 	}
 
-	public static Army readArmy(final File file, final Context context) {
-		Army result = null;
+	public static <T> T readFromFile(final String fileName, final Context context, final Parcelable.Creator<T> creator) {
+		final File dir = getFilePath(context);
+		return readFromFile(new File(dir.getAbsolutePath(), fileName), context, creator);
+	}
+
+	public static <T> T readFromFile(final File file, final Context context, final Parcelable.Creator<T> creator) {
+		T result = null;
 		InputStream os = null;
 		try {
 			os = new FileInputStream(file);
 			final int available = os.available();
 			final byte[] buffer = new byte[available];
 			os.read(buffer);
-			result = readArmy(buffer);
+			result = readData(buffer, creator);
 		} catch (final FileNotFoundException e) {
 			Log.e(TAG, CANNOT_READ_ARMY_FILE, e);
 		} catch (final IOException e) {
@@ -106,7 +116,7 @@ public final class FileUtil {
 		return result;
 	}
 
-	public static Army readArmy(byte[] buffer) {
+	public static <T> T readData(byte[] buffer, final Parcelable.Creator<T> creator) {
 		final Parcel parcel = Parcel.obtain();
 		final Inflater inflater = new Inflater();
 		inflater.setInput(buffer);
@@ -126,7 +136,7 @@ public final class FileUtil {
 		final byte[] output = outputStream.toByteArray();
 		parcel.unmarshall(output, 0, output.length);
 		parcel.setDataPosition(0);
-		final Army result = Army.CREATOR.createFromParcel(parcel);
+		final T result = creator.createFromParcel(parcel);
 		parcel.recycle();
 		return result;
 	}

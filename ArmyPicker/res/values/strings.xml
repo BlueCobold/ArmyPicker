@@ -39,5 +39,7 @@
 	<string name="twin_linked">Twin linked</string>
 	<string name="preferred_enemy">Preferred enemy</string>
 	<string name="download">Download</string>
+	<string name="title_activity_characters">Characters</string>
+	<string name="pick_trait">Pick trait</string>
 
 </resources>

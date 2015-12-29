@@ -3,6 +3,7 @@ package de.game_coding.armypicker.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.game_coding.armypicker.model.creators.UnitStatsCreator;
 import android.os.Parcel;
 
 public class UnitStats extends Model {

@@ -44,7 +44,7 @@ public class ArmyStreamConverter extends AbstractHttpMessageConverter<Army> {
 		}
 
 		final byte[] bytes = bos.toByteArray();
-		return FileUtil.readArmy(bytes);
+		return FileUtil.readData(bytes, Army.CREATOR);
 	}
 
 	@Override

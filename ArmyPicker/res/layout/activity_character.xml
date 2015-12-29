@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/army_list_gradient"
+	tools:context="${relativePackage}.${activityClass}" >
+
+	<ListView
+		android:id="@+id/character_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true" >
+	</ListView>
+
+	<RelativeLayout
+		android:id="@+id/character_option_dialog"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+		<de.game_coding.armypicker.viewgroups.CharacterOptionPicker_
+			android:id="@+id/character_option_picker"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/chance_view"
+			android:layout_margin="20dp"
+		/>
+	</RelativeLayout>
+</RelativeLayout>

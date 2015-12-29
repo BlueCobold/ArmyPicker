@@ -133,6 +133,12 @@ public class ArmyActivity extends Activity {
 		chanceView.setVisibility(View.GONE);
 	}
 
+	@Click(R.id.army_show_characters_lists)
+	protected void switchToCharacterSelection() {
+		CharacterActivity.shareArmy(army);
+		CharacterActivity_.intent(this).extra(CharacterActivity.EXTRA_ARMY_ID, army.getId()).start();
+	}
+
 	@ItemClick(R.id.army_available_unit_selection)
 	protected void selectNewUnit(final Unit unit) {
 		armyList.setAdapter(null);

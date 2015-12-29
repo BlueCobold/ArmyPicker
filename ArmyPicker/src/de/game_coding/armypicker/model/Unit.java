@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.game_coding.armypicker.model.creators.UnitCreator;
+import de.game_coding.armypicker.model.creators.UnitOptionGroupCreator;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,7 +14,7 @@ public class Unit extends Model {
 	public static final Parcelable.Creator<Unit> CREATOR = new UnitCreator();
 
 	private String name = "";
-	private Type type = Type.STANDARD;
+	private UnitType type = UnitType.STANDARD;
 	private int points;
 	private int amount = 1;
 	private int initialAmount = 1;
@@ -22,7 +24,7 @@ public class Unit extends Model {
 	private final List<Integer> statsReferences = new ArrayList<Integer>();
 	private final List<Integer> weaponReferences = new ArrayList<Integer>();
 
-	public Unit(final String name, final Type type, final int points, final int amount, final int maxAmount,
+	public Unit(final String name, final UnitType type, final int points, final int amount, final int maxAmount,
 		final UnitOptionGroup... options) {
 		this.name = name;
 		this.type = type;
@@ -34,7 +36,7 @@ public class Unit extends Model {
 		setOptionAmounts();
 	}
 
-	public Unit(final String name, final Type type, final int points, final UnitOptionGroup... options) {
+	public Unit(final String name, final UnitType type, final int points, final UnitOptionGroup... options) {
 		this.name = name;
 		this.type = type;
 		this.points = points;
@@ -42,7 +44,7 @@ public class Unit extends Model {
 		setOptionAmounts();
 	}
 
-	public Unit(final String name, final Type type, final int points) {
+	public Unit(final String name, final UnitType type, final int points) {
 		this.name = name;
 		this.type = type;
 		this.points = points;
@@ -76,7 +78,7 @@ public class Unit extends Model {
 		this.name = name;
 	}
 
-	public Type getType() {
+	public UnitType getType() {
 		return type;
 	}
 
@@ -184,7 +186,7 @@ public class Unit extends Model {
 		name = source.readString();
 		subtitle = source.readString();
 		points = source.readInt();
-		type = Type.values()[source.readInt()];
+		type = UnitType.values()[source.readInt()];
 		amount = source.readInt();
 		maxAmount = source.readInt();
 		initialAmount = source.readInt();
