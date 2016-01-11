@@ -61,8 +61,6 @@ public class CharacterActivity extends Activity {
 
 	private List<Character> characterList;
 
-	protected Character editedCharacter;
-
 	@AfterViews
 	protected void init() {
 		army = _armies.get(getIntent().getIntExtra(EXTRA_ARMY_ID, -1));
@@ -87,31 +85,30 @@ public class CharacterActivity extends Activity {
 		adapter.onOptionRequestListener(new ItemClickedListener<Character>() {
 			@Override
 			public void onItemClicked(final Character character) {
-				editedCharacter = character;
-				optionDialog.setVisibility(View.VISIBLE);
-				optionPicker.setAbortHandler(new ItemClickedListener<CharacterOption>() {
-
-					@Override
-					public void onItemClicked(final CharacterOption option) {
-						optionDialog.setVisibility(View.GONE);
-						editedCharacter = null;
-					}
-				});
-				optionPicker.setAcceptHandler(new ItemClickedListener<CharacterOption>() {
-
-					@Override
-					public void onItemClicked(final CharacterOption option) {
-						if (editedCharacter == null) {
-							return;
-						}
-						optionDialog.setVisibility(View.GONE);
-						editedCharacter.addOption(option);
-						editedCharacter = null;
-					}
-				});
+				showOptionPicker(character);
 			}
 		});
 		characters.setAdapter(adapter);
+	}
+
+	private void showOptionPicker(final Character character) {
+		optionPicker.setAbortHandler(new ItemClickedListener<CharacterOption>() {
+
+			@Override
+			public void onItemClicked(final CharacterOption option) {
+				optionDialog.setVisibility(View.GONE);
+			}
+		});
+		optionPicker.setAcceptHandler(new ItemClickedListener<CharacterOption>() {
+
+			@Override
+			public void onItemClicked(final CharacterOption option) {
+				optionDialog.setVisibility(View.GONE);
+				character.addOption(option);
+				adapter.notifyDataChanged(character);
+			}
+		});
+		optionDialog.setVisibility(View.VISIBLE);
 	}
 
 	@Override

@@ -96,6 +96,7 @@ public class CharacterOptionPicker extends RelativeLayout {
 		subAdapter.addAll(rootAdapter.getItem(baseOption.getSelectedItemPosition()).getSubOptions());
 		subAdapter.notifyDataSetChanged();
 		subOption.setSelection(0);
+		onSubOptionSelected(selected, null);
 	}
 
 	@ItemSelect(R.id.character_sub_option)
@@ -115,22 +116,29 @@ public class CharacterOptionPicker extends RelativeLayout {
 			return;
 		}
 
-		final CharacterOption option = new CharacterOption();
-		final CharacterOption rootOption = availableOptions.getSubOptions().get(baseOption.getSelectedItemPosition());
-		option.setName(rootOption.getName());
-
-		if (subOption.getSelectedItemPosition() >= 0) {
-			final CharacterOption childOption = rootOption.getSubOptions().get(subOption.getSelectedItemPosition());
-			childOption.setName(childOption.getName());
-			rootOption.getSubOptions().add(childOption);
-
-			if (subsubOption.getSelectedItemPosition() >= 0) {
-				final CharacterOption subChildOption = childOption.getSubOptions().get(
-					subOption.getSelectedItemPosition());
-				subChildOption.setName(childOption.getName());
-				childOption.getSubOptions().add(subChildOption);
-			}
+		CharacterOption option = null;
+		CharacterOption selected = (CharacterOption) baseOption.getSelectedItem();
+		if (selected != null) {
+			option = new CharacterOption();
+			option.setName(selected.getName());
 		}
+
+		CharacterOption childOption = null;
+		selected = (CharacterOption) subOption.getSelectedItem();
+		if (option != null && selected != null) {
+			childOption = new CharacterOption();
+			childOption.setName(selected.getName());
+			option.getSubOptions().add(childOption);
+		}
+
+		CharacterOption subChildOption = null;
+		selected = (CharacterOption) subsubOption.getSelectedItem();
+		if (childOption != null && selected != null) {
+			subChildOption = new CharacterOption();
+			subChildOption.setName(selected.getName());
+			childOption.getSubOptions().add(subChildOption);
+		}
+
 		onAcceptListener.onItemClicked(option);
 	}
 

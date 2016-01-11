@@ -29,4 +29,19 @@ public class WeakArrayList<E> extends ArrayList<WeakReference<E>> implements Wea
 	public void addItem(final E item) {
 		add(new WeakReference<E>(item));
 	}
+
+	@Override
+	public void addItem(final int position, final E item) {
+		add(position, new WeakReference<E>(item));
+	}
+
+	@Override
+	public boolean containsItem(final E item) {
+		for (final WeakReference<E> i : this) {
+			if (item.equals(i)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

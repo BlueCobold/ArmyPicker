@@ -32,7 +32,7 @@ public class OptionListAdapter extends BaseAdapter<UnitOption, OptionListItem> {
 	protected void fillView(final OptionListItem view, final UnitOption item, final int position, final ViewGroup parent) {
 		view.bind(item, optionGroup);
 
-		if (!views.contains(view)) {
+		if (!views.containsItem(view)) {
 			views.addItem(view);
 		}
 

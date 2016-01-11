@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:padding="0dp" >
+
+	<ImageButton
+		android:id="@+id/character_option_delete"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_alignParentRight="true"
+		android:layout_centerVertical="true"
+		android:padding="5dp"
+		android:background="@null"
+		android:scaleType="fitCenter"
+		android:src="@drawable/ic_action_discard" />
+	
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/character_option_delete" >
+
+		<TextView
+			android:id="@+id/character_option_base"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="30dp"
+			android:text="Psyker"
+			android:textColor="#FFFFFFFF"
+			android:textSize="16sp" />
+	
+		<TextView
+			android:id="@+id/character_option_sub"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="40dp"
+			android:text="Telekinesis"
+			android:textColor="@color/text_color"
+			android:textSize="14sp" />
+		
+		<TextView
+			android:id="@+id/character_option_subsub"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="50dp"
+			android:layout_marginBottom="5dp"
+			android:text="Push"
+			android:textColor="@color/text_color"
+			android:textSize="14sp" />
+	</LinearLayout>
+
+</RelativeLayout>

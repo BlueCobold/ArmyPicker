@@ -35,6 +35,9 @@ public final class FileUtil {
 
 	public static void storeToFile(final Parcelable data, final String fileName, final Context context) {
 		final File dir = getFilePath(context);
+		if (dir == null) {
+			return;
+		}
 		final Parcel parcel = Parcel.obtain();
 		OutputStream os = null;
 		try {
@@ -89,6 +92,9 @@ public final class FileUtil {
 
 	public static <T> T readFromFile(final String fileName, final Context context, final Parcelable.Creator<T> creator) {
 		final File dir = getFilePath(context);
+		if (dir == null) {
+			return null;
+		}
 		return readFromFile(new File(dir.getAbsolutePath(), fileName), context, creator);
 	}
 

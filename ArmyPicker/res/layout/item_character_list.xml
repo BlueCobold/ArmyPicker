@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/army_list_gradient" >
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/item_gradient" >
 
-    <ImageView
-        android:id="@+id/character_item_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
-        android:src="@drawable/ic_action_edit" />
+	<ImageView
+		android:id="@+id/character_item_image"
+		android:layout_width="120dp"
+		android:layout_height="120dp"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:layout_margin="10dp"
+		android:background="#40FFFFFF"
+		android:src="@drawable/ic_camera_alt_white_24dp" />
 
-    <EditText
-        android:id="@+id/character_item_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_toRightOf="@id/character_item_image"
-        android:text="title"
-        android:textColor="#A0FFFFFF"
-        android:textSize="20sp">
-        <requestFocus />
-    </EditText>
+	<EditText
+		android:id="@+id/character_item_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_toRightOf="@id/character_item_image"
+		android:text="title"
+		android:textColor="#A0FFFFFF"
+		android:textSize="20sp">
+		<requestFocus />
+	</EditText>
 
-    <ImageView
-        android:id="@+id/character_item_add_property"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@id/character_item_title"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/ic_action_new" />
+	<LinearLayout
+		android:id="@+id/character_item_properties"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@id/character_item_title"
+		android:layout_below="@id/character_item_title"
+		android:layout_marginTop="0dp"
+		android:layout_marginRight="10dp"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		android:orientation="vertical" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/character_item_properties"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/character_item_add_property"
-        android:layout_alignLeft="@id/character_item_title"
-        android:layout_below="@id/character_item_title"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="10dp"
-        android:scrollbars="none" />
+	<ImageView
+		android:id="@+id/character_item_add_property"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/character_item_properties"
+		android:layout_alignLeft="@id/character_item_title"
+		android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+		android:src="@drawable/ic_action_new" />
 
 </RelativeLayout>

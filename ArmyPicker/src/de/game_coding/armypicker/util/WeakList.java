@@ -10,4 +10,7 @@ public interface WeakList<T> extends List<WeakReference<T>> {
 
 	void addItem(T item);
 
+	void addItem(int position, T item);
+
+	boolean containsItem(T item);
 }

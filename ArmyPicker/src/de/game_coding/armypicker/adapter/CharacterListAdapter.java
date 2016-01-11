@@ -16,6 +16,7 @@ public class CharacterListAdapter extends BaseAdapter<Character, CharacterListIt
 	}
 
 	private ItemClickedListener<Character> imageRequestHandler;
+
 	private ItemClickedListener<Character> optionRequestHandler;
 
 	@Override

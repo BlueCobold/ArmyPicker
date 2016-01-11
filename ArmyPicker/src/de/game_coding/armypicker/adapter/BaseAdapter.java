@@ -1,22 +1,23 @@
 package de.game_coding.armypicker.adapter;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import android.content.Context;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import de.game_coding.armypicker.util.WeakSparseArray;
 
-public abstract class BaseAdapter<T, V extends View> extends ArrayAdapter<T> {
+public abstract class BaseAdapter<M, V extends View> extends ArrayAdapter<M> {
 
-	private final SparseArray<V> views = new SparseArray<V>();
+	private final WeakSparseArray<V> views = new WeakSparseArray<V>();
 
-	public BaseAdapter(final Context context, final T[] objects) {
+	public BaseAdapter(final Context context, final M[] objects) {
 		super(context, 0, objects);
 	}
 
-	public BaseAdapter(final Context context, final List<T> objects) {
+	public BaseAdapter(final Context context, final List<M> objects) {
 		super(context, 0, objects);
 	}
 
@@ -31,16 +32,24 @@ public abstract class BaseAdapter<T, V extends View> extends ArrayAdapter<T> {
 			view = (V) convertView;
 		}
 
+		views.putItem(position, view);
 		fillView(view, getItem(position), position, parent);
-		views.put(position, view);
 
 		return view;
 	}
 
-	public void notifyDataChanged(final T item) {
+	protected WeakSparseArray<V> getViews() {
+		return views;
+	}
+
+	public void notifyDataChanged(final M item) {
 		for (int i = 0; i < getCount(); i++) {
 			if (getItem(i).equals(item)) {
-				final V view = views.get(i);
+				final WeakReference<V> ref = views.get(i);
+				if (ref == null) {
+					continue;
+				}
+				final V view = ref.get();
 				if (view != null) {
 					fillView(view, item, i, null);
 				}
@@ -49,7 +58,7 @@ public abstract class BaseAdapter<T, V extends View> extends ArrayAdapter<T> {
 		}
 	}
 
-	protected void fillView(final V view, final T item, final int position, final ViewGroup parent) {
+	protected void fillView(final V view, final M item, final int position, final ViewGroup parent) {
 	}
 
 	protected abstract V buildNewView();
