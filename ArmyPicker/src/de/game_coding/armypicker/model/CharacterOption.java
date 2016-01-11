@@ -44,6 +44,10 @@ public class CharacterOption extends Model {
 		this.name = name;
 	}
 
+	public void addSubOption(final String name) {
+		subOptions.add(new CharacterOption(name));
+	}
+
 	public List<CharacterOption> getSubOptions() {
 		return subOptions;
 	}

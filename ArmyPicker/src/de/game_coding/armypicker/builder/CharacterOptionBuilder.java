@@ -26,45 +26,45 @@ public class CharacterOptionBuilder {
 
 	private CharacterOption buildWarlordTable1() {
 		final CharacterOption types = new CharacterOption("Warlord Table 1");
-		types.getSubOptions().add(new CharacterOption("Option 1"));
-		types.getSubOptions().add(new CharacterOption("Option 2"));
-		types.getSubOptions().add(new CharacterOption("Option 3"));
-		types.getSubOptions().add(new CharacterOption("Option 4"));
-		types.getSubOptions().add(new CharacterOption("Option 5"));
-		types.getSubOptions().add(new CharacterOption("Option 6"));
+		types.addSubOption("Option 1");
+		types.addSubOption("Option 2");
+		types.addSubOption("Option 3");
+		types.addSubOption("Option 4");
+		types.addSubOption("Option 5");
+		types.addSubOption("Option 6");
 		return types;
 	}
 
 	private CharacterOption buildWarlordTable2() {
 		final CharacterOption types = new CharacterOption("Warlord Table 2");
-		types.getSubOptions().add(new CharacterOption("Option 1"));
-		types.getSubOptions().add(new CharacterOption("Option 2"));
-		types.getSubOptions().add(new CharacterOption("Option 3"));
-		types.getSubOptions().add(new CharacterOption("Option 4"));
-		types.getSubOptions().add(new CharacterOption("Option 5"));
-		types.getSubOptions().add(new CharacterOption("Option 6"));
+		types.addSubOption("Option 1");
+		types.addSubOption("Option 2");
+		types.addSubOption("Option 3");
+		types.addSubOption("Option 4");
+		types.addSubOption("Option 5");
+		types.addSubOption("Option 6");
 		return types;
 	}
 
 	private CharacterOption buildWarlordTable3() {
 		final CharacterOption types = new CharacterOption("Warlord Table 3");
-		types.getSubOptions().add(new CharacterOption("Option 1"));
-		types.getSubOptions().add(new CharacterOption("Option 2"));
-		types.getSubOptions().add(new CharacterOption("Option 3"));
-		types.getSubOptions().add(new CharacterOption("Option 4"));
-		types.getSubOptions().add(new CharacterOption("Option 5"));
-		types.getSubOptions().add(new CharacterOption("Option 6"));
+		types.addSubOption("Option 1");
+		types.addSubOption("Option 2");
+		types.addSubOption("Option 3");
+		types.addSubOption("Option 4");
+		types.addSubOption("Option 5");
+		types.addSubOption("Option 6");
 		return types;
 	}
 
 	private CharacterOption buildWarlordTable4() {
 		final CharacterOption types = new CharacterOption("Warlord Table 4");
-		types.getSubOptions().add(new CharacterOption("Option 1"));
-		types.getSubOptions().add(new CharacterOption("Option 2"));
-		types.getSubOptions().add(new CharacterOption("Option 3"));
-		types.getSubOptions().add(new CharacterOption("Option 4"));
-		types.getSubOptions().add(new CharacterOption("Option 5"));
-		types.getSubOptions().add(new CharacterOption("Option 6"));
+		types.addSubOption("Option 1");
+		types.addSubOption("Option 2");
+		types.addSubOption("Option 3");
+		types.addSubOption("Option 4");
+		types.addSubOption("Option 5");
+		types.addSubOption("Option 6");
 		return types;
 	}
 
@@ -77,23 +77,23 @@ public class CharacterOptionBuilder {
 
 	private CharacterOption buildSpellsTable1() {
 		final CharacterOption types = new CharacterOption("Psyker Table 1");
-		types.getSubOptions().add(new CharacterOption("Spell 1"));
-		types.getSubOptions().add(new CharacterOption("Spell 2"));
-		types.getSubOptions().add(new CharacterOption("Spell 3"));
-		types.getSubOptions().add(new CharacterOption("Spell 4"));
-		types.getSubOptions().add(new CharacterOption("Spell 5"));
-		types.getSubOptions().add(new CharacterOption("Spell 6"));
+		types.addSubOption("Spell 1");
+		types.addSubOption("Spell 2");
+		types.addSubOption("Spell 3");
+		types.addSubOption("Spell 4");
+		types.addSubOption("Spell 5");
+		types.addSubOption("Spell 6");
 		return types;
 	}
 
 	private CharacterOption buildSpellsTable2() {
 		final CharacterOption types = new CharacterOption("Psyker Table 2");
-		types.getSubOptions().add(new CharacterOption("Spell 1"));
-		types.getSubOptions().add(new CharacterOption("Spell 2"));
-		types.getSubOptions().add(new CharacterOption("Spell 3"));
-		types.getSubOptions().add(new CharacterOption("Spell 4"));
-		types.getSubOptions().add(new CharacterOption("Spell 5"));
-		types.getSubOptions().add(new CharacterOption("Spell 6"));
+		types.addSubOption("Spell 1");
+		types.addSubOption("Spell 2");
+		types.addSubOption("Spell 3");
+		types.addSubOption("Spell 4");
+		types.addSubOption("Spell 5");
+		types.addSubOption("Spell 6");
 		return types;
 	}
 }
