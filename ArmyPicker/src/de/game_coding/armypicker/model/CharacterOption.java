@@ -22,6 +22,11 @@ public class CharacterOption extends Model {
 		this.name = name;
 	}
 
+	public CharacterOption(final String name, final CharacterOption subOption) {
+		this.name = name;
+		subOptions.add(subOption);
+	}
+
 	public CharacterOption(final Parcel source) {
 		readFromParcel(source);
 	}

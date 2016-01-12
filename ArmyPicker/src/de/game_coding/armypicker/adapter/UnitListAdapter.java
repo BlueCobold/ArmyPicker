@@ -1,13 +1,12 @@
 package de.game_coding.armypicker.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.ItemClickedListener;
+import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.viewgroups.UnitListItem;
@@ -20,9 +19,8 @@ public class UnitListAdapter extends BaseUnitAdapter<UnitListItem> {
 	private final boolean showHeader;
 	private final boolean showSummaries;
 
-	public UnitListAdapter(final Context context, final List<Unit> units, final boolean showHeader,
-		final boolean showSummaries) {
-		super(context, units);
+	public UnitListAdapter(final Context context, final Army army, final boolean showHeader, final boolean showSummaries) {
+		super(context, army.getUnits().toArray(new Unit[army.getUnits().size()]));
 		this.showHeader = showHeader;
 		this.showSummaries = showSummaries;
 	}

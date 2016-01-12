@@ -142,7 +142,7 @@ public class ArmyActivity extends Activity {
 	@ItemClick(R.id.army_available_unit_selection)
 	protected void selectNewUnit(final Unit unit) {
 		armyList.setAdapter(null);
-		army.getUnits().add(CloneUtil.clone(unit, Unit.CREATOR));
+		army.addUnit(CloneUtil.clone(unit, Unit.CREATOR));
 		if (showTypes) {
 			sortUnits(army);
 		}
@@ -216,7 +216,7 @@ public class ArmyActivity extends Activity {
 	}
 
 	private UnitListAdapter newUnitAdapter() {
-		final UnitListAdapter adapter = new UnitListAdapter(this, army.getUnits(), showTypes, showSummaries);
+		final UnitListAdapter adapter = new UnitListAdapter(this, army, showTypes, showSummaries);
 		adapter.setNotifier(new IValueChangedNotifier() {
 
 			@Override
@@ -230,7 +230,7 @@ public class ArmyActivity extends Activity {
 			@Override
 			public void onDelete(final Unit unit) {
 				armyList.setAdapter(null);
-				army.getUnits().remove(unit);
+				army.removeUnit(unit);
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 				armyList.setAdapter(newUnitAdapter());
 				FileUtil.storeArmy(army, ArmyActivity.this);

@@ -4,20 +4,23 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.ViewGroup;
+import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.ItemClickedListener;
-import de.game_coding.armypicker.model.Character;
 import de.game_coding.armypicker.viewgroups.CharacterListItem;
 import de.game_coding.armypicker.viewgroups.CharacterListItem_;
+import de.game_coding.armypicker.viewmodel.CharacterViewModel;
 
-public class CharacterListAdapter extends BaseAdapter<Character, CharacterListItem> {
+public class CharacterListAdapter extends BaseAdapter<CharacterViewModel, CharacterListItem> {
 
-	public CharacterListAdapter(final Context context, final List<Character> characters) {
+	public CharacterListAdapter(final Context context, final List<CharacterViewModel> characters) {
 		super(context, characters);
 	}
 
-	private ItemClickedListener<Character> imageRequestHandler;
+	private ItemClickedListener<CharacterViewModel> imageRequestHandler;
 
-	private ItemClickedListener<Character> optionRequestHandler;
+	private ItemClickedListener<CharacterViewModel> optionRequestHandler;
+
+	private DeleteHandler<CharacterViewModel> deleteHandler;
 
 	@Override
 	protected CharacterListItem buildNewView() {
@@ -25,18 +28,23 @@ public class CharacterListAdapter extends BaseAdapter<Character, CharacterListIt
 	}
 
 	@Override
-	protected void fillView(final CharacterListItem view, final Character item, final int position,
+	protected void fillView(final CharacterListItem view, final CharacterViewModel item, final int position,
 		final ViewGroup parent) {
 		view.bind(item);
 		view.setOnImageRequestListener(imageRequestHandler);
 		view.setOnOptionRequestListener(optionRequestHandler);
+		view.setOnDeleteHandler(deleteHandler);
 	}
 
-	public void setOnImageRequestListener(final ItemClickedListener<Character> imageRequestHandler) {
+	public void setOnImageRequestListener(final ItemClickedListener<CharacterViewModel> imageRequestHandler) {
 		this.imageRequestHandler = imageRequestHandler;
 	}
 
-	public void onOptionRequestListener(final ItemClickedListener<Character> optionRequestHandler) {
+	public void setOptionRequestListener(final ItemClickedListener<CharacterViewModel> optionRequestHandler) {
 		this.optionRequestHandler = optionRequestHandler;
+	}
+
+	public void setOnDeleteHandler(final DeleteHandler<CharacterViewModel> deleteHandler) {
+		this.deleteHandler = deleteHandler;
 	}
 }

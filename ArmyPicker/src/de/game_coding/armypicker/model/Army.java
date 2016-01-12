@@ -1,15 +1,35 @@
 package de.game_coding.armypicker.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import de.game_coding.armypicker.model.creators.ArmyCreator;
 import android.os.Parcel;
 import android.os.Parcelable;
+import de.game_coding.armypicker.model.creators.ArmyCreator;
 
 public class Army extends Model {
 
 	public static final Parcelable.Creator<Army> CREATOR = new ArmyCreator();
+
+	private enum FileVersions {
+		CHARACTER_OPTIONS(1);
+
+		private int value;
+
+		private FileVersions(final int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
 
 	private String name = "";
 
@@ -26,6 +46,10 @@ public class Army extends Model {
 	private UnitStats weapons = new UnitStats();
 
 	private String templateVersion;
+
+	private List<Character> characters = new ArrayList<Character>();
+
+	private final Map<Unit, Character> autoCharacters = new HashMap<Unit, Character>();
 
 	public Army(final String name, final Unit[] unitTemplates, final String templateVersion) {
 		this.name = name;
@@ -60,6 +84,22 @@ public class Army extends Model {
 		return units;
 	}
 
+	public void addUnit(final Unit unit) {
+		units.add(unit);
+		if (unit.getSuppliedOptions().size() == 0 && !unit.isCharacter()) {
+			return;
+		}
+		final Character character = new Character();
+		character.setName(unit.getName());
+		character.getOptions().addAll(unit.getSuppliedOptions());
+		autoCharacters.put(unit, character);
+	}
+
+	public void removeUnit(final Unit unit) {
+		units.remove(unit);
+		autoCharacters.remove(unit);
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -87,6 +127,12 @@ public class Army extends Model {
 		writeList(dest, units);
 		writeList(dest, stats);
 		weapons.writeToParcel(dest, flags);
+		writeList(dest, characters);
+		dest.writeInt(autoCharacters.size());
+		for (final Entry<Unit, Character> entry : autoCharacters.entrySet()) {
+			dest.writeInt(units.indexOf(entry.getKey()));
+			entry.getValue().writeToParcel(dest, flags);
+		}
 	}
 
 	@Override
@@ -107,11 +153,19 @@ public class Army extends Model {
 		units = readList(source, Unit.CREATOR);
 		stats = readList(source, UnitStats.CREATOR);
 		weapons = new UnitStats(source);
+		if (getFileVersion() >= FileVersions.CHARACTER_OPTIONS.getValue()) {
+			characters = readList(source, Character.CREATOR);
+			final int entries = source.readInt();
+			for (int i = 0; i < entries; i++) {
+				final int index = source.readInt();
+				autoCharacters.put(units.get(index), new Character(source));
+			}
+		}
 	}
 
 	@Override
 	protected int getFeatureVersion() {
-		return 0;
+		return FileVersions.CHARACTER_OPTIONS.getValue();
 	}
 
 	public int getTotalCosts() {
@@ -162,5 +216,21 @@ public class Army extends Model {
 
 	public void setTemplateVersion(final String templateVersion) {
 		this.templateVersion = templateVersion;
+	}
+
+	public Collection<Character> getCharacters() {
+		return characters;
+	}
+
+	public Collection<Character> getAutoCharacters() {
+		final List<Character> sortedChars = new ArrayList<Character>(autoCharacters.values());
+		Collections.sort(sortedChars, new Comparator<Character>() {
+
+			@Override
+			public int compare(final Character lhs, final Character rhs) {
+				return lhs.getName().compareTo(rhs.getName());
+			}
+		});
+		return Collections.unmodifiableCollection(sortedChars);
 	}
 }

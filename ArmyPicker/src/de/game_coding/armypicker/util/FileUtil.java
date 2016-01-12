@@ -50,6 +50,9 @@ public final class FileUtil {
 			final byte[] buffer = new byte[1024];
 			while (!compressor.finished()) {
 				final int count = compressor.deflate(buffer);
+				if (count == 0) {
+					break;
+				}
 				os.write(buffer, 0, count);
 			}
 		} catch (final FileNotFoundException e) {
@@ -68,7 +71,7 @@ public final class FileUtil {
 	}
 
 	public static void storeArmy(final Army army, final Context context) {
-		storeToFile(null, army.getId() + FILE_SUFFIX, context);
+		storeToFile(army, army.getId() + FILE_SUFFIX, context);
 	}
 
 	public static List<Army> readArmies(final Context context) {
@@ -98,7 +101,7 @@ public final class FileUtil {
 		return readFromFile(new File(dir.getAbsolutePath(), fileName), context, creator);
 	}
 
-	public static <T> T readFromFile(final File file, final Context context, final Parcelable.Creator<T> creator) {
+	private static <T> T readFromFile(final File file, final Context context, final Parcelable.Creator<T> creator) {
 		T result = null;
 		InputStream os = null;
 		try {
@@ -131,6 +134,9 @@ public final class FileUtil {
 		try {
 			while (!inflater.finished()) {
 				final int count = inflater.inflate(buffer);
+				if (count == 0) {
+					break;
+				}
 				outputStream.write(buffer, 0, count);
 			}
 			outputStream.close();

@@ -23,12 +23,15 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.ListView;
 import de.game_coding.armypicker.adapter.CharacterListAdapter;
+import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.Character;
 import de.game_coding.armypicker.model.CharacterOption;
+import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.ImageUtil;
 import de.game_coding.armypicker.viewgroups.CharacterOptionPicker;
+import de.game_coding.armypicker.viewmodel.CharacterViewModel;
 
 @EActivity(R.layout.activity_character)
 @OptionsMenu(R.menu.character_activity_menu)
@@ -59,7 +62,11 @@ public class CharacterActivity extends Activity {
 
 	private CharacterListAdapter adapter;
 
-	private List<Character> characterList;
+	private List<CharacterViewModel> characterList;
+
+	private CharacterViewModel imagePickerViewModel;
+
+	private boolean showSummaries;
 
 	@AfterViews
 	protected void init() {
@@ -68,30 +75,44 @@ public class CharacterActivity extends Activity {
 			finish();
 			return;
 		}
-
-		characterList = new ArrayList<Character>();
 		initAdapter();
 	}
 
 	private void initAdapter() {
+		characterList = new ArrayList<CharacterViewModel>();
+		for (final Character c : army.getAutoCharacters()) {
+			characterList.add(new CharacterViewModel(c, false, showSummaries));
+		}
+		for (final Character c : army.getCharacters()) {
+			characterList.add(new CharacterViewModel(c, true, showSummaries));
+		}
+
 		adapter = new CharacterListAdapter(this, characterList);
-		adapter.setOnImageRequestListener(new ItemClickedListener<Character>() {
+		adapter.setOnImageRequestListener(new ItemClickedListener<CharacterViewModel>() {
 
 			@Override
-			public void onItemClicked(final Character item) {
+			public void onItemClicked(final CharacterViewModel item) {
 				selectImage(item);
 			}
 		});
-		adapter.onOptionRequestListener(new ItemClickedListener<Character>() {
+		adapter.setOptionRequestListener(new ItemClickedListener<CharacterViewModel>() {
 			@Override
-			public void onItemClicked(final Character character) {
+			public void onItemClicked(final CharacterViewModel character) {
 				showOptionPicker(character);
+			}
+		});
+		adapter.setOnDeleteHandler(new DeleteHandler<CharacterViewModel>() {
+
+			@Override
+			public void onDelete(final CharacterViewModel item) {
+				army.getCharacters().remove(item.getCharacter());
+				initAdapter();
 			}
 		});
 		characters.setAdapter(adapter);
 	}
 
-	private void showOptionPicker(final Character character) {
+	private void showOptionPicker(final CharacterViewModel character) {
 		optionPicker.setAbortHandler(new ItemClickedListener<CharacterOption>() {
 
 			@Override
@@ -104,7 +125,7 @@ public class CharacterActivity extends Activity {
 			@Override
 			public void onItemClicked(final CharacterOption option) {
 				optionDialog.setVisibility(View.GONE);
-				character.addOption(option);
+				character.getCharacter().addOption(option);
 				adapter.notifyDataChanged(character);
 			}
 		});
@@ -120,8 +141,14 @@ public class CharacterActivity extends Activity {
 	@OptionsItem(R.id.action_add)
 	protected void addNewCharacter() {
 		final Character character = new Character();
-		adapter.add(character);
-		adapter.notifyDataSetChanged();
+		army.getCharacters().add(character);
+		initAdapter();
+	}
+
+	@OptionsItem(R.id.action_show_summary)
+	protected void onShowHideSummary() {
+		showSummaries = !showSummaries;
+		initAdapter();
 	}
 
 	@Override
@@ -130,11 +157,9 @@ public class CharacterActivity extends Activity {
 			final Bundle extras = data != null ? data.getExtras() : null;
 			Bitmap bmp = null;
 
-			final Character c = characterList.get(0);
-
 			Uri uri = data != null ? data.getData() : null;
 			if (uri != null) {
-				loadImage(uri, c);
+				loadImage(uri, imagePickerViewModel);
 				return;
 			}
 
@@ -145,7 +170,7 @@ public class CharacterActivity extends Activity {
 			if (bmp == null) {
 				uri = resultFile != null ? Uri.fromFile(resultFile) : null;
 				if (uri != null && new File(uri.getPath()).exists()) {
-					loadImage(uri, c);
+					loadImage(uri, imagePickerViewModel);
 					return;
 				}
 			}
@@ -153,23 +178,26 @@ public class CharacterActivity extends Activity {
 	}
 
 	@UiThread
-	protected void finishImageLoading(final Character character) {
+	protected void finishImageLoading(final CharacterViewModel character) {
 		adapter.notifyDataChanged(character);
+		FileUtil.storeArmy(army, this);
 	}
 
 	@Background
-	protected void loadImage(final Uri uri, final Character character) {
+	protected void loadImage(final Uri uri, final CharacterViewModel character) {
 		Bitmap img = ImageUtil.decodeUri(this, uri, 100, 100);
 		Uri result = null;
 		if (img != null) {
 			img = ImageUtil.toRect(img);
-			result = ImageUtil.saveBitmap(this, "char_" + character.getId() + "_.jpg", img);
+			result = ImageUtil.saveBitmap(this,
+				"char_" + character.getCharacter().getId() + "_" + System.currentTimeMillis() + "_.jpg", img);
 		}
-		character.setImageUri(result);
+		character.getCharacter().setImageUri(result);
 		finishImageLoading(character);
 	}
 
-	private void selectImage(final Character character) {
+	private void selectImage(final CharacterViewModel viewModel) {
+		imagePickerViewModel = viewModel;
 		resultFile = null;
 		resultFile = createImageFile();
 		if (resultFile == null) {
@@ -179,8 +207,7 @@ public class CharacterActivity extends Activity {
 			resultFile.delete();
 		}
 		final Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, resultFile.getAbsolutePath());
-		captureIntent.putExtra("CHARACTER_ID", character.getId());
+		captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(resultFile));
 		startActivityForResult(captureIntent, IMAGE_CAPTURE_CODE);
 	}
 

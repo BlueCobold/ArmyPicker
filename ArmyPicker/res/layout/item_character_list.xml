@@ -25,7 +25,6 @@
 		android:text="title"
 		android:textColor="#A0FFFFFF"
 		android:textSize="20sp">
-		<requestFocus />
 	</EditText>
 
 	<LinearLayout
@@ -50,4 +49,13 @@
 		android:layout_marginBottom="5dp"
 		android:src="@drawable/ic_action_new" />
 
+	<ImageView
+		android:id="@+id/character_item_remove"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/character_item_properties"
+		android:layout_alignParentRight="true"
+		android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+		android:src="@drawable/ic_action_discard" />
 </RelativeLayout>

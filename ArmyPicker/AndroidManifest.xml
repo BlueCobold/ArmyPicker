@@ -21,7 +21,7 @@
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:label="@string/app_name"
 			android:launchMode="standard"
-			android:windowSoftInputMode="stateHidden" >
+			android:windowSoftInputMode="stateHidden|adjustPan" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +30,13 @@
 		</activity>
 		<activity
 			android:name="de.game_coding.armypicker.ArmyActivity_"
-			android:label="@string/title_activity_army" >
+			android:label="@string/title_activity_army"
+			android:windowSoftInputMode="stateHidden|adjustPan" >
 		</activity>
 		<activity
 			android:name="de.game_coding.armypicker.CharacterActivity_"
-			android:label="@string/title_activity_characters" >
+			android:label="@string/title_activity_characters"
+			android:windowSoftInputMode="stateHidden|adjustPan" >
 		</activity>
 	</application>
 

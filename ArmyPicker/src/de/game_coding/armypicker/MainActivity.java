@@ -16,7 +16,6 @@ import org.androidannotations.annotations.ViewById;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -176,7 +175,6 @@ public class MainActivity extends Activity {
 
 	@ItemClick(R.id.army_selection)
 	protected void switchToArmy(final Army army) {
-		Log.d(TAG, "Clicked on item " + army.getName());
 		editedArmyIndex = armies.indexOf(army);
 		ArmyActivity_.intent(this).extra(ArmyActivity.EXTRA_ARMY, army).startForResult(EDIT_ARMY);
 	}

@@ -2,12 +2,14 @@ package de.game_coding.armypicker.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import de.game_coding.armypicker.model.creators.UnitCreator;
-import de.game_coding.armypicker.model.creators.UnitOptionGroupCreator;
 import android.os.Parcel;
 import android.os.Parcelable;
+import de.game_coding.armypicker.model.creators.UnitCreator;
+import de.game_coding.armypicker.model.creators.UnitOptionGroupCreator;
 
 public class Unit extends Model {
 
@@ -23,6 +25,8 @@ public class Unit extends Model {
 	private List<UnitOptionGroup> options = new ArrayList<UnitOptionGroup>();
 	private final List<Integer> statsReferences = new ArrayList<Integer>();
 	private final List<Integer> weaponReferences = new ArrayList<Integer>();
+	private List<CharacterOption> suppliedOptions = new ArrayList<CharacterOption>();
+	private boolean isCharacter = false;
 
 	public Unit(final String name, final UnitType type, final int points, final int amount, final int maxAmount,
 		final UnitOptionGroup... options) {
@@ -125,6 +129,11 @@ public class Unit extends Model {
 		return this;
 	}
 
+	public Unit withCharacterOption(final CharacterOption option) {
+		suppliedOptions.add(option);
+		return this;
+	}
+
 	public List<Integer> getWeaponReferences() {
 		return weaponReferences;
 	}
@@ -136,6 +145,15 @@ public class Unit extends Model {
 	public Unit withSubtitle(final String subtitle) {
 		this.subtitle = subtitle;
 		return this;
+	}
+
+	public Unit asCharacter(final boolean value) {
+		isCharacter = value;
+		return this;
+	}
+
+	public boolean isCharacter() {
+		return isCharacter;
 	}
 
 	public int getTotalCosts() {
@@ -175,6 +193,8 @@ public class Unit extends Model {
 		for (final Integer i : weaponReferences) {
 			dest.writeInt(i);
 		}
+		writeList(dest, suppliedOptions);
+		dest.writeInt(isCharacter ? 1 : 0);
 	}
 
 	@Override
@@ -209,6 +229,8 @@ public class Unit extends Model {
 		for (int i = 0; i < refCount; i++) {
 			weaponReferences.add(source.readInt());
 		}
+		suppliedOptions = readList(source, CharacterOption.CREATOR);
+		isCharacter = source.readInt() > 0;
 	}
 
 	@Override
@@ -225,6 +247,10 @@ public class Unit extends Model {
 			}
 		}
 		throw new IllegalArgumentException("No group with id=" + targetGroupId + " defined");
+	}
+
+	public Collection<CharacterOption> getSuppliedOptions() {
+		return Collections.unmodifiableCollection(suppliedOptions);
 	}
 
 	@Override
