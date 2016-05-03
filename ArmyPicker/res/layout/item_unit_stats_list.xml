@@ -24,4 +24,28 @@
 		android:layout_below="@id/list_item_name" >
 	</TableLayout>
 	
+	<LinearLayout
+		android:id="@+id/unit_list_item_gamerules_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:orientation="vertical"
+		android:divider="@drawable/navigation_list_separator"
+		android:dividerHeight="1dp"
+		android:layout_alignParentLeft="true"
+		android:layout_below="@+id/item_list_table" >
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/unit_list_item_rules_summary"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:textSize="14sp"
+		android:textColor="#70FFFFFF"
+		android:layout_below="@id/unit_list_item_gamerules_list"
+		android:paddingRight="10dp"
+		android:paddingLeft="30dp"
+		android:text="-, -,"
+		/>
 </RelativeLayout>

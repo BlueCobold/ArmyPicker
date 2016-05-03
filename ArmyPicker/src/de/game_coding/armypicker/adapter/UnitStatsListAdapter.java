@@ -9,20 +9,25 @@ import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.viewgroups.UnitStatsListItem;
 import de.game_coding.armypicker.viewgroups.UnitStatsListItem_;
+import de.game_coding.armypicker.viewmodel.UnitStatsSummaries;
 
 public class UnitStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, UnitStatsListItem> {
 
 	private final List<UnitStats> stats;
+	private final UnitStatsSummaries showStatsSummaries;
 
-	public UnitStatsListAdapter(final Context context, final UnitStats stats) {
+	public UnitStatsListAdapter(final Context context, final UnitStats stats, UnitStatsSummaries showStatsSummaries) {
 		super(context, stats.getEntries());
+		this.showStatsSummaries = showStatsSummaries;
 		this.stats = new ArrayList<UnitStats>();
 		this.stats.add(stats);
 	}
 
-	public UnitStatsListAdapter(final Context context, final List<UnitStats> stats) {
+	public UnitStatsListAdapter(final Context context, final List<UnitStats> stats,
+		UnitStatsSummaries showStatsSummaries) {
 		super(context, merge(stats));
 		this.stats = stats;
+		this.showStatsSummaries = showStatsSummaries;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class UnitStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, Unit
 	@Override
 	protected void fillView(final UnitStatsListItem view, final StatsEntry item, final int position,
 		final ViewGroup parent) {
-		view.bind(item, findByIndex(stats, position).getHeaders());
+		view.bind(item, findByIndex(stats, position).getHeaders(), showStatsSummaries);
 	}
 
 	private UnitStats findByIndex(final List<UnitStats> stats, final int position) {

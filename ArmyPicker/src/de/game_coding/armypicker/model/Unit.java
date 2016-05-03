@@ -15,6 +15,7 @@ public class Unit extends Model {
 
 	public static final Parcelable.Creator<Unit> CREATOR = new UnitCreator();
 
+	private int id;
 	private String name = "";
 	private UnitType type = UnitType.STANDARD;
 	private int points;
@@ -26,6 +27,7 @@ public class Unit extends Model {
 	private final List<Integer> statsReferences = new ArrayList<Integer>();
 	private final List<Integer> weaponReferences = new ArrayList<Integer>();
 	private List<CharacterOption> suppliedOptions = new ArrayList<CharacterOption>();
+
 	private boolean isCharacter = false;
 
 	public Unit(final String name, final UnitType type, final int points, final int amount, final int maxAmount,
@@ -156,6 +158,14 @@ public class Unit extends Model {
 		return isCharacter;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public int getTotalCosts() {
 		return amount * points + getTotalOptionCosts();
 	}
@@ -178,6 +188,7 @@ public class Unit extends Model {
 		super.writeToParcel(dest, flags);
 		dest.writeString(name);
 		dest.writeString(subtitle);
+		dest.writeInt(id);
 		dest.writeInt(points);
 		dest.writeInt(type.ordinal());
 		dest.writeInt(amount);
@@ -205,6 +216,7 @@ public class Unit extends Model {
 		}
 		name = source.readString();
 		subtitle = source.readString();
+		id = source.readInt();
 		points = source.readInt();
 		type = UnitType.values()[source.readInt()];
 		amount = source.readInt();

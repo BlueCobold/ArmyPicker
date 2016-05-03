@@ -85,6 +85,11 @@ public class Army extends Model {
 	}
 
 	public void addUnit(final Unit unit) {
+		int max = 0;
+		for (final Unit u : units) {
+			max = Math.max(max, u.getId());
+		}
+		unit.setId(max + 1);
 		units.add(unit);
 		if (unit.getSuppliedOptions().size() == 0 && !unit.isCharacter()) {
 			return;

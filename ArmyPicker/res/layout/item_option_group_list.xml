@@ -10,9 +10,9 @@
 		android:layout_height="wrap_content"
 		android:gravity="center_horizontal"
 		android:textColor="#A0FFFFFF"
+		android:textSize="16sp"
 		android:paddingTop="3pt"
 		android:paddingBottom="3pt"
-		android:textSize="16sp"
 		android:background="#0AFFFFFF"
 		/>
 

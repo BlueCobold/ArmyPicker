@@ -15,12 +15,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.adapter.OptionGroupListAdapter;
+import de.game_coding.armypicker.adapter.UnitGameRuleListAdapter;
 import de.game_coding.armypicker.listener.DeleteHandler;
+import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitOption;
 import de.game_coding.armypicker.model.UnitOptionGroup;
+import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.util.UIUtil;
+import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.viewmodel.UnitSummaries;
 
 @EViewGroup(R.layout.item_unit_list)
 public class UnitListItem extends RelativeLayout {
@@ -46,6 +51,12 @@ public class UnitListItem extends RelativeLayout {
 	@ViewById(R.id.unit_options_summary)
 	protected TextView summary;
 
+	@ViewById(R.id.unit_rules_summary)
+	protected TextView rulesSummary;
+
+	@ViewById(R.id.unit_gamerules_list)
+	protected LinearLayout ruleList;
+
 	@ViewById(R.id.unit_type_header)
 	protected TextView type;
 
@@ -57,18 +68,21 @@ public class UnitListItem extends RelativeLayout {
 
 	private Unit unit;
 
+	private UnitStats stats;
+
 	private DeleteHandler<Unit> deleteHandler;
 
 	private IValueChangedNotifier notifier;
 
-	private boolean showSummaries;
+	private UnitSummaries showSummaries = UnitSummaries.NONE;
 
 	public UnitListItem(final Context context) {
 		super(context);
 	}
 
-	public void bind(final Unit item, final boolean showSummaries) {
+	public void bind(final Unit item, final UnitStats stats, final UnitSummaries showSummaries) {
 		unit = item;
+		this.stats = stats;
 		this.showSummaries = showSummaries;
 
 		title.setText(unit.getName());
@@ -85,18 +99,34 @@ public class UnitListItem extends RelativeLayout {
 		UIUtil.show(amount, unit.getMaxAmount() > 1);
 
 		final OptionGroupListAdapter adapter = newAdapter(new ArrayList<UnitOptionGroup>());
-		buildEntries(adapter);
+		buildGroupEntries(adapter);
 
 		optionPoints.setText(String.valueOf(unit.getTotalOptionCosts()));
 		optionPoints.setVisibility(View.GONE);
 
 		final String selectedOptions = getSelectedOptions();
 
-		if (showSummaries && !selectedOptions.isEmpty()) {
-			summary.setVisibility(View.VISIBLE);
+		if (showSummaries != UnitSummaries.NONE && !selectedOptions.isEmpty()) {
 			summary.setText(selectedOptions);
+			summary.setVisibility(View.VISIBLE);
 		} else {
 			summary.setVisibility(View.GONE);
+		}
+
+		final List<GameRule> rules = stats.getGameRules();
+		if (showSummaries == UnitSummaries.ALL_SUMMARIES && !rules.isEmpty()) {
+			rulesSummary.setText(UnitUtils.getRulesSummaries(rules));
+			rulesSummary.setVisibility(View.VISIBLE);
+		} else {
+			rulesSummary.setVisibility(View.GONE);
+		}
+
+		if (showSummaries == UnitSummaries.ALL_DETAILS && !rules.isEmpty()) {
+			final UnitGameRuleListAdapter ruleAdapter = new UnitGameRuleListAdapter(getContext(), rules);
+			buildRuleEntries(ruleAdapter);
+			ruleList.setVisibility(View.VISIBLE);
+		} else {
+			ruleList.setVisibility(View.GONE);
 		}
 
 		UIUtil.show(add, unit.getAmount() < unit.getMaxAmount());
@@ -149,27 +179,45 @@ public class UnitListItem extends RelativeLayout {
 
 	private void openCloseOptions() {
 		if (options.getChildCount() == 0) {
-			buildEntries(newAdapter(unit.getOptions()));
+			buildGroupEntries(newAdapter(unit.getOptions()));
 			summary.setVisibility(View.GONE);
+			ruleList.setVisibility(View.GONE);
 			if ((unit.getOptions().size() > 0 && unit.getOptions().get(0).getOptions().size() > 1)
 				|| unit.getOptions().size() > 1) {
 				optionPoints.setVisibility(View.VISIBLE);
 			}
 		} else {
 			final String selectedOptions = getSelectedOptions();
-			if (showSummaries && !selectedOptions.isEmpty()) {
+			if (showSummaries != UnitSummaries.NONE && !selectedOptions.isEmpty()) {
 				summary.setVisibility(View.VISIBLE);
 				summary.setText(selectedOptions);
 			}
-			buildEntries(newAdapter(new ArrayList<UnitOptionGroup>()));
+			final List<GameRule> rules = stats.getGameRules();
+			if (showSummaries == UnitSummaries.ALL_SUMMARIES && !rules.isEmpty()) {
+				rulesSummary.setText(UnitUtils.getRulesSummaries(rules));
+				rulesSummary.setVisibility(View.VISIBLE);
+			} else {
+				rulesSummary.setVisibility(View.GONE);
+			}
+			if (showSummaries == UnitSummaries.ALL_DETAILS && !rules.isEmpty()) {
+				ruleList.setVisibility(View.VISIBLE);
+			}
+			buildGroupEntries(newAdapter(new ArrayList<UnitOptionGroup>()));
 			optionPoints.setVisibility(View.GONE);
 		}
 	}
 
-	private void buildEntries(final BaseAdapter adapter) {
+	private void buildGroupEntries(final BaseAdapter adapter) {
 		options.removeAllViews();
 		for (int i = 0; i < adapter.getCount(); i++) {
 			options.addView(adapter.getView(i, null, this));
+		}
+	}
+
+	private void buildRuleEntries(final BaseAdapter adapter) {
+		ruleList.removeAllViews();
+		for (int i = 0; i < adapter.getCount(); i++) {
+			ruleList.addView(adapter.getView(i, null, this));
 		}
 	}
 
@@ -195,7 +243,7 @@ public class UnitListItem extends RelativeLayout {
 		amount.setText("[" + unit.getAmount() + "]");
 		UIUtil.show(amount, unit.getMaxAmount() > 1);
 		if (options.getChildCount() > 0) {
-			buildEntries(newAdapter(unit.getOptions()));
+			buildGroupEntries(newAdapter(unit.getOptions()));
 		}
 		if (notifier != null) {
 			notifier.onValueChanged();

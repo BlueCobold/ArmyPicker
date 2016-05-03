@@ -36,6 +36,9 @@ import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
+import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.viewmodel.UnitStatsSummaries;
+import de.game_coding.armypicker.viewmodel.UnitSummaries;
 
 @EActivity(R.layout.activity_army)
 @OptionsMenu(R.menu.army_activity_menu)
@@ -90,9 +93,13 @@ public class ArmyActivity extends Activity {
 
 	private boolean showTypes;
 
-	private boolean showSummaries;
+	private UnitSummaries showSummaries = UnitSummaries.NONE;
+
+	private UnitStatsSummaries showStatsSummaries = UnitStatsSummaries.NONE;
 
 	private List<UnitStats> stats;
+
+	private Unit shownStatsUnit;
 
 	@AfterViews
 	protected void init() {
@@ -109,7 +116,7 @@ public class ArmyActivity extends Activity {
 
 		stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
 		sortStatsByName(stats);
-		statsList.setAdapter(new UnitStatsListAdapter(this, stats));
+		statsList.setAdapter(new UnitStatsListAdapter(this, stats, showStatsSummaries));
 
 		final UnitStats weapons = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
 		sortStatsByName(weapons);
@@ -204,14 +211,14 @@ public class ArmyActivity extends Activity {
 	private void restoreSettings() {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		showTypes = settings.getBoolean(SETTING_SHOW_TYPES, false);
-		showSummaries = settings.getBoolean(SETTING_SHOW_SUMMARIES, false);
+		showSummaries = UnitSummaries.values()[settings.getInt(SETTING_SHOW_SUMMARIES, 0)];
 	}
 
 	private void storeSettings() {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		final Editor editor = settings.edit();
 		editor.putBoolean(SETTING_SHOW_TYPES, showTypes);
-		editor.putBoolean(SETTING_SHOW_SUMMARIES, showSummaries);
+		editor.putInt(SETTING_SHOW_SUMMARIES, showSummaries.ordinal());
 		editor.apply();
 	}
 
@@ -248,14 +255,16 @@ public class ArmyActivity extends Activity {
 
 	@ItemClick({ R.id.army_specific_unit_stats_list, R.id.army_specific_weapon_stats_inline_list })
 	protected void hideStatsView() {
+		shownStatsUnit = null;
 		statsView.setVisibility(View.GONE);
 	}
 
 	@ItemLongClick(R.id.army_available_unit_selection)
 	protected void showStatsWindow(final Unit unit) {
+		shownStatsUnit = unit;
 		statsView.setVisibility(View.VISIBLE);
-		final UnitStats stats = getStats(unit.getStatsReferences(), army.getStats());
-		specificStatsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats));
+		final UnitStats stats = UnitUtils.getStats(unit.getStatsReferences(), army.getStats());
+		specificStatsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats, showStatsSummaries));
 		if (stats.getEntries().size() > 1) {
 			specificInlineWeaponList.setVisibility(View.GONE);
 		} else {
@@ -276,8 +285,8 @@ public class ArmyActivity extends Activity {
 	@ItemLongClick({ R.id.army_unit_stats_list, R.id.army_specific_unit_stats_list })
 	protected void showGearWindow(final StatsEntry statsEntry) {
 		specificGearView.setVisibility(View.VISIBLE);
-		specificWeaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getGear(army.getWeapons(),
-			statsEntry)));
+		specificWeaponList
+			.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getGear(army.getWeapons(), statsEntry)));
 	}
 
 	private UnitStats getGear(final UnitStats lookupList, final StatsEntry... statsEntries) {
@@ -291,25 +300,6 @@ public class ArmyActivity extends Activity {
 			}
 		}
 		return result;
-	}
-
-	private static UnitStats getStats(final List<Integer> references, final List<UnitStats> list) {
-		UnitStats result = null;
-		for (final UnitStats statsType : list) {
-			for (final Integer id : references) {
-				final StatsEntry stats = statsType.find(id);
-				if (stats != null) {
-					if (result == null) {
-						result = new UnitStats(statsType.getHeaders());
-					}
-					result.appendEntry(stats);
-				}
-			}
-			if (result != null) {
-				return result;
-			}
-		}
-		return new UnitStats();
 	}
 
 	private static void sortStatsByName(final List<UnitStats> stats) {
@@ -348,7 +338,13 @@ public class ArmyActivity extends Activity {
 
 	@OptionsItem(R.id.action_show_summary)
 	protected void showHideSummaries() {
-		showSummaries = !showSummaries;
+		if (statsView.getVisibility() == View.VISIBLE && shownStatsUnit != null) {
+			showStatsSummaries = UnitStatsSummaries.values()[(showStatsSummaries.ordinal() + 1)
+				% UnitStatsSummaries.values().length];
+			showStatsWindow(shownStatsUnit);
+			return;
+		}
+		showSummaries = UnitSummaries.values()[(showSummaries.ordinal() + 1) % UnitSummaries.values().length];
 		showUnitList();
 		armyList.setAdapter(null);
 		armyList.setAdapter(newUnitAdapter());

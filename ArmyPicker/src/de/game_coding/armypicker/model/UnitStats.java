@@ -3,8 +3,8 @@ package de.game_coding.armypicker.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.game_coding.armypicker.model.creators.UnitStatsCreator;
 import android.os.Parcel;
+import de.game_coding.armypicker.model.creators.UnitStatsCreator;
 
 public class UnitStats extends Model {
 
@@ -16,6 +16,7 @@ public class UnitStats extends Model {
 		private final List<StatsEntry> secondaries = new ArrayList<StatsEntry>();
 		private final int id;
 		private final List<Integer> gearReferences = new ArrayList<Integer>();
+		private final List<GameRule> gameRules = new ArrayList<GameRule>();
 
 		public StatsEntry(final int id, final String name, final String... values) {
 			this.id = id;
@@ -52,6 +53,10 @@ public class UnitStats extends Model {
 
 		public List<Integer> getGearReferences() {
 			return gearReferences;
+		}
+
+		public List<GameRule> getGameRules() {
+			return gameRules;
 		}
 	}
 
@@ -112,6 +117,7 @@ public class UnitStats extends Model {
 			for (final Integer i : entry.gearReferences) {
 				dest.writeInt(i);
 			}
+			writeList(dest, entry.getGameRules());
 		}
 	}
 
@@ -141,6 +147,9 @@ public class UnitStats extends Model {
 			for (int j = 0; j < refCount; j++) {
 				entry.gearReferences.add(source.readInt());
 			}
+			entry.gameRules.clear();
+			final List<GameRule> rules = readList(source, GameRule.CREATOR);
+			entry.gameRules.addAll(rules);
 		}
 	}
 
@@ -172,6 +181,33 @@ public class UnitStats extends Model {
 			stats.getGearReferences().add(id);
 		}
 		return this;
+	}
+
+	public UnitStats withGameRule(GameRule rule) {
+		if (entries.isEmpty()) {
+			return this;
+		}
+		entries.get(entries.size() - 1).getGameRules().add(rule);
+		return this;
+	}
+
+	public UnitStats withGameRule(String title, String description) {
+		if (entries.isEmpty()) {
+			return this;
+		}
+		return withGameRule(new GameRule(title, description));
+	}
+
+	public List<GameRule> getGameRules() {
+		final ArrayList<GameRule> rules = new ArrayList<GameRule>();
+		for (final StatsEntry sub : entries) {
+			for (final GameRule rule : sub.getGameRules()) {
+				if (!rules.contains(rule)) {
+					rules.add(rule);
+				}
+			}
+		}
+		return rules;
 	}
 
 	@Override

@@ -9,18 +9,23 @@ import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.util.UnitUtils;
 import de.game_coding.armypicker.viewgroups.UnitListItem;
 import de.game_coding.armypicker.viewgroups.UnitListItem_;
+import de.game_coding.armypicker.viewmodel.UnitSummaries;
 
 public class UnitListAdapter extends BaseUnitAdapter<UnitListItem> {
 
 	private IValueChangedNotifier notifier;
 	private DeleteHandler<Unit> deleteHandler;
 	private final boolean showHeader;
-	private final boolean showSummaries;
+	private final UnitSummaries showSummaries;
+	private final Army army;
 
-	public UnitListAdapter(final Context context, final Army army, final boolean showHeader, final boolean showSummaries) {
+	public UnitListAdapter(final Context context, final Army army, final boolean showHeader,
+		final UnitSummaries showSummaries) {
 		super(context, army.getUnits().toArray(new Unit[army.getUnits().size()]));
+		this.army = army;
 		this.showHeader = showHeader;
 		this.showSummaries = showSummaries;
 	}
@@ -33,7 +38,7 @@ public class UnitListAdapter extends BaseUnitAdapter<UnitListItem> {
 	@Override
 	protected void fillView(final UnitListItem view, final Unit item, final int position, final ViewGroup parent) {
 
-		view.bind(item, showSummaries);
+		view.bind(item, UnitUtils.getStats(item.getStatsReferences(), army.getStats()), showSummaries);
 		view.setDeleteHandler(deleteHandler);
 		view.setNotifier(notifier);
 

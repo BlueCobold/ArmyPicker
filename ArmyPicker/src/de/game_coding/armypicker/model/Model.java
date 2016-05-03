@@ -25,14 +25,14 @@ public abstract class Model implements Parcelable {
 		return fileVersion;
 	}
 
-	protected void writeList(final Parcel dest, final List<? extends Parcelable> model) {
+	protected static void writeList(final Parcel dest, final List<? extends Parcelable> model) {
 		dest.writeInt(model.size());
 		for (final Parcelable m : model) {
 			m.writeToParcel(dest, 0);
 		}
 	}
 
-	protected <T extends Parcelable> List<T> readList(final Parcel source, final Parcelable.Creator<T> creator) {
+	protected static <T extends Parcelable> List<T> readList(final Parcel source, final Parcelable.Creator<T> creator) {
 		final int count = source.readInt();
 		final ArrayList<T> result = new ArrayList<T>();
 		for (int i = 0; i < count; i++) {
