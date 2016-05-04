@@ -39,6 +39,10 @@ public class Army extends Model {
 
 	private List<Unit> units = new ArrayList<Unit>();
 
+	private Battalion[] battalionTemplates = new Battalion[0];
+
+	private List<Battalion> battalions = new ArrayList<Battalion>();
+
 	private int id;
 
 	private List<UnitStats> stats = new ArrayList<UnitStats>();
@@ -100,6 +104,22 @@ public class Army extends Model {
 		autoCharacters.put(unit, character);
 	}
 
+	public void withBattalionTemplates(final Battalion[] templates) {
+		battalionTemplates = templates.clone();
+	}
+
+	public void addBattalion(final Battalion battalion) {
+		battalions.add(battalion);
+	}
+
+	public void removeBattalion(final Battalion battalion) {
+		battalions.remove(battalion);
+	}
+
+	public List<Battalion> getBattalions() {
+		return battalions;
+	}
+
 	public void removeUnit(final Unit unit) {
 		units.remove(unit);
 		autoCharacters.remove(unit);
@@ -155,9 +175,15 @@ public class Army extends Model {
 		unitTemplates = new Unit[size];
 		source.readTypedArray(unitTemplates, Unit.CREATOR);
 
+		final int bsize = source.readInt();
+		battalionTemplates = new Battalion[bsize];
+		source.readTypedArray(battalionTemplates, Battalion.CREATOR);
+
 		units = readList(source, Unit.CREATOR);
 		stats = readList(source, UnitStats.CREATOR);
 		weapons = new UnitStats(source);
+		battalions = readList(source, Battalion.CREATOR);
+
 		if (getFileVersion() >= FileVersions.CHARACTER_OPTIONS.getValue()) {
 			characters = readList(source, Character.CREATOR);
 			final int entries = source.readInt();

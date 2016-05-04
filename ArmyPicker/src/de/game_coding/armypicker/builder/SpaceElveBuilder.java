@@ -1,5 +1,6 @@
 package de.game_coding.armypicker.builder;
 
+import de.game_coding.armypicker.model.Battalion;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitStats;
 
@@ -11,7 +12,7 @@ public class SpaceElveBuilder implements IArmyTemplateBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.game_coding.armypicker.builder.UnitBuilder#getTemplates()
 	 */
 	@Override
@@ -21,7 +22,7 @@ public class SpaceElveBuilder implements IArmyTemplateBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.game_coding.armypicker.builder.UnitBuilder#getName()
 	 */
 	@Override
@@ -37,6 +38,11 @@ public class SpaceElveBuilder implements IArmyTemplateBuilder {
 	@Override
 	public UnitStats getWeapons() {
 		return new UnitStats();
+	}
+
+	@Override
+	public Battalion[] getBattalions() {
+		return new Battalion[0];
 	}
 
 	@Override

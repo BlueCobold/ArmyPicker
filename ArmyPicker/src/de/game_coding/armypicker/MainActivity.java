@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 		private Army build(final IArmyTemplateBuilder builder) {
 			return new Army(builder.getName(), builder.getTemplates(), builder.getVersion())//
 				.attachStats(builder.getStats())//
-				.attachWeapons(builder.getWeapons());
+				.attachWeapons(builder.getWeapons()).attachBattalions(builder.getBattalions());
 		}
 	};
 
