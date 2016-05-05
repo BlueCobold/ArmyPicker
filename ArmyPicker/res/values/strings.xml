@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-		<string name="app_name">ArmyPicker</string>
-	<string name="title_activity_army">ArmyActivity</string>
+	<string name="app_name">ArmyPicker</string>
+	<string name="title_activity_army">Armies</string>
 	<string name="new_item">new</string>
 	<string name="abort">Abort</string>
 	<string name="your_available_armies">Your armies:</string>
@@ -41,5 +41,13 @@
 	<string name="download">Download</string>
 	<string name="title_activity_characters">Characters</string>
 	<string name="pick_trait">Pick trait</string>
+	<string name="open_character_sheet">Open character sheet</string>
+	<string name="show_unit_stats">Show unit stats</string>
+	<string name="show_weapon_stats">Show weapon stats</string>
+	<string name="show_dice_calculator">Show dice calculator</string>
+	<string name="show_army_sheet">Show army sheet</string>
+	<string name="open_detachments">Open detachments</string>
+	<string name="available_choices">Available choices</string>
+	<string name="title_activity_battalions">Detachments</string>
 
 </resources>

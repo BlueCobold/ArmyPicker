@@ -76,7 +76,8 @@
 			android:background="@null"
 			android:padding="5dp"
 			android:scaleType="fitCenter"
-			android:src="@drawable/ic_action_view_as_list" />
+			android:src="@drawable/ic_action_view_as_list"
+			android:contentDescription="@string/show_army_sheet"/>
 		
 		<ImageButton
 			android:id="@+id/army_show_characters_lists"
@@ -85,7 +86,18 @@
 			android:background="@null"
 			android:padding="5dp"
 			android:scaleType="fitCenter"
-			android:src="@drawable/ic_action_view_as_list" />
+			android:src="@drawable/ic_crown"
+			android:contentDescription="@string/open_character_sheet"/>
+		
+		<ImageButton
+			android:id="@+id/army_show_detachments"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_skulls"
+			android:contentDescription="@string/open_detachments"/>
 		
 		<ImageButton
 			android:id="@+id/army_show_unit_stats"
@@ -94,7 +106,8 @@
 			android:background="@null"
 			android:padding="5dp"
 			android:scaleType="fitCenter"
-			android:src="@drawable/ic_power" />
+			android:src="@drawable/ic_power"
+			android:contentDescription="@string/show_unit_stats"/>
 		
 		<ImageButton
 			android:id="@+id/army_show_weapon_stats"
@@ -103,7 +116,8 @@
 			android:background="@null"
 			android:padding="5dp"
 			android:scaleType="fitCenter"
-			android:src="@drawable/ic_guns" />
+			android:src="@drawable/ic_guns"
+			android:contentDescription="@string/show_weapon_stats"/>
 		
 		<ImageButton
 			android:id="@+id/army_show_chance_calculator"
@@ -112,7 +126,8 @@
 			android:background="@null"
 			android:padding="5dp"
 			android:scaleType="fitCenter"
-			android:src="@drawable/ic_dice" />
+			android:src="@drawable/ic_dice"
+			android:contentDescription="@string/show_dice_calculator"/>
 	</LinearLayout>
 
 	<LinearLayout

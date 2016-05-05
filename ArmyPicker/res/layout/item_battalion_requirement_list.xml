@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@drawable/item_gradient" >
+
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:background="#00FFFFFF"
+		android:id="@+id/battalion_req_header">
+		<TextView
+			android:id="@+id/battalion_req_f_prefix"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="20sp"
+			android:paddingTop="10dp"
+			android:paddingBottom="10dp"
+			android:paddingLeft="10dp"
+			android:textColor="#A0FFFFFF"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentTop="true"
+			android:text="- [F]"/>
+
+		<TextView
+			android:id="@+id/battalion_req_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:textColor="#A0FFFFFF"
+			android:layout_toRightOf="@+id/battalion_req_f_prefix"
+			android:paddingBottom="10dp"
+			android:paddingLeft="5dp"
+			android:paddingTop="10dp"
+			android:text="name"
+			android:textSize="20sp" />
+		
+		<ImageButton
+			android:id="@+id/battalion_req_delete"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_action_discard" />
+
+		<ImageButton
+			android:id="@+id/battalion_req_add"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_toLeftOf="@+id/battalion_req_delete"
+			android:layout_centerVertical="true"
+			android:scaleType="fitCenter"
+			android:background="@null"
+			android:src="@drawable/ic_action_new" />
+
+		<TextView
+			android:id="@+id/battalion_req_count"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:textColor="#A0FFFFFF"
+			android:layout_toLeftOf="@+id/battalion_req_add"
+			android:paddingBottom="10dp"
+			android:paddingLeft="5dp"
+			android:paddingTop="10dp"
+			android:text="[1/3]"
+			android:textSize="20sp" />
+		
+	</RelativeLayout>
+
+	<TextView
+		android:id="@+id/battalion_req_description"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textColor="#70FFFFFF"
+		android:paddingRight="10dp"
+		android:paddingLeft="30dp"
+		android:textSize="14sp" />
+
+	<LinearLayout
+		android:id="@+id/battalion_req_rules"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical" />
+	
+	<LinearLayout 
+		android:id="@+id/battalion_req_unit_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#16000000"
+		android:orientation="vertical">
+	</LinearLayout>
+
+</LinearLayout>

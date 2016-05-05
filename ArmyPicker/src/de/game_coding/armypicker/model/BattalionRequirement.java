@@ -17,7 +17,7 @@ public class BattalionRequirement extends Model {
 
 		@Override
 		public BattalionRequirement createFromParcel(final Parcel source) {
-			return null;
+			return new BattalionRequirement(source);
 		}
 	};
 
@@ -29,17 +29,37 @@ public class BattalionRequirement extends Model {
 
 	private List<BattalionRequirement> requiredSubBattalions = new ArrayList<BattalionRequirement>();
 
-	private List<BattalionRequirement> assignedBattalions = new ArrayList<BattalionRequirement>();
+	private List<BattalionRequirement> assignedSubBattalions = new ArrayList<BattalionRequirement>();
 
-	private final List<String> requiredUnitNames = new ArrayList<String>();
+	private List<UnitRequirement> requiredUnits = new ArrayList<UnitRequirement>();
 
-	private List<Integer> assignedUnits = new ArrayList<Integer>();
+	private List<Unit> assignedUnits = new ArrayList<Unit>();
+
+	private BattalionChoice choice;
+
+	private boolean isMeta;
+
+	private String description;
+
+	private List<GameRule> rules = new ArrayList<GameRule>();
+
+	private Object tag;
 
 	public BattalionRequirement(final String name, final int minCount, final int maxCount) {
 		super();
 		this.name = name;
 		this.minCount = minCount;
 		this.maxCount = maxCount;
+		this.choice = BattalionChoice.X_OF;
+	}
+
+	public BattalionRequirement(final String name, final int minCount, final int maxCount,
+		final BattalionChoice choice) {
+		super();
+		this.name = name;
+		this.minCount = minCount;
+		this.maxCount = maxCount;
+		this.choice = choice;
 	}
 
 	public BattalionRequirement(final Parcel source) {
@@ -67,45 +87,100 @@ public class BattalionRequirement extends Model {
 		return this;
 	}
 
-	public List<String> getRequiredUnitNames() {
-		return requiredUnitNames;
+	public List<UnitRequirement> getRequiredUnits() {
+		return requiredUnits;
 	}
 
-	public BattalionRequirement addUnitName(final String name) {
-		requiredUnitNames.add(name);
+	public BattalionRequirement addUnit(final String name) {
+		return addUnit(name, 1, 1);
+	}
+
+	public BattalionRequirement addUnit(final String name, final int min, final int max) {
+		return addUnit(name, min, max, 0);
+	}
+
+	public BattalionRequirement addUnit(final String name, final int min, final int max, final int minModels) {
+		requiredUnits.add(new UnitRequirement(name, min, max, minModels));
 		return this;
 	}
 
-	public void assignBattalion(final BattalionRequirement battalion) {
+	public BattalionRequirement assignSubBattalion(final BattalionRequirement battalion) {
+		if (battalion == null || assignedSubBattalions.contains(battalion)) {
+			return this;
+		}
 		for (final BattalionRequirement req : requiredSubBattalions) {
-			if (req.name.equals(name)) {
-				assignedBattalions.add(battalion);
+			if (req.name.equals(battalion.name)) {
+				assignedSubBattalions.add(battalion);
 			}
 		}
+		return this;
 	}
 
-	public void removeBattalion(final BattalionRequirement battalion) {
-		assignedBattalions.remove(battalion);
+	public void removeSubBattalion(final BattalionRequirement battalion) {
+		assignedSubBattalions.remove(battalion);
 	}
 
-	public Collection<BattalionRequirement> getAssignedBattalions() {
-		return assignedBattalions;
+	public Collection<BattalionRequirement> getAssignedSubBattalions() {
+		return assignedSubBattalions;
 	}
 
 	public void assignUnit(final Unit unit) {
-		for (final String req : requiredUnitNames) {
-			if (req.equals(unit.getName())) {
-				assignedUnits.add(unit.getId());
+		for (final UnitRequirement req : requiredUnits) {
+			if (req.getUnitName().equals(unit.getName())) {
+				assignedUnits.add(unit);
 			}
 		}
 	}
 
-	public void removeBattalion(final Unit unit) {
-		assignedUnits.remove(unit.getId());
+	public void removeUnit(final Unit unit) {
+		assignedUnits.remove(unit);
 	}
 
-	public Collection<Integer> getAssignedUnits() {
+	public Collection<Unit> getAssignedUnits() {
 		return assignedUnits;
+	}
+
+	public BattalionRequirement markAsMeta() {
+		isMeta = true;
+		return this;
+	}
+
+	public boolean isMeta() {
+		return isMeta;
+	}
+
+	public BattalionChoice getChoice() {
+		return choice;
+	}
+
+	public Object getTag() {
+		return tag;
+	}
+
+	public void setTag(final Object tag) {
+		this.tag = tag;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public BattalionRequirement withDescription(final String description) {
+		this.description = description;
+		return this;
+	}
+
+	public BattalionRequirement withRule(final String title, final String description) {
+		return withRule(new GameRule(title, description));
+	}
+
+	public BattalionRequirement withRule(final GameRule rule) {
+		rules.add(rule);
+		return this;
+	}
+
+	public Collection<GameRule> getRules() {
+		return rules;
 	}
 
 	@Override
@@ -115,10 +190,14 @@ public class BattalionRequirement extends Model {
 		minCount = source.readInt();
 		maxCount = source.readInt();
 		requiredSubBattalions = readList(source, CREATOR);
-		requiredUnitNames.clear();
-		source.readStringList(requiredUnitNames);
-		assignedBattalions = readList(source, CREATOR);
-		assignedUnits = source.readArrayList(Integer.class.getClassLoader());
+		requiredUnits = readList(source, UnitRequirement.CREATOR);
+		assignedSubBattalions = readList(source, CREATOR);
+		assignedUnits = readList(source, Unit.CREATOR);
+		// assignedUnits = source.readArrayList(Integer.class.getClassLoader());
+		choice = BattalionChoice.values()[source.readInt()];
+		isMeta = source.readInt() == 1;
+		description = source.readString();
+		rules = readList(source, GameRule.CREATOR);
 	}
 
 	@Override
@@ -131,9 +210,14 @@ public class BattalionRequirement extends Model {
 		dest.writeInt(minCount);
 		dest.writeInt(maxCount);
 		writeList(dest, requiredSubBattalions);
-		dest.writeStringList(requiredUnitNames);
-		writeList(dest, assignedBattalions);
-		dest.writeList(assignedUnits);
+		writeList(dest, requiredUnits);
+		writeList(dest, assignedSubBattalions);
+		writeList(dest, assignedUnits);
+		// dest.writeList(assignedUnits);
+		dest.writeInt(choice.ordinal());
+		dest.writeInt(isMeta ? 1 : 0);
+		dest.writeString(description != null ? description : "");
+		writeList(dest, rules);
 	}
 
 	@Override
@@ -144,5 +228,25 @@ public class BattalionRequirement extends Model {
 	@Override
 	protected int getFeatureVersion() {
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder description = new StringBuilder(name).append(" [");
+		for (final BattalionRequirement sub : assignedSubBattalions) {
+			description.append(sub.getName()).append(", ");
+		}
+		return description.append("]").toString();
+	}
+
+	public int getUnitCosts() {
+		int total = 0;
+		for (final BattalionRequirement sub : getAssignedSubBattalions()) {
+			total += sub.getUnitCosts();
+		}
+		for (final Unit unit : getAssignedUnits()) {
+			total += unit.getTotalCosts();
+		}
+		return total;
 	}
 }

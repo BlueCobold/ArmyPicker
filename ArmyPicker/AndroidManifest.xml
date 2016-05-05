@@ -30,12 +30,20 @@
 		</activity>
 		<activity
 			android:name="de.game_coding.armypicker.ArmyActivity_"
+			android:icon="@drawable/ic_action_view_as_list"
 			android:label="@string/title_activity_army"
 			android:windowSoftInputMode="stateHidden|adjustPan" >
 		</activity>
 		<activity
 			android:name="de.game_coding.armypicker.CharacterActivity_"
+			android:icon="@drawable/ic_crown"
 			android:label="@string/title_activity_characters"
+			android:windowSoftInputMode="stateHidden|adjustPan" >
+		</activity>
+		<activity
+			android:name="de.game_coding.armypicker.BattalionActivity_"
+			android:icon="@drawable/ic_skulls"
+			android:label="@string/title_activity_battalions"
 			android:windowSoftInputMode="stateHidden|adjustPan" >
 		</activity>
 	</application>

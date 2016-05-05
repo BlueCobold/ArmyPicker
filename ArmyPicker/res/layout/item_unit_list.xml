@@ -103,7 +103,7 @@
 		android:layout_height="wrap_content"
 		android:clickable="true"
 		android:orientation="vertical"
-		android:background="#20000050"
+		android:background="#20000000"
 		android:divider="@drawable/navigation_list_separator"
 		android:dividerHeight="1dp"
 		android:layout_alignParentLeft="true"
@@ -161,7 +161,7 @@
 		android:minWidth="50dp"
 		android:paddingLeft="10dp"
 		android:text="100"
-		android:background="#30000050"
+		android:background="#30000000"
 		android:textColor="#A0FFFFFF"
 		/>
 

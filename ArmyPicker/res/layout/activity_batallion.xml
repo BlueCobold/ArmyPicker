@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/army_list_gradient"
+	tools:context="${relativePackage}.${activityClass}" >
+	
+	<ListView
+		android:id="@+id/battalions_list"
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent"
+		android:choiceMode="singleChoice"
+		android:divider="@drawable/navigation_list_separator"
+		android:layout_above="@+id/battalions_button_area"
+		android:dividerHeight="1dp">
+	</ListView>
+
+	<LinearLayout 
+		android:id="@+id/battalions_button_area"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<ImageButton
+			android:id="@+id/battalions_show_chance_calculator"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@null"
+			android:padding="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_dice"
+			android:contentDescription="@string/show_dice_calculator"/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/battalion_available_choices_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="fill_parent"
+			android:background="@drawable/army_list_gradient"
+			android:orientation="vertical"
+			android:layout_margin="20dp">
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#A0FFFFFF"
+				android:textSize="20sp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="10dp"
+				android:text="@string/available_choices"
+				/>
+			
+			<ListView
+				android:id="@+id/battalion_available_selection"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:choiceMode="singleChoice"
+				android:background="@drawable/army_list_gradient"
+				android:divider="@drawable/navigation_list_separator"
+				android:dividerHeight="1dp" >
+			</ListView>
+
+			<Button
+				android:id="@+id/battalion_select_abort"
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:background="@null"
+				android:textColor="#FFFFFFFF"
+				android:text="@string/abort" />
+
+		</LinearLayout>
+	</LinearLayout>
+	
+	<LinearLayout
+		android:id="@+id/battalion_available_sub_choices_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="fill_parent"
+			android:background="@drawable/army_list_gradient"
+			android:orientation="vertical"
+			android:layout_margin="20dp">
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#A0FFFFFF"
+				android:textSize="20sp"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="10dp"
+				android:text="@string/available_choices"
+				/>
+
+			<ListView
+				android:id="@+id/battalion_available_sub_selection"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:choiceMode="singleChoice"
+				android:background="@drawable/army_list_gradient"
+				android:divider="@drawable/navigation_list_separator"
+				android:dividerHeight="1dp" >
+			</ListView>
+
+			<Button
+				android:id="@+id/battalion_sub_select_abort"
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:background="@null"
+				android:textColor="#FFFFFFFF"
+				android:text="@string/abort" />
+
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/battalion_unit_edit_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >	
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="fill_parent"
+			android:background="@drawable/army_list_gradient"
+			android:orientation="vertical"
+			android:layout_marginTop="20dp"
+			android:layout_marginBottom="20dp">
+
+			<RelativeLayout 
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<TextView
+					android:id="@+id/battalion_points"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#A0FFFFFF"
+					android:textSize="20sp"
+					android:layout_alignParentRight="true"
+					android:paddingTop="10dp"
+					android:paddingBottom="10dp"
+					android:paddingLeft="10dp"
+					android:paddingRight="35dp"
+					android:text="1000"
+					/>
+			</RelativeLayout>
+
+			<ListView
+				android:id="@+id/battalion_unit_edit_list"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:choiceMode="singleChoice"
+				android:divider="@drawable/navigation_list_separator"
+				android:dividerHeight="1dp" >
+			</ListView>
+
+			<Button
+				android:id="@+id/battalion_unit_edit_abort"
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:background="@null"
+				android:textColor="#FFFFFFFF"
+				android:text="@string/abort" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<RelativeLayout
+		android:id="@+id/chance_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#80000000"
+		android:orientation="vertical"
+		android:visibility="gone" >
+		<de.game_coding.armypicker.viewgroups.ChanceCalculator_
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/chance_view"
+			android:layout_margin="20dp"
+		/>
+	</RelativeLayout>
+</RelativeLayout>

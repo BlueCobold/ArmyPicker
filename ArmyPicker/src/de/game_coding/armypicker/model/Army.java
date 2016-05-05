@@ -108,6 +108,10 @@ public class Army extends Model {
 		battalionTemplates = templates.clone();
 	}
 
+	public Battalion[] getBattalionTemplates() {
+		return battalionTemplates;
+	}
+
 	public void addBattalion(final Battalion battalion) {
 		battalions.add(battalion);
 	}
@@ -149,9 +153,14 @@ public class Army extends Model {
 		dest.writeInt(unitTemplates.length);
 		dest.writeTypedArray(unitTemplates, flags);
 
+		dest.writeInt(battalionTemplates.length);
+		dest.writeTypedArray(battalionTemplates, flags);
+
 		writeList(dest, units);
 		writeList(dest, stats);
 		weapons.writeToParcel(dest, flags);
+		writeList(dest, battalions);
+
 		writeList(dest, characters);
 		dest.writeInt(autoCharacters.size());
 		for (final Entry<Unit, Character> entry : autoCharacters.entrySet()) {
@@ -204,6 +213,9 @@ public class Army extends Model {
 		for (final Unit unit : units) {
 			total += unit.getTotalCosts();
 		}
+		for (final Battalion bat : battalions) {
+			total += bat.getUnitCosts();
+		}
 		return total;
 	}
 
@@ -251,6 +263,11 @@ public class Army extends Model {
 
 	public Collection<Character> getCharacters() {
 		return characters;
+	}
+
+	public Army attachBattalions(final Battalion[] battalions) {
+		battalionTemplates = battalions;
+		return this;
 	}
 
 	public Collection<Character> getAutoCharacters() {

@@ -24,6 +24,14 @@
         module="armypicker">
 	</info>
     <dependencies>
+        <dependency
+            name="android-test" org="com.google.android" rev="4.1.1.4">
+            <exclude name='xmlParserAPIs' />
+            <exclude name='android' />
+            <exclude name='xpp3' />
+            <exclude name='xerces' />
+        </dependency>
+        <dependency name="junit" org="junit" rev="4.12" />
     	<dependency 
             name="androidannotations-api"
             org="org.androidannotations"

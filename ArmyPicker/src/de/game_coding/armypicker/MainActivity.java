@@ -58,9 +58,10 @@ public class MainActivity extends Activity {
 		}
 
 		private Army build(final IArmyTemplateBuilder builder) {
-			return new Army(builder.getName(), builder.getTemplates(), builder.getVersion())//
-				.attachStats(builder.getStats())//
-				.attachWeapons(builder.getWeapons()).attachBattalions(builder.getBattalions());
+			return new Army(builder.getName(), builder.getTemplates(), builder.getVersion()) //
+				.attachStats(builder.getStats()) //
+				.attachWeapons(builder.getWeapons()) //
+				.attachBattalions(builder.getBattalions());
 		}
 	};
 
@@ -222,6 +223,15 @@ public class MainActivity extends Activity {
 				armies.add(editedArmyIndex, army);
 				armyListView.setAdapter(newArmyAdapter(armyListView));
 			}
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (chanceView.getVisibility() == View.VISIBLE) {
+			onHideChanceView();
+		} else {
+			super.onBackPressed();
 		}
 	}
 

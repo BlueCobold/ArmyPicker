@@ -50,6 +50,8 @@ public class ArmyActivity extends Activity {
 
 	public static final String EXTRA_ARMY = "ArmyActivity.EXTRA_ARMY";
 
+	private static final int EDIT_ARMY = 10;
+
 	private Army army;
 
 	@ViewById(R.id.army_available_units_view)
@@ -86,7 +88,7 @@ public class ArmyActivity extends Activity {
 	protected View chanceView;
 
 	@ViewById(R.id.army_specific_unit_stats_view)
-	protected View statsView;
+	protected View specificStatsView;
 
 	@ViewById(R.id.army_specific_unit_gear_view)
 	protected View specificGearView;
@@ -208,6 +210,11 @@ public class ArmyActivity extends Activity {
 		weaponList.setVisibility(View.VISIBLE);
 	}
 
+	@Click(R.id.army_show_detachments)
+	protected void startBattalionSelection() {
+		BattalionActivity_.intent(this).extra(BattalionActivity_.EXTRA_ARMY, army).startForResult(EDIT_ARMY);
+	}
+
 	private void restoreSettings() {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		showTypes = settings.getBoolean(SETTING_SHOW_TYPES, false);
@@ -256,13 +263,13 @@ public class ArmyActivity extends Activity {
 	@ItemClick({ R.id.army_specific_unit_stats_list, R.id.army_specific_weapon_stats_inline_list })
 	protected void hideStatsView() {
 		shownStatsUnit = null;
-		statsView.setVisibility(View.GONE);
+		specificStatsView.setVisibility(View.GONE);
 	}
 
 	@ItemLongClick(R.id.army_available_unit_selection)
 	protected void showStatsWindow(final Unit unit) {
 		shownStatsUnit = unit;
-		statsView.setVisibility(View.VISIBLE);
+		specificStatsView.setVisibility(View.VISIBLE);
 		final UnitStats stats = UnitUtils.getStats(unit.getStatsReferences(), army.getStats());
 		specificStatsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats, showStatsSummaries));
 		if (stats.getEntries().size() > 1) {
@@ -336,9 +343,40 @@ public class ArmyActivity extends Activity {
 		storeSettings();
 	}
 
+	@Override
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if (requestCode == EDIT_ARMY) {
+			if (resultCode == RESULT_OK) {
+				final Bundle bundle = data.getExtras();
+				army = bundle.getParcelable(BattalionActivity.EXTRA_ARMY);
+				armyList.setAdapter(newUnitAdapter());
+				pointLabel.setText(String.valueOf(army.getTotalCosts()));
+			}
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (weaponList.getVisibility() == View.VISIBLE) {
+			showUnitList();
+		} else if (statsList.getVisibility() == View.VISIBLE) {
+			showUnitList();
+		} else if (specificGearView.getVisibility() == View.VISIBLE) {
+			hideSpecificGearView();
+		} else if (specificStatsView.getVisibility() == View.VISIBLE) {
+			hideStatsView();
+		} else if (selectionView.getVisibility() == View.VISIBLE) {
+			abortUnitSelection();
+		} else if (chanceView.getVisibility() == View.VISIBLE) {
+			hideChanceView();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
 	@OptionsItem(R.id.action_show_summary)
 	protected void showHideSummaries() {
-		if (statsView.getVisibility() == View.VISIBLE && shownStatsUnit != null) {
+		if (specificStatsView.getVisibility() == View.VISIBLE && shownStatsUnit != null) {
 			showStatsSummaries = UnitStatsSummaries.values()[(showStatsSummaries.ordinal() + 1)
 				% UnitStatsSummaries.values().length];
 			showStatsWindow(shownStatsUnit);

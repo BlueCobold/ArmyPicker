@@ -9,11 +9,11 @@ import org.androidannotations.annotations.ViewById;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.adapter.BaseAdapter;
 import de.game_coding.armypicker.adapter.OptionGroupListAdapter;
 import de.game_coding.armypicker.adapter.UnitGameRuleListAdapter;
 import de.game_coding.armypicker.listener.DeleteHandler;
@@ -87,6 +87,7 @@ public class UnitListItem extends RelativeLayout {
 
 		title.setText(unit.getName());
 		costs.setText(String.valueOf(unit.getTotalCosts()));
+		UIUtil.show(delete, deleteHandler != null || unit.getAmount() > unit.getInitialAmount());
 
 		if (unit.getSubtitle() != null && !unit.getSubtitle().isEmpty()) {
 			source.setText(unit.getSubtitle());
@@ -147,7 +148,6 @@ public class UnitListItem extends RelativeLayout {
 
 	@Click(R.id.unit_amount)
 	protected void onAmountClicked() {
-
 		if (unit.getAmount() < unit.getMaxAmount()) {
 			unit.setAmount(unit.getMaxAmount());
 		} else {
@@ -166,7 +166,6 @@ public class UnitListItem extends RelativeLayout {
 
 	@Click(R.id.unit_delete)
 	protected void onDeleteClicked() {
-
 		if (unit.getAmount() == unit.getInitialAmount()) {
 			if (deleteHandler != null) {
 				deleteHandler.onDelete(unit);
@@ -207,18 +206,14 @@ public class UnitListItem extends RelativeLayout {
 		}
 	}
 
-	private void buildGroupEntries(final BaseAdapter adapter) {
+	private void buildGroupEntries(final BaseAdapter<?, ?> adapter) {
 		options.removeAllViews();
-		for (int i = 0; i < adapter.getCount(); i++) {
-			options.addView(adapter.getView(i, null, this));
-		}
+		adapter.fillWithItems(options, this);
 	}
 
-	private void buildRuleEntries(final BaseAdapter adapter) {
+	private void buildRuleEntries(final BaseAdapter<?, ?> adapter) {
 		ruleList.removeAllViews();
-		for (int i = 0; i < adapter.getCount(); i++) {
-			ruleList.addView(adapter.getView(i, null, this));
-		}
+		adapter.fillWithItems(ruleList, this);
 	}
 
 	private OptionGroupListAdapter newAdapter(final List<UnitOptionGroup> entries) {
@@ -248,6 +243,7 @@ public class UnitListItem extends RelativeLayout {
 		if (notifier != null) {
 			notifier.onValueChanged();
 		}
+		UIUtil.show(delete, deleteHandler != null || unit.getAmount() > unit.getInitialAmount());
 		UIUtil.show(add, unit.getAmount() < unit.getMaxAmount());
 	}
 

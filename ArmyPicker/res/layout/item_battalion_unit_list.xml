@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/item_gradient"
+	android:orientation="vertical" >
+
+	<TextView
+		android:id="@+id/unit_req_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:paddingLeft="30dp"
+		android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:text="Unit name"
+		android:textColor="#A0FFFFFF"
+		android:textSize="20sp" />
+
+	<ImageButton
+		android:id="@+id/unit_req_delete"
+		android:layout_width="30dp"
+		android:layout_height="30dp"
+		android:layout_alignParentRight="true"
+		android:layout_marginTop="5dp"
+		android:background="@null"
+		android:scaleType="fitCenter"
+		android:src="@drawable/ic_action_discard" />
+
+	<ImageButton
+		android:id="@+id/unit_req_add"
+		android:layout_width="30dp"
+		android:layout_height="30dp"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
+		android:layout_marginTop="5dp"
+		android:layout_toLeftOf="@+id/unit_req_delete"
+		android:background="@null"
+		android:scaleType="fitCenter"
+		android:src="@drawable/ic_action_new" />
+
+	<TextView
+		android:id="@+id/unit_req_amount"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/unit_req_add"
+		android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:text="[1]"
+		android:textColor="#A0FFFFFF"
+		android:textSize="20sp" />
+
+	<TextView
+		android:id="@+id/unit_req_description"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/unit_req_amount"
+		android:textColor="#A0FFFFFF"
+		android:paddingRight="10dp"
+		android:paddingLeft="30dp"
+		android:textSize="14sp" />
+
+</RelativeLayout>

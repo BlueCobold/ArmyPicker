@@ -76,9 +76,7 @@ public class OptionGroupListItem extends RelativeLayout {
 		if (group.isCollapsed()) {
 			return;
 		}
-		for (int i = 0; i < adapter.getCount(); i++) {
-			options.addView(adapter.getView(i, null, this));
-		}
+		adapter.fillWithItems(options, this);
 	}
 
 	private void updateWarnings() {
@@ -100,8 +98,8 @@ public class OptionGroupListItem extends RelativeLayout {
 
 	private void updateCollapseHeader() {
 		collapseHeader.setVisibility(!group.isCollapsible() || !group.isEnabled() ? View.GONE : View.VISIBLE);
-		collapseHeader.setText((group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle() + " ["
-			+ group.getAmountSelected() + "]");
+		collapseHeader.setText(
+			(group.isCollapsed() ? OPEN : CLOSE) + group.getExpansionTitle() + " [" + group.getAmountSelected() + "]");
 	}
 
 }

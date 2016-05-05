@@ -147,8 +147,8 @@ public class ChanceCalculator extends RelativeLayout {
 		} else {
 			save_chance = (Math.max(save, 2) - 1) / 6.0;
 			savedPercent.setText(Double.toString(((int) ((1 - save_chance) * 1000)) / 10.0) + "%");
-			saved.setText(Double
-				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * save_chance)) * 10)) / 10.0));
+			saved.setText(
+				Double.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * save_chance)) * 10)) / 10.0));
 		}
 		final int fnp = get(fieldFnp);
 		double fnp_chance = fnp / 6.0;
@@ -159,8 +159,8 @@ public class ChanceCalculator extends RelativeLayout {
 		} else {
 			fnp_chance = (Math.max(fnp, 2) - 1) / 6.0;
 			fnpSavedPercent.setText(Double.toString(((int) ((1 - fnp_chance) * 1000)) / 10.0) + "%");
-			fnpSaved.setText(Double
-				.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * fnp_chance)) * 10)) / 10.0));
+			fnpSaved.setText(
+				Double.toString(((int) (rolls * (1 - (rendChance + (1 - rendChance) * fnp_chance)) * 10)) / 10.0));
 		}
 		double cover_chance = cover / 6.0;
 		if (cover <= 0 || cover > 6) {
@@ -201,16 +201,16 @@ public class ChanceCalculator extends RelativeLayout {
 	}
 
 	private double calcToHit(final int rolls) {
-		final double[] chances = { 0,//
-			1 / 6.0,//
-			2 / 6.0,//
-			3 / 6.0,//
-			4 / 6.0,//
-			5 / 6.0,//
-			5 / 6.0,//
-			5 / 6.0,//
-			5 / 6.0,//
-			5 / 6.0,//
+		final double[] chances = { 0, //
+			1 / 6.0, //
+			2 / 6.0, //
+			3 / 6.0, //
+			4 / 6.0, //
+			5 / 6.0, //
+			5 / 6.0, //
+			5 / 6.0, //
+			5 / 6.0, //
+			5 / 6.0, //
 			5 / 6.0 };
 		double chance = chances[get(fieldBs)];
 		if (reRollToHit.isChecked()) {
@@ -225,7 +225,7 @@ public class ChanceCalculator extends RelativeLayout {
 
 	private int get(final EditText field) {
 		try {
-			return Integer.parseInt(field.getText().toString());
+			return field != null ? Integer.parseInt(field.getText().toString()) : 0;
 		} catch (final NumberFormatException ex) {
 			return 0;
 		}

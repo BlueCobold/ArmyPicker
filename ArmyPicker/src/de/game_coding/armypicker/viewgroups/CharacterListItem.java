@@ -74,9 +74,7 @@ public class CharacterListItem extends RelativeLayout {
 				refreshOptions();
 			}
 		});
-		for (int i = 0; i < adapter.getCount(); i++) {
-			items.addView(adapter.getView(i, null, this));
-		}
+		adapter.fillWithItems(items, this);
 	}
 
 	public void setOnImageRequestListener(final ItemClickedListener<CharacterViewModel> imageRequestHandler) {

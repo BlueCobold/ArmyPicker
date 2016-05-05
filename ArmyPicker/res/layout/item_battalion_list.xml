@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@drawable/item_gradient" >
+
+	<RelativeLayout
+		android:id="@+id/battalion_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:id="@+id/battalion_d_prefix"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="20sp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:paddingLeft="10dp"
+			android:textColor="#A0FFFFFF"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentTop="true"
+			android:text="[D]"/>
+	
+		<TextView
+			android:id="@+id/battalion_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:layout_toRightOf="@+id/battalion_d_prefix"
+			android:paddingLeft="5dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:textColor="#A0FFFFFF"
+			android:text="name"
+			android:textSize="20sp" />
+	
+		<ImageButton
+			android:id="@+id/battalion_delete"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_action_discard" />
+
+		<ImageButton
+			android:id="@+id/battalion_add"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:layout_centerVertical="true"
+			android:layout_toLeftOf="@+id/battalion_delete"
+			android:background="@null"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_action_new" />
+	
+		<TextView
+			android:id="@+id/battalion_amount"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@id/battalion_add"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:text="[1]"
+			android:textColor="#A0FFFFFF"
+			android:textSize="20sp" />
+	</RelativeLayout>
+
+	<TextView
+		android:id="@+id/battalion_description"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textColor="#70FFFFFF"
+		android:paddingRight="10dp"
+		android:paddingLeft="30dp"
+		android:textSize="14sp" />
+
+	<LinearLayout
+		android:id="@+id/battalion_rules"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+	</LinearLayout>
+
+	<LinearLayout 
+		android:id="@+id/battalion_sub_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+	</LinearLayout>
+
+</LinearLayout>

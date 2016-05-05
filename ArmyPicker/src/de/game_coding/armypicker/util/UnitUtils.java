@@ -1,6 +1,6 @@
 package de.game_coding.armypicker.util;
 
-import java.util.List;
+import java.util.Collection;
 
 import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.UnitStats;
@@ -11,7 +11,7 @@ public final class UnitUtils {
 	private UnitUtils() {
 	}
 
-	public static UnitStats getStats(final List<Integer> references, final List<UnitStats> list) {
+	public static UnitStats getStats(final Collection<Integer> references, final Collection<UnitStats> list) {
 		UnitStats result = null;
 		for (final UnitStats statsType : list) {
 			for (final Integer id : references) {
@@ -30,7 +30,7 @@ public final class UnitUtils {
 		return new UnitStats();
 	}
 
-	public static String getRulesSummaries(List<GameRule> rules) {
+	public static String getRulesSummaries(final Collection<GameRule> rules) {
 		final StringBuilder sb = new StringBuilder();
 		for (final GameRule rule : rules) {
 			if (sb.length() != 0) {

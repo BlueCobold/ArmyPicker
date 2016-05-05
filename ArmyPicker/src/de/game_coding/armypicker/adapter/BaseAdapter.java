@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import de.game_coding.armypicker.util.WeakSparseArray;
 
 public abstract class BaseAdapter<M, V extends View> extends ArrayAdapter<M> {
@@ -55,6 +56,12 @@ public abstract class BaseAdapter<M, V extends View> extends ArrayAdapter<M> {
 				}
 				return;
 			}
+		}
+	}
+
+	public void fillWithItems(final LinearLayout container, final ViewGroup parent) {
+		for (int i = 0; i < getCount(); i++) {
+			container.addView(getView(i, null, parent));
 		}
 	}
 

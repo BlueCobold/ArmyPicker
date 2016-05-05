@@ -8,13 +8,13 @@ import org.androidannotations.annotations.ViewById;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.adapter.BaseAdapter;
 import de.game_coding.armypicker.adapter.UnitGameRuleListAdapter;
 import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
@@ -40,7 +40,7 @@ public class UnitStatsListItem extends RelativeLayout {
 		super(context);
 	}
 
-	public void bind(final StatsEntry item, final String[] headers, UnitStatsSummaries showSummaries) {
+	public void bind(final StatsEntry item, final String[] headers, final UnitStatsSummaries showSummaries) {
 
 		String entryName = "";
 		if (item != null) {
@@ -69,11 +69,9 @@ public class UnitStatsListItem extends RelativeLayout {
 		}
 	}
 
-	private void buildRuleEntries(final BaseAdapter adapter) {
+	private void buildRuleEntries(final BaseAdapter<?, ?> adapter) {
 		ruleList.removeAllViews();
-		for (int i = 0; i < adapter.getCount(); i++) {
-			ruleList.addView(adapter.getView(i, null, this));
-		}
+		adapter.fillWithItems(ruleList, this);
 	}
 
 	private void addRow(final String[] values) {
