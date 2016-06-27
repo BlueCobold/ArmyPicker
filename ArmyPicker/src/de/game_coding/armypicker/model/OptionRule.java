@@ -275,8 +275,8 @@ public class OptionRule extends Model implements IRule {
 		return new GroupAmountReducer();
 	}
 
-	public OptionAmountReducer limitAmountOfOption(final int... groupIds) {
-		targetIds = groupIds;
+	public OptionAmountReducer limitAmountOfOption(final int... optionIds) {
+		targetIds = optionIds;
 		return new OptionAmountReducer();
 	}
 
@@ -402,7 +402,7 @@ public class OptionRule extends Model implements IRule {
 			return new SumsComparator();
 		}
 
-		public int buildSourceSelectionSums() {
+		protected int buildSourceSelectionSums() {
 			int sum = 0;
 			for (final int sourceId : sourceIds) {
 				sum += selected(getGroup(sourceId));
@@ -410,7 +410,7 @@ public class OptionRule extends Model implements IRule {
 			return sum;
 		}
 
-		public int buildSourceOptionSums() {
+		protected int buildSourceOptionSums() {
 			int sum = 0;
 			for (final int sourceId : sourceIds) {
 				sum += selected(getOption(sourceId));
