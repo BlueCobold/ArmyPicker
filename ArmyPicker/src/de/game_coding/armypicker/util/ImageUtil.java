@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
@@ -101,11 +102,30 @@ public final class ImageUtil {
 				new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
 
 			if (cursor == null || cursor.getCount() != 1) {
-				return -1;
+				return getImageOrientationViaExif(context, src.getPath());
 			}
 
 			cursor.moveToFirst();
 			return cursor.getInt(0);
+		} catch (final Exception e) {
+			return -1;
+		}
+	}
+
+	public static int getImageOrientationViaExif(final Context context, final String imgPath) {
+		try {
+			final ExifInterface ei = new ExifInterface(imgPath);
+			final int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+				ExifInterface.ORIENTATION_UNDEFINED);
+			switch (orientation) {
+			case ExifInterface.ORIENTATION_ROTATE_90:
+				return 90;
+			case ExifInterface.ORIENTATION_ROTATE_180:
+				return 180;
+			case ExifInterface.ORIENTATION_ROTATE_270:
+				return 270;
+			}
+			return -1;
 		} catch (final Exception e) {
 			return -1;
 		}
