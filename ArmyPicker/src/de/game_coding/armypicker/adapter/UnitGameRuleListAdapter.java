@@ -28,6 +28,7 @@ public class UnitGameRuleListAdapter extends BaseAdapter<GameRule, GameRuleListI
 	@Override
 	protected void fillView(final GameRuleListItem view, final GameRule item, final int position,
 		final ViewGroup parent) {
+		view.setBackgroundColor(0x08000000 * (position % 2) + ((position + 1) % 2) * 0x16FFFFFF);
 		view.bind(item);
 	}
 }
