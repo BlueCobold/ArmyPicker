@@ -42,11 +42,12 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 		for (final UnitRequirement unit : objects) {
 			if (!names.contains(unit.getUnitName())) {
 				final String name = unit.getUnitName();
-				final BattalionChoice choice = choiceType(name, item);
-				int max = maxCount(name, item);
-				final int selectedUnits = count(name, item);
+				final BattalionRequirement parent = getParent(name, item);
+				final BattalionChoice choice = choiceType(name, parent);
+				int max = maxCount(name, parent);
+				final int selectedUnits = count(name, parent);
 				if (choice == BattalionChoice.X_OF) {
-					max += selectedUnits - item.getAssignedUnits().size();
+					max += selectedUnits - parent.getAssignedUnits().size();
 				}
 				if (max > 0) {
 					names.add(unit.getUnitName());
@@ -64,7 +65,9 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 	@Override
 	protected void fillView(final BattalionUnitListItem view, final String item, final int position,
 		final ViewGroup parent) {
-		final int count = count(item, requirement);
+		final BattalionRequirement parentRequirement = getParent(item, requirement);
+
+		final int count = count(item, parentRequirement);
 		view.setAddHandler(addHandler);
 		view.setDeleteHandler(deleteHandler);
 		view.setClickHandler(new ItemClickedListener<String>() {
@@ -73,20 +76,49 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 				onClickItem(clickedItem);
 			}
 		});
-		final BattalionChoice choice = choiceType(item, requirement);
-		final int selectedUnits = count(item, requirement);
+		final BattalionChoice choice = choiceType(item, parentRequirement);
+		final int selectedUnits = count(item, parentRequirement);
 		final int min = minCount(item);
-		int max = maxCount(item, requirement);
+		int max = maxCount(item, parentRequirement);
 		if (choice == BattalionChoice.X_OF) {
-			max += selectedUnits - requirement.getAssignedUnits().size();
+			max += selectedUnits - parentRequirement.getAssignedUnits().size();
 		}
 		final boolean minOk = (choice == BattalionChoice.X_OF
-			&& requirement.getAssignedUnits().size() >= requirement.getMinCount())
+			&& parentRequirement.getAssignedUnits().size() >= parentRequirement.getMinCount())
 			|| (choice == BattalionChoice.X_OF_EACH && count >= min);
 		final boolean canDelete = count > 0
-			&& (count > min || (choice == BattalionChoice.X_OF && requirement.getRequiredUnits().size() > 1));
+			&& (count > min || (choice == BattalionChoice.X_OF && parentRequirement.getRequiredUnits().size() > 1));
 		final boolean canAdd = selectedUnits < max;
 		view.bind(item, count, minOk, max, canDelete, canAdd, details, getSelectedOptions(item));
+	}
+
+	private static BattalionRequirement getParent(final String item, final BattalionRequirement requirement) {
+		for (final UnitRequirement unit : requirement.getRequiredUnits()) {
+			if (unit.getUnitName().equals(item)) {
+				return requirement;
+			}
+		}
+		for (final BattalionRequirement sub : requirement.getAssignedSubBattalions()) {
+			if (!sub.isMeta()) {
+				continue;
+			}
+			for (final UnitRequirement unit : sub.getRequiredUnits()) {
+				if (unit.getUnitName().equals(item)) {
+					return sub;
+				}
+			}
+		}
+		for (final BattalionRequirement sub : requirement.getRequiredSubBattalions()) {
+			if (!sub.isMeta()) {
+				continue;
+			}
+			for (final UnitRequirement unit : sub.getRequiredUnits()) {
+				if (unit.getUnitName().equals(item)) {
+					return sub;
+				}
+			}
+		}
+		return null;
 	}
 
 	private boolean onClickItem(final String item) {
@@ -141,16 +173,6 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 				return req.getChoice();
 			}
 		}
-		for (final BattalionRequirement sub : req.getRequiredSubBattalions()) {
-			if (!sub.isMeta()) {
-				continue;
-			}
-			for (final UnitRequirement unit : sub.getRequiredUnits()) {
-				if (unit.getUnitName().equals(item)) {
-					return sub.getChoice();
-				}
-			}
-		}
 		return null;
 	}
 
@@ -182,24 +204,10 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 
 	private static int maxCount(final String item, final BattalionRequirement req) {
 		UnitRequirement requiredUnit = null;
-		BattalionRequirement parent = req;
+		final BattalionRequirement parent = req;
 		for (final UnitRequirement unit : req.getRequiredUnits()) {
 			if (unit.getUnitName().equals(item)) {
 				requiredUnit = unit;
-			}
-		}
-		if (requiredUnit == null) {
-			for (final BattalionRequirement sub : req.getRequiredSubBattalions()) {
-				if (!sub.isMeta()) {
-					continue;
-				}
-				for (final UnitRequirement unit : sub.getRequiredUnits()) {
-					if (unit.getUnitName().equals(item)) {
-						requiredUnit = unit;
-						parent = sub;
-						break;
-					}
-				}
 			}
 		}
 		if (requiredUnit == null) {
@@ -208,42 +216,11 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 		return parent.getMaxCount() * requiredUnit.getMax();
 	}
 
-	private static Unit findOne(final String item, final BattalionRequirement req) {
-		for (final Unit unit : req.getAssignedUnits()) {
-			if (unit.getName().equals(item)) {
-				return unit;
-			}
-		}
-		for (final BattalionRequirement sub : req.getAssignedSubBattalions()) {
-			if (!sub.isMeta()) {
-				continue;
-			}
-			for (final Unit unit : sub.getAssignedUnits()) {
-				if (unit.getName().equals(item)) {
-					return unit;
-				}
-			}
-		}
-		return null;
-	}
-
 	private static int count(final String item, final BattalionRequirement req) {
 		int count = 0;
 		for (final Unit unit : req.getAssignedUnits()) {
 			if (unit.getName().equals(item)) {
 				count++;
-			}
-		}
-		if (count == 0) {
-			for (final BattalionRequirement sub : req.getAssignedSubBattalions()) {
-				if (!sub.isMeta()) {
-					continue;
-				}
-				for (final Unit unit : sub.getAssignedUnits()) {
-					if (unit.getName().equals(item)) {
-						count++;
-					}
-				}
 			}
 		}
 		return count;
