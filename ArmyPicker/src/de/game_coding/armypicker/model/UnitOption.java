@@ -1,8 +1,8 @@
 package de.game_coding.armypicker.model;
 
-import de.game_coding.armypicker.model.creators.UnitOptionCreator;
 import android.os.Parcel;
 import android.os.Parcelable;
+import de.game_coding.armypicker.model.creators.UnitOptionCreator;
 
 public class UnitOption extends Model {
 
@@ -11,6 +11,7 @@ public class UnitOption extends Model {
 	private String name = "";
 	private int costs;
 	private int amountSelected;
+	private int defaultAmount;
 	private int id;
 	private boolean enabled = true;
 	private int parentId = -1;
@@ -21,12 +22,14 @@ public class UnitOption extends Model {
 		this.name = name;
 		this.costs = costs;
 		this.amountSelected = defaultAmount;
+		this.defaultAmount = defaultAmount;
 	}
 
 	public UnitOption(final String name, final int costs, final int defaultAmount) {
 		this.name = name;
 		this.costs = costs;
 		this.amountSelected = defaultAmount;
+		this.defaultAmount = defaultAmount;
 	}
 
 	public UnitOption(final String name, final int costs) {
@@ -58,6 +61,10 @@ public class UnitOption extends Model {
 
 	public int getAmountSelected() {
 		return amountSelected;
+	}
+
+	public int getDefaultAmount() {
+		return defaultAmount;
 	}
 
 	public void setAmountSelected(final int amountSelected) {
@@ -103,6 +110,7 @@ public class UnitOption extends Model {
 		dest.writeInt(id);
 		dest.writeInt(costs);
 		dest.writeInt(amountSelected);
+		dest.writeInt(defaultAmount);
 		dest.writeInt(parentId);
 	};
 
@@ -117,12 +125,15 @@ public class UnitOption extends Model {
 		id = source.readInt();
 		costs = source.readInt();
 		amountSelected = source.readInt();
+		if (getFileVersion() >= 1) {
+			defaultAmount = source.readInt();
+		}
 		parentId = source.readInt();
 	}
 
 	@Override
 	protected int getFeatureVersion() {
-		return 0;
+		return 1;
 	}
 
 	@Override

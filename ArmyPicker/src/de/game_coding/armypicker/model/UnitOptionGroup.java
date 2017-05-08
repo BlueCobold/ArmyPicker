@@ -218,6 +218,11 @@ public class UnitOptionGroup extends Model {
 	public void setEnabled(final boolean enabled) {
 		if (this.enabled != enabled) {
 			this.enabled = enabled;
+			for (final UnitOption unitOption : options) {
+				if (unitOption.getAmountSelected() == 0 && unitOption.getDefaultAmount() > 0) {
+					unitOption.setAmountSelected(unitOption.getDefaultAmount());
+				}
+			}
 			validateAmounts();
 		}
 	}
