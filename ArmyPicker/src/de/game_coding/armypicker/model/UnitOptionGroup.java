@@ -41,6 +41,10 @@ public class UnitOptionGroup extends Model {
 		 * Can only be taken once for the entire unit and must always be taken
 		 */
 		X_PER_UNIT,
+		/**
+		 * Can only be taken X times for each model and must always be taken
+		 */
+		X_OF_EACH_PER_MODEL,
 	}
 
 	public enum ExpansionState {
@@ -169,6 +173,9 @@ public class UnitOptionGroup extends Model {
 				continue;
 			} else if (type == GroupType.X_PER_UNIT) {
 				option.setAmountSelected(optionNumberPerGroup);
+			} else if (type == GroupType.X_OF_EACH_PER_MODEL) {
+				option.setAmountSelected(optionNumberPerGroup);
+				continue;
 			}
 			if (option.getParentId() >= 0) {
 				option.setAmountSelected(Math.min(option.getAmountSelected(), getOptionAmount(option.getParentId())));
@@ -270,25 +277,28 @@ public class UnitOptionGroup extends Model {
 	private int getMaxAmount() {
 		int max = limit;
 		switch (type) {
-		case X_PER_UNIT:
-			return optionNumberPerGroup;
+			case X_PER_UNIT:
+				return optionNumberPerGroup;
 
-		case ONE_PER_MODEL:
-			max = limit;
-			break;
+			case X_OF_EACH_PER_MODEL:
+				return optionNumberPerGroup;
 
-		case ONE_PER_MODEL_EXEPT_ONE:
-			max = limit - 1;
-			break;
+			case ONE_PER_MODEL:
+				max = limit;
+				break;
 
-		case UP_TO_X_PER_UNIT:
-		case UP_TO_X_OF_EACH_PER_UNIT:
-			max = optionNumberPerGroup;
-			break;
+			case ONE_PER_MODEL_EXEPT_ONE:
+				max = limit - 1;
+				break;
 
-		default:
-			max = optionNumberPerGroup * (limit / groupSize);
-			break;
+			case UP_TO_X_PER_UNIT:
+			case UP_TO_X_OF_EACH_PER_UNIT:
+				max = optionNumberPerGroup;
+				break;
+
+			default:
+				max = optionNumberPerGroup * (limit / groupSize);
+				break;
 		}
 		return max;
 	}
