@@ -67,8 +67,8 @@ public class OptionListItem extends RelativeLayout {
 
 	@Click(R.id.option_delete)
 	protected void onDeleteClicked() {
-		option
-			.setAmountSelected((optionGroup.getType() == GroupType.ONE_PER_MODEL || optionGroup.getType() == GroupType.ONE_PER_MODEL_EXEPT_ONE) ? 0
+		option.setAmountSelected((optionGroup.getType() == GroupType.ONE_PER_MODEL
+			|| optionGroup.getType() == GroupType.ONE_PER_MODEL_EXEPT_ONE) ? 0
 				: Math.max(0, option.getAmountSelected() - 1));
 		updateValues();
 	}
@@ -88,11 +88,15 @@ public class OptionListItem extends RelativeLayout {
 
 		total.setText(String.valueOf(option.getAmountSelected() * option.getCosts()));
 
-		setVisibility(optionGroup.isEnabled() && (option.getParentId() < 0 || option.isEnabled()) ? View.VISIBLE
-			: View.GONE);
+		setVisibility(
+			optionGroup.isEnabled() && (option.getParentId() < 0 || option.isEnabled()) ? View.VISIBLE : View.GONE);
 
-		UIUtil.show(delete, option.getAmountSelected() > 0);
+		UIUtil.show(delete,
+			(option.getAmountSelected() > 0 && optionGroup.getType() != GroupType.X_OF_EACH_PER_MODEL)
+				&& (optionGroup.getOptions().size() > 1 || (optionGroup.getType() != GroupType.ONE_PER_MODEL
+					&& optionGroup.getType() != GroupType.ONE_PER_MODEL_EXEPT_ONE)));
 		UIUtil.show(add, optionGroup.canSelectMore(option) && option.isEnabled());
+		UIUtil.show(costs, option.getCosts() > 0);
 	}
 
 	public void setNotifier(final IValueChangedNotifier notifier) {

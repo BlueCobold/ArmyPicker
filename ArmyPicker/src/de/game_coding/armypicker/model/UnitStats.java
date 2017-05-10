@@ -183,7 +183,7 @@ public class UnitStats extends Model {
 		return this;
 	}
 
-	public UnitStats withGameRule(GameRule rule) {
+	public UnitStats withGameRule(final GameRule rule) {
 		if (entries.isEmpty()) {
 			return this;
 		}
@@ -191,7 +191,7 @@ public class UnitStats extends Model {
 		return this;
 	}
 
-	public UnitStats withGameRule(String title, String description) {
+	public UnitStats withGameRule(final String title, final String description) {
 		if (entries.isEmpty()) {
 			return this;
 		}

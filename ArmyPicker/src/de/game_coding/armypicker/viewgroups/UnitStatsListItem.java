@@ -51,6 +51,9 @@ public class UnitStatsListItem extends RelativeLayout {
 		table.removeAllViews();
 		addRow(headers);
 		addRow(item.getValues());
+		for (final StatsEntry sec : item.getSecondaries()) {
+			addRow(sec.getValues());
+		}
 
 		final List<GameRule> rules = item.getGameRules();
 		if (showSummaries == UnitStatsSummaries.ALL_SUMMARIES && !rules.isEmpty()) {

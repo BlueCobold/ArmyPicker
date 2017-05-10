@@ -123,8 +123,7 @@ public class BattalionRequirementListItem extends RelativeLayout {
 		count.setText("[" + selected + "/" + item.getMaxCount() + "]");
 		count
 			.setVisibility((readOnly || item.getChoice() == BattalionChoice.X_OF_EACH) ? View.INVISIBLE : View.VISIBLE);
-		addButton
-			.setVisibility((readOnly || item.getRequiredSubBattalions().isEmpty()) ? View.INVISIBLE : View.VISIBLE);
+		addButton.setVisibility((readOnly || !hasMoreSubs(item)) ? View.INVISIBLE : View.VISIBLE);
 		deleteButton.setVisibility(readOnly ? View.INVISIBLE : View.VISIBLE);
 
 		rules.setVisibility(
@@ -147,6 +146,15 @@ public class BattalionRequirementListItem extends RelativeLayout {
 		} else {
 			rules.setVisibility(View.GONE);
 		}
+	}
+
+	private static boolean hasMoreSubs(final BattalionRequirement item) {
+		for (final BattalionRequirement sub : item.getRequiredSubBattalions()) {
+			if (!sub.isMeta()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Click(R.id.battalion_req_name)

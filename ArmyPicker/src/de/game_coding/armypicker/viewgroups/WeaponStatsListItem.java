@@ -54,7 +54,7 @@ public class WeaponStatsListItem extends RelativeLayout {
 			return;
 		}
 		final TableRow tableRow = new TableRow(getContext());
-		final float[] percents = new float[] { 0.22f, 0.20f, 0.12f, 0.12f, 0.34f };
+		final float[] percents = new float[] { 0.18f, 0.20f, 0.12f, 0.12f, 0.12f, 0.26f };
 
 		for (int i = 0; i < values.length && i < stats.getHeaders().length; i++) {
 			final String value = values[i];
@@ -65,8 +65,8 @@ public class WeaponStatsListItem extends RelativeLayout {
 				text.setGravity(Gravity.CENTER_HORIZONTAL);
 			}
 			text.setTextColor(text.getResources().getColor(R.color.text_color));
-			text.setLayoutParams(new TableRow.LayoutParams((int) (width * percents[i]),
-				TableRow.LayoutParams.WRAP_CONTENT));
+			text.setLayoutParams(
+				new TableRow.LayoutParams((int) (width * percents[i]), TableRow.LayoutParams.WRAP_CONTENT));
 			tableRow.addView(text);
 		}
 		table.addView(tableRow);
