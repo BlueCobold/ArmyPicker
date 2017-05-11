@@ -29,6 +29,7 @@ import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.listener.ProgressClickListener;
 import de.game_coding.armypicker.model.Army;
 import de.game_coding.armypicker.model.Battalion;
+import de.game_coding.armypicker.model.BattalionChoice;
 import de.game_coding.armypicker.model.BattalionRequirement;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
@@ -107,10 +108,37 @@ public class BattalionActivity extends Activity {
 	protected void onSelectNewBattalion(final Battalion battalion) {
 		battalions.setAdapter(null);
 		final Battalion entry = CloneUtil.clone(battalion, Battalion.CREATOR);
+		if (entry.getRequirement().getChoice() == BattalionChoice.X_OF_EACH) {
+			for (final BattalionRequirement required : entry.getRequirement().getRequiredSubBattalions()) {
+				final Collection<BattalionRequirement> mandatories = getMandatoryItems(required);
+				BattalionRequirement clone = null;
+				if (mandatories.size() > 0) {
+					clone = CloneUtil.clone(required, BattalionRequirement.CREATOR);
+					entry.getRequirement().getAssignedSubBattalions().add(clone);
+					for (final BattalionRequirement m : mandatories) {
+						assignViaDeepClone(clone, m);
+					}
+				}
+			}
+		}
 		army.addBattalion(entry);
 		battalions.setAdapter(newBattalionAdapter());
 		UIUtil.hide(selectionView);
 		FileUtil.storeArmy(army, this);
+	}
+
+	private Collection<BattalionRequirement> getMandatoryItems(final BattalionRequirement item) {
+		if (item.getRequiredSubBattalions().size() > 1 && item.getChoice() == BattalionChoice.X_OF) {
+			return new ArrayList<BattalionRequirement>();
+		}
+		final List<BattalionRequirement> found = new ArrayList<BattalionRequirement>();
+		if (item.getRequiredUnits().size() > 0 && item.getMinCount() > 0) {
+			found.add(item);
+		}
+		for (final BattalionRequirement required : item.getRequiredSubBattalions()) {
+			found.addAll(getMandatoryItems(required));
+		}
+		return found;
 	}
 
 	@Click(R.id.battalion_select_abort)
@@ -171,7 +199,11 @@ public class BattalionActivity extends Activity {
 	}
 
 	private ListAdapter newBattalionAdapter() {
-		final BattalionListAdapter adapter = new BattalionListAdapter(this, army.getBattalions(), true, details);
+		return newBattalionAdapter(null);
+	}
+
+	private ListAdapter newBattalionAdapter(final BattalionListAdapter old) {
+		final BattalionListAdapter adapter = new BattalionListAdapter(this, army.getBattalions(), true, details, old);
 		adapter.setDeleteHandler(new DeleteHandler<Battalion>() {
 			@Override
 			public void onDelete(final Battalion b) {
@@ -189,16 +221,26 @@ public class BattalionActivity extends Activity {
 					&& (current.getRequiredUnits().size() == 0 || current == item)) {
 					current = current.getRequiredSubBattalions().get(0);
 				}
+				if (current.getRequiredSubBattalions().size() == 0 && item.getRequiredSubBattalions().size() == 1
+					&& item.getAssignedSubBattalions().size() == 0) {
+					assignViaDeepClone(item, current);
+					onSubSelected.onCompleted();
+					return;
+				}
 				if (current.getRequiredSubBattalions().size() == 1) {
 					assignViaDeepClone(item, current.getRequiredSubBattalions().get(0));
 					onSubSelected.onCompleted();
+					return;
+				}
+				final List<BattalionRequirement> choices = mergeSubs(item);
+				if (choices.size() == 0) {
 					return;
 				}
 				addToRequirement = item;
 				onSubSelectedHandler = onSubSelected;
 				UIUtil.show(subSelectionView);
 				final BattalionRequirementListAdapter subAdapter = new BattalionRequirementListAdapter(
-					BattalionActivity.this, mergeSubs(item), true, details);
+					BattalionActivity.this, choices, true, details);
 				availableSubBattalions.setAdapter(subAdapter);
 			}
 		});
@@ -254,15 +296,21 @@ public class BattalionActivity extends Activity {
 
 	private List<BattalionRequirement> mergeSubs(final BattalionRequirement item) {
 		final List<BattalionRequirement> subs = new ArrayList<BattalionRequirement>();
+		int total = 0;
 		for (final BattalionRequirement sub : item.getRequiredSubBattalions()) {
-			BattalionRequirement add = sub;
+			int added = 0;
 			for (final BattalionRequirement assigned : item.getAssignedSubBattalions()) {
-				if (assigned.getName().equals(add.getName())) {
-					add = assigned;
-					break;
+				if (assigned.getName().equals(sub.getName())) {
+					added++;
+					total++;
 				}
 			}
-			subs.add(add);
+			if (added < item.getMaxCount()) {
+				subs.add(sub);
+			}
+		}
+		if (item.getChoice() == BattalionChoice.X_OF && total >= item.getMaxCount()) {
+			return new ArrayList<BattalionRequirement>();
 		}
 		return subs;
 	}
@@ -298,7 +346,7 @@ public class BattalionActivity extends Activity {
 	protected void onChangeDetails() {
 		details = BattalionRequirementDetails.values()[(details.ordinal() + 1)
 			% BattalionRequirementDetails.values().length];
-		battalions.setAdapter(newBattalionAdapter());
+		battalions.setAdapter(newBattalionAdapter((BattalionListAdapter) battalions.getAdapter()));
 
 		if (addToRequirement != null) {
 			final BattalionRequirementListAdapter subAdapter = new BattalionRequirementListAdapter(

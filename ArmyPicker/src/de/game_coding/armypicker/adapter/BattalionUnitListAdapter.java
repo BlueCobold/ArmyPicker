@@ -31,13 +31,14 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 	private final BattalionRequirementDetails details;
 
 	public BattalionUnitListAdapter(final Context context, final Collection<UnitRequirement> objects,
-		final BattalionRequirement requirement, final BattalionRequirementDetails details) {
-		super(context, getNames(objects, requirement));
+		final BattalionRequirement requirement, final BattalionRequirementDetails details, final boolean isCollapsed) {
+		super(context, getNames(objects, requirement, isCollapsed));
 		this.requirement = requirement;
 		this.details = details;
 	}
 
-	private static List<String> getNames(final Collection<UnitRequirement> objects, final BattalionRequirement item) {
+	private static List<String> getNames(final Collection<UnitRequirement> objects, final BattalionRequirement item,
+		final boolean collapsed) {
 		final List<String> names = new ArrayList<String>();
 		for (final UnitRequirement unit : objects) {
 			if (!names.contains(unit.getUnitName())) {
@@ -49,7 +50,7 @@ public class BattalionUnitListAdapter extends BaseAdapter<String, BattalionUnitL
 				if (choice == BattalionChoice.X_OF) {
 					max += selectedUnits - parent.getAssignedUnits().size();
 				}
-				if (max > 0) {
+				if (max > 0 && (!collapsed || selectedUnits > 0)) {
 					names.add(unit.getUnitName());
 				}
 			}

@@ -6,5 +6,8 @@ public enum UnitType {
 	STANDARD, //
 	FAST_ATTACK, //
 	SUPPORT, //
+	FLYER, //
 	LORD_OF_WAR, //
+	FORTIFICATION, //
+	DEDICATED, //
 }

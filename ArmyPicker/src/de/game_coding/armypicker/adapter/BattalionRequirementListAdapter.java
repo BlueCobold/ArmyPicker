@@ -34,6 +34,14 @@ public class BattalionRequirementListAdapter extends BaseAdapter<BattalionRequir
 
 	private final BattalionRequirementDetails details;
 
+	private ItemClickedListener<BattalionRequirement> collapseHandler;
+
+	public interface CollapseProvider {
+		public boolean isCollapsed(final BattalionRequirement item);
+	}
+
+	private CollapseProvider collapseProvider;
+
 	public BattalionRequirementListAdapter(final Context context, final List<BattalionRequirement> objects,
 		final boolean readOnly, final BattalionRequirementDetails details) {
 		super(context, readOnly ? filterMeta(objects, !readOnly) : getFlat(objects));
@@ -99,10 +107,11 @@ public class BattalionRequirementListAdapter extends BaseAdapter<BattalionRequir
 		final int position, final ViewGroup parent) {
 		view.setAddHandler(addHandler);
 		view.setDeleteHandler(deleteHandler);
-		view.bind(item, readOnly, details);
+		view.bind(item, readOnly, details, collapseProvider != null ? collapseProvider.isCollapsed(item) : false);
 		view.setAddUnitHandler(addUnitHandler);
 		view.setEditUnitHandler(editUnitHandler);
 		view.setChangeNotifier(notifier);
+		view.setCollapseHandler(collapseHandler);
 		if (!readOnly && item.getTag() instanceof Integer) {
 			view.setBackgroundColor(Math.min(255, 22 * ((Integer) item.getTag()).intValue()) << 24);
 		}
@@ -126,5 +135,13 @@ public class BattalionRequirementListAdapter extends BaseAdapter<BattalionRequir
 
 	public void setEditUnitHandler(final ItemClickedListener<Collection<Unit>> handler) {
 		this.editUnitHandler = handler;
+	}
+
+	public void setCollapseHandler(final ItemClickedListener<BattalionRequirement> handler) {
+		this.collapseHandler = handler;
+	}
+
+	public void setCollapseProvider(final CollapseProvider collapseProvider) {
+		this.collapseProvider = collapseProvider;
 	}
 }

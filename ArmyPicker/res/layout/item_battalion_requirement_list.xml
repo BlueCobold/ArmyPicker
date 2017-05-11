@@ -72,6 +72,17 @@
 			android:text="[1/3]"
 			android:textSize="20sp" />
 		
+		<ImageButton
+			android:id="@+id/battalion_req_collapse"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_toLeftOf="@+id/battalion_req_count"
+			android:layout_centerVertical="true"
+			android:scaleType="fitCenter"
+			android:background="@null"
+			android:src="@drawable/ic_action_download" />
 	</RelativeLayout>
 
 	<TextView

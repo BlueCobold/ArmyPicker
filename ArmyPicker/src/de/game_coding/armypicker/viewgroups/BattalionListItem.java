@@ -3,6 +3,7 @@ package de.game_coding.armypicker.viewgroups;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
@@ -16,16 +17,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
 import de.game_coding.armypicker.adapter.BattalionRequirementListAdapter;
+import de.game_coding.armypicker.adapter.BattalionRequirementListAdapter.CollapseProvider;
 import de.game_coding.armypicker.adapter.UnitGameRuleListAdapter;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.ItemClickedListener;
 import de.game_coding.armypicker.model.Battalion;
+import de.game_coding.armypicker.model.BattalionChoice;
 import de.game_coding.armypicker.model.BattalionRequirement;
 import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitRequirement;
 import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.viewgroups.BattalionRequirementListItem.ViewState;
 import de.game_coding.armypicker.viewmodel.BattalionRequirementDetails;
 
 @EViewGroup(R.layout.item_battalion_list)
@@ -66,6 +70,8 @@ public class BattalionListItem extends RelativeLayout {
 
 	private ItemClickedListener<Collection<Unit>> editUnitHandler;
 
+	private ItemClickedListener<BattalionRequirement> collapseHandler;
+
 	public BattalionListItem(final Context context) {
 		super(context);
 	}
@@ -100,13 +106,18 @@ public class BattalionListItem extends RelativeLayout {
 		return units;
 	}
 
-	public void bind(final Battalion item, final boolean deletable, final BattalionRequirementDetails details) {
+	public void bind(final Battalion item, final boolean deletable, final BattalionRequirementDetails details,
+		final Map<BattalionRequirement, ViewState> viewStates) {
 		this.battalion = item;
 		name.setClickable(deletable);
 		name.setText(item.getTypeName());
 		amount.setVisibility(deletable ? View.VISIBLE : View.GONE);
-		amount.setText("[" + item.getRequirement().getAssignedSubBattalions().size() + "/"
-			+ item.getRequirement().getMaxCount() + "]");
+		int maxCount = item.getRequirement().getMaxCount();
+		if (item.getRequirement().getChoice() == BattalionChoice.X_OF_EACH) {
+			maxCount = item.getRequirement().getRequiredSubBattalions().size()
+				+ item.getRequirement().getRequiredUnits().size();
+		}
+		amount.setText("[" + item.getRequirement().getAssignedSubBattalions().size() + "/" + maxCount + "]");
 		deleteButton.setVisibility(deletable ? View.VISIBLE : View.GONE);
 		addButton.setVisibility(deletable ? View.VISIBLE : View.GONE);
 		requirements.removeAllViews();
@@ -118,6 +129,14 @@ public class BattalionListItem extends RelativeLayout {
 			adapter.setAddUnitHandler(addUnitHandler);
 			adapter.setChangeNotifier(notifier);
 			adapter.setEditUnitHandler(editUnitHandler);
+			adapter.setCollapseHandler(collapseHandler);
+			adapter.setCollapseProvider(new CollapseProvider() {
+				@Override
+				public boolean isCollapsed(final BattalionRequirement item) {
+					final ViewState state = viewStates.get(item);
+					return state != null ? state.isMinimized() : false;
+				}
+			});
 			adapter.fillWithItems(requirements, this);
 		}
 
@@ -161,5 +180,9 @@ public class BattalionListItem extends RelativeLayout {
 
 	public void setEditUnitHandler(final ItemClickedListener<Collection<Unit>> handler) {
 		this.editUnitHandler = handler;
+	}
+
+	public void setCollapseHandler(final ItemClickedListener<BattalionRequirement> handler) {
+		this.collapseHandler = handler;
 	}
 }

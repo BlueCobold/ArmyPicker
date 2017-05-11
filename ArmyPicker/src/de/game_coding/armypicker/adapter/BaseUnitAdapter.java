@@ -22,21 +22,26 @@ public abstract class BaseUnitAdapter<V extends View> extends BaseAdapter<Unit, 
 
 	protected String getUnitTypeName(final Unit unit, final View view) {
 		switch (unit.getType()) {
-		case ELITE:
-			return view.getResources().getString(R.string.type_elite);
-		case FAST_ATTACK:
-			return view.getResources().getString(R.string.type_fast);
-		case HQ:
-			return view.getResources().getString(R.string.type_hq);
-		case STANDARD:
-			return view.getResources().getString(R.string.type_standard);
-		case SUPPORT:
-			return view.getResources().getString(R.string.type_heavy);
-		case LORD_OF_WAR:
-			return view.getResources().getString(R.string.type_low);
-
-		default:
-			break;
+			case ELITE:
+				return view.getResources().getString(R.string.type_elite);
+			case FAST_ATTACK:
+				return view.getResources().getString(R.string.type_fast);
+			case HQ:
+				return view.getResources().getString(R.string.type_hq);
+			case STANDARD:
+				return view.getResources().getString(R.string.type_standard);
+			case SUPPORT:
+				return view.getResources().getString(R.string.type_heavy);
+			case LORD_OF_WAR:
+				return view.getResources().getString(R.string.type_low);
+			case FLYER:
+				return view.getResources().getString(R.string.type_flyer);
+			case FORTIFICATION:
+				return view.getResources().getString(R.string.type_fort);
+			case DEDICATED:
+				return view.getResources().getString(R.string.type_transport);
+			default:
+				break;
 		}
 		return "";
 	}

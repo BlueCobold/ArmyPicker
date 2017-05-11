@@ -31,6 +31,18 @@ import de.game_coding.armypicker.viewmodel.BattalionRequirementDetails;
 @EViewGroup(R.layout.item_battalion_requirement_list)
 public class BattalionRequirementListItem extends RelativeLayout {
 
+	public static class ViewState {
+		private boolean minimized; // show only selected entries
+
+		public boolean isMinimized() {
+			return minimized;
+		}
+
+		public void setMinimized(final boolean minimized) {
+			this.minimized = minimized;
+		}
+	}
+
 	@ViewById(R.id.battalion_req_name)
 	protected TextView name;
 
@@ -52,6 +64,9 @@ public class BattalionRequirementListItem extends RelativeLayout {
 	@ViewById(R.id.battalion_req_delete)
 	protected View deleteButton;
 
+	@ViewById(R.id.battalion_req_collapse)
+	protected View collapseButton;
+
 	private BattalionRequirement item;
 
 	private ItemClickedListener<BattalionRequirement> addHandler;
@@ -64,12 +79,14 @@ public class BattalionRequirementListItem extends RelativeLayout {
 
 	private IValueChangedNotifier notifier;
 
+	private ItemClickedListener<BattalionRequirement> collapseHandler;
+
 	public BattalionRequirementListItem(final Context context) {
 		super(context);
 	}
 
-	public void bind(final BattalionRequirement item, final boolean readOnly,
-		final BattalionRequirementDetails details) {
+	public void bind(final BattalionRequirement item, final boolean readOnly, final BattalionRequirementDetails details,
+		final boolean collapseUnits) {
 		this.item = item;
 		name.setClickable(!readOnly);
 		name.setText(item.getName());
@@ -85,13 +102,13 @@ public class BattalionRequirementListItem extends RelativeLayout {
 			}
 			if (!units.isEmpty()) {
 				final BattalionUnitListAdapter adapter = new BattalionUnitListAdapter(getContext(), units, item,
-					details);
+					details, collapseUnits);
 				adapter.setAddHandler(new ItemClickedListener<String>() {
 					@Override
 					public void onItemClicked(final String unitName) {
 						addUnitHandler.onItemClicked(new Pair<UnitRequirement, BattalionRequirement>(
 							findTemplate(unitName), findAssignmentParent(unitName)));
-						bind(item, readOnly, details);
+						bind(item, readOnly, details, collapseUnits);
 					}
 				});
 				adapter.setEditUnitHandler(new ItemClickedListener<String>() {
@@ -107,7 +124,7 @@ public class BattalionRequirementListItem extends RelativeLayout {
 					public void onDelete(final String unitName) {
 						final BattalionRequirement parent = findParent(unitName);
 						parent.removeUnit(findOne(unitName));
-						bind(item, readOnly, details);
+						bind(item, readOnly, details, collapseUnits);
 						if (notifier != null) {
 							notifier.onValueChanged();
 						}
@@ -125,6 +142,7 @@ public class BattalionRequirementListItem extends RelativeLayout {
 			.setVisibility((readOnly || item.getChoice() == BattalionChoice.X_OF_EACH) ? View.INVISIBLE : View.VISIBLE);
 		addButton.setVisibility((readOnly || !hasMoreSubs(item)) ? View.INVISIBLE : View.VISIBLE);
 		deleteButton.setVisibility(readOnly ? View.INVISIBLE : View.VISIBLE);
+		collapseButton.setVisibility(readOnly ? View.INVISIBLE : View.VISIBLE);
 
 		rules.setVisibility(
 			item.getRules() != null && item.getRules().size() > 0 && details == BattalionRequirementDetails.RULES
@@ -155,6 +173,13 @@ public class BattalionRequirementListItem extends RelativeLayout {
 			}
 		}
 		return false;
+	}
+
+	@Click(R.id.battalion_req_collapse)
+	protected void onCollapse() {
+		if (collapseHandler != null) {
+			collapseHandler.onItemClicked(item);
+		}
 	}
 
 	@Click(R.id.battalion_req_name)
@@ -301,5 +326,9 @@ public class BattalionRequirementListItem extends RelativeLayout {
 
 	public void setEditUnitHandler(final ItemClickedListener<Collection<Unit>> handler) {
 		this.editUnitHandler = handler;
+	}
+
+	public void setCollapseHandler(final ItemClickedListener<BattalionRequirement> handler) {
+		this.collapseHandler = handler;
 	}
 }

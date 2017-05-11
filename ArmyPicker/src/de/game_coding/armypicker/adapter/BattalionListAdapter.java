@@ -1,7 +1,9 @@
 package de.game_coding.armypicker.adapter;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.util.Pair;
@@ -17,6 +19,8 @@ import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitRequirement;
 import de.game_coding.armypicker.viewgroups.BattalionListItem;
 import de.game_coding.armypicker.viewgroups.BattalionListItem_;
+import de.game_coding.armypicker.viewgroups.BattalionRequirementListItem;
+import de.game_coding.armypicker.viewgroups.BattalionRequirementListItem.ViewState;
 import de.game_coding.armypicker.viewmodel.BattalionRequirementDetails;
 
 public class BattalionListAdapter extends BaseAdapter<Battalion, BattalionListItem> {
@@ -29,17 +33,24 @@ public class BattalionListAdapter extends BaseAdapter<Battalion, BattalionListIt
 
 	private IValueChangedNotifier notifier;
 
+	private ItemClickedListener<BattalionRequirement> collapseHandler;
+
 	private ItemClickedListener<Pair<UnitRequirement, BattalionRequirement>> addUnitHandler;
 
 	private ItemClickedListener<Collection<Unit>> editUnitHandler;
 
+	private final Map<BattalionRequirement, BattalionRequirementListItem.ViewState> viewStates = new HashMap<BattalionRequirement, BattalionRequirementListItem.ViewState>();
+
 	private final BattalionRequirementDetails details;
 
 	public BattalionListAdapter(final Context context, final List<Battalion> objects, final boolean deletable,
-		final BattalionRequirementDetails details) {
+		final BattalionRequirementDetails details, final BattalionListAdapter old) {
 		super(context, objects);
 		this.deletable = deletable;
 		this.details = details;
+		if (old != null) {
+			viewStates.putAll(old.viewStates);
+		}
 	}
 
 	public BattalionListAdapter(final Context context, final Battalion[] objects, final boolean deletable,
@@ -64,7 +75,7 @@ public class BattalionListAdapter extends BaseAdapter<Battalion, BattalionListIt
 				addSubHandler.onItemClicked(subItem, new CompletionHandler() {
 					@Override
 					public void onCompleted() {
-						view.bind(item, deletable, details);
+						view.bind(item, deletable, details, viewStates);
 					}
 				});
 			}
@@ -75,13 +86,23 @@ public class BattalionListAdapter extends BaseAdapter<Battalion, BattalionListIt
 				if (delete(item.getRequirement(), subItem) && notifier != null) {
 					notifier.onValueChanged();
 				}
-				view.bind(item, deletable, details);
+				view.bind(item, deletable, details, viewStates);
+			}
+		});
+		view.setCollapseHandler(new ItemClickedListener<BattalionRequirement>() {
+			@Override
+			public void onItemClicked(final BattalionRequirement subItem) {
+				if (!viewStates.containsKey(subItem)) {
+					viewStates.put(subItem, new ViewState());
+				}
+				viewStates.get(subItem).setMinimized(!viewStates.get(subItem).isMinimized());
+				view.bind(item, deletable, details, viewStates);
 			}
 		});
 		view.setAddUnitHandler(addUnitHandler);
 		view.setChangeNotifier(notifier);
 		view.setEditUnitHandler(editUnitHandler);
-		view.bind(item, deletable, details);
+		view.bind(item, deletable, details, viewStates);
 	}
 
 	private boolean delete(final BattalionRequirement parent, final BattalionRequirement subItem) {
