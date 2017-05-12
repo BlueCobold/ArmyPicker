@@ -38,9 +38,6 @@
 	<string name="wounds">Wounds</string>
 	<string name="rending">Rending</string>
 	<string name="inv_cover">Inv/Cover</string>
-	<string name="shred">Shred</string>
-	<string name="twin_linked">Twin linked</string>
-	<string name="preferred_enemy">Preferred enemy</string>
 	<string name="download">Download</string>
 	<string name="title_activity_characters">Characters</string>
 	<string name="pick_trait">Pick trait</string>
@@ -52,5 +49,9 @@
 	<string name="open_detachments">Open detachments</string>
 	<string name="available_choices">Available choices</string>
 	<string name="title_activity_battalions">Detachments</string>
+	<string name="chance_re_roll_wound">Re-roll wound</string>
+	<string name="chance_re_roll_hit">Re-roll hit</string>
+	<string name="chance_ap">AP</string>
+	<string name="chance_rend">Rend</string>
 
 </resources>

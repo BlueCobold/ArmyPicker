@@ -80,6 +80,28 @@
                 android:text="4"
                 android:textColor="@color/text_color" />
 
+            <EditText
+                android:id="@+id/chance_edit_ap"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/chance_edit_t"
+                android:layout_below="@+id/chance_edit_t"
+                android:inputType="number"
+                android:padding="5dp"
+                android:text="0"
+                android:textColor="@color/text_color" />
+
+            <EditText
+                android:id="@+id/chance_edit_rend"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/chance_edit_t"
+                android:layout_below="@+id/chance_edit_ap"
+                android:inputType="number"
+                android:padding="5dp"
+                android:text="0"
+                android:textColor="@color/text_color" />
+
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
@@ -107,7 +129,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/chance_edit_t"
-                android:layout_below="@+id/chance_edit_t"
+                android:layout_below="@+id/chance_edit_rend"
                 android:inputType="number"
                 android:padding="5dp"
                 android:text="3"
@@ -162,6 +184,26 @@
                 android:layout_alignBottom="@+id/chance_edit_bs"
                 android:layout_alignRight="@+id/textView4"
                 android:text="@string/bs"
+                android:textColor="@color/text_color" />
+
+            <TextView
+                android:id="@+id/textViewAp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/chance_edit_ap"
+                android:layout_alignBottom="@+id/chance_edit_ap"
+                android:layout_toLeftOf="@+id/chance_edit_t"
+                android:text="@string/chance_ap"
+                android:textColor="@color/text_color" />
+            
+            <TextView
+                android:id="@+id/textViewRend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/chance_edit_rend"
+                android:layout_alignBottom="@+id/chance_edit_rend"
+                android:layout_toLeftOf="@+id/chance_edit_t"
+                android:text="@string/chance_rend"
                 android:textColor="@color/text_color" />
 
             <TextView
@@ -335,39 +377,12 @@
                 android:textColor="@color/text_color" />
 
             <CheckBox
-                android:id="@+id/chance_rending"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/chance_edit_fpn"
-                android:layout_below="@+id/chance_edit_cover"
-                android:text="@string/rending"
-                android:textColor="@color/text_color" />
-
-            <CheckBox
-                android:id="@+id/chance_reroll_to_wound"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/chance_rending"
-                android:layout_below="@+id/chance_rending"
-                android:text="@string/shred"
-                android:textColor="@color/text_color" />
-
-            <CheckBox
                 android:id="@+id/chance_reroll_to_hit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/chance_rending"
+                android:layout_alignLeft="@+id/chance_reroll_to_wound"
                 android:layout_below="@+id/chance_reroll_to_wound"
-                android:text="@string/twin_linked"
-                android:textColor="@color/text_color" />
-
-            <CheckBox
-                android:id="@+id/chance_reroll_all_ones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/chance_rending"
-                android:layout_below="@+id/chance_reroll_to_hit"
-                android:text="@string/preferred_enemy"
+                android:text="@string/chance_re_roll_hit"
                 android:textColor="@color/text_color" />
 
             <EditText
@@ -391,6 +406,15 @@
                 android:text="@string/inv_cover"
                 android:textColor="@color/text_color"
                 android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/chance_reroll_to_wound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewAp"
+                android:layout_below="@+id/chance_edit_cover"
+                android:text="@string/chance_re_roll_wound"
+                android:textColor="@color/text_color" />
 
         </RelativeLayout>
 
