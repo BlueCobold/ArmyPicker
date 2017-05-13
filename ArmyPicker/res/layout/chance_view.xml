@@ -416,6 +416,43 @@
                 android:text="@string/chance_re_roll_wound"
                 android:textColor="@color/text_color" />
 
+            <ImageView
+                android:id="@+id/chance_add_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/ic_action_new" />
+
+            <TextView
+                android:id="@+id/chance_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chance_page"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text=" &gt; "
+                android:textColor="@color/text_color" />
+
+            <TextView
+                android:id="@+id/chance_prev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chance_page"
+                android:layout_toLeftOf="@+id/chance_next"
+                android:padding="5dp"
+                android:text=" &lt; "
+                android:textColor="@color/text_color" />
+
+            <TextView
+                android:id="@+id/chance_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/chance_add_entry"
+                android:text="1 / 1"
+                android:textColor="@color/text_color" />
+
         </RelativeLayout>
 
     </ScrollView>

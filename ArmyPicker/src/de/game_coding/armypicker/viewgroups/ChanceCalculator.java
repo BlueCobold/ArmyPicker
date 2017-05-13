@@ -1,7 +1,11 @@
 package de.game_coding.armypicker.viewgroups;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.ViewById;
@@ -89,11 +93,66 @@ public class ChanceCalculator extends RelativeLayout {
 	@ViewById(R.id.chance_reroll_to_hit)
 	protected CheckBox reRollToHit;
 
+	@ViewById(R.id.chance_page)
+	protected TextView page;
+
+	private final List<Settings> settings = new ArrayList<Settings>();
+	private int settingsIndex = 0;
+
 	public ChanceCalculator(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 	}
 
+	private class Settings {
+		private final List<String> inputs = new ArrayList<String>();
+		private final List<Boolean> checks = new ArrayList<Boolean>();
+
+		public Settings() {
+			for (int i = 0; i < 10; i++) {
+				inputs.add("");
+			}
+			checks.add(false);
+			checks.add(false);
+			save();
+		}
+
+		public void save() {
+			inputs.set(0, fieldAp.getText().toString());
+			inputs.set(1, fieldBs.getText().toString());
+			inputs.set(2, fieldCover.getText().toString());
+			inputs.set(3, fieldFnp.getText().toString());
+			inputs.set(4, fieldRend.getText().toString());
+			inputs.set(5, fieldRolls.getText().toString());
+			inputs.set(6, fieldSave.getText().toString());
+			inputs.set(7, fieldStrength.getText().toString());
+			inputs.set(8, fieldToughness.getText().toString());
+			inputs.set(9, fieldWounds.getText().toString());
+			checks.set(0, reRollToHit.isChecked());
+			checks.set(1, reRollToWound.isChecked());
+		}
+
+		public void restore() {
+			fieldAp.setText(inputs.get(0));
+			fieldBs.setText(inputs.get(1));
+			fieldCover.setText(inputs.get(2));
+			fieldFnp.setText(inputs.get(3));
+			fieldRend.setText(inputs.get(4));
+			fieldRolls.setText(inputs.get(5));
+			fieldSave.setText(inputs.get(6));
+			fieldStrength.setText(inputs.get(7));
+			fieldToughness.setText(inputs.get(8));
+			fieldWounds.setText(inputs.get(9));
+			reRollToHit.setChecked(checks.get(0));
+			reRollToWound.setChecked(checks.get(1));
+		}
+	}
+
 	@AfterViews
+	protected void onAfterViews() {
+		settings.add(new Settings());
+		calculate();
+	}
+
 	@TextChange({ R.id.chance_edit_bs, R.id.chance_edit_cover, R.id.chance_edit_fpn, R.id.chance_edit_rolls,
 		R.id.chance_edit_s, R.id.chance_edit_save, R.id.chance_edit_t, R.id.chance_edit_ap, R.id.chance_edit_rend,
 		R.id.chance_edit_wounds })
@@ -109,6 +168,30 @@ public class ChanceCalculator extends RelativeLayout {
 	@CheckedChange({ R.id.chance_reroll_to_hit, R.id.chance_reroll_to_wound })
 	protected void onCheckedChange() {
 		calculate();
+	}
+
+	@Click(R.id.chance_add_entry)
+	protected void onAddSettings() {
+		settings.get(settingsIndex).save();
+		settings.add(new Settings());
+		settingsIndex = settings.size() - 1;
+		page.setText("" + (settingsIndex + 1) + " / " + settings.size());
+	}
+
+	@Click(R.id.chance_next)
+	protected void onNextSettings() {
+		settings.get(settingsIndex).save();
+		settingsIndex = Math.min(settings.size() - 1, settingsIndex + 1);
+		settings.get(settingsIndex).restore();
+		page.setText("" + (settingsIndex + 1) + " / " + settings.size());
+	}
+
+	@Click(R.id.chance_prev)
+	protected void onPreviousSettings() {
+		settings.get(settingsIndex).save();
+		settingsIndex = Math.max(0, settingsIndex - 1);
+		settings.get(settingsIndex).restore();
+		page.setText("" + (settingsIndex + 1) + " / " + settings.size());
 	}
 
 	private double calcChance(final int rolls) {
