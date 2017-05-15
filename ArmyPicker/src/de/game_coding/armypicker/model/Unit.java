@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import de.game_coding.armypicker.model.UnitOptionGroup.GroupType;
 import de.game_coding.armypicker.model.creators.UnitCreator;
 import de.game_coding.armypicker.model.creators.UnitOptionGroupCreator;
 
@@ -97,8 +98,22 @@ public class Unit extends Model {
 	}
 
 	public void setAmount(final int amount) {
+		final int old = this.amount;
 		this.amount = amount;
 		setOptionAmounts();
+		for (int i = 0; i < this.amount - old; i++) {
+			for (final UnitOptionGroup group : getOptions()) {
+				if (group.getType() == GroupType.UP_TO_X_PER_Y_MODELS
+					|| group.getType() == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS) {
+					for (final UnitOption option : group.getOptions()) {
+						if (option.getDefaultAmount() > 0) {
+							option.setAmountSelected(option.getAmountSelected() + option.getDefaultAmount());
+						}
+					}
+				}
+				group.validateAmounts();
+			}
+		}
 	}
 
 	public int getMaxAmount() {
