@@ -6,7 +6,7 @@ import org.androidannotations.api.rest.RestClientErrorHandling;
 
 import de.game_coding.armypicker.model.Army;
 
-@Rest(rootUrl = "http://game-coding.de/downloads/armypicker", converters = { ArmyStreamConverter.class })
+@Rest(rootUrl = "https://www.game-coding.de/downloads/armypicker", converters = { ArmyStreamConverter.class })
 public interface Downloader extends RestClientErrorHandling {
 
 	@Get("/template.php?name={templateName}")

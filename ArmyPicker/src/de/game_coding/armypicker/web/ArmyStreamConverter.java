@@ -6,7 +6,9 @@ import java.io.InputStream;
 
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -30,6 +32,12 @@ public class ArmyStreamConverter extends AbstractHttpMessageConverter<Army> {
 	protected Army readInternal(final Class<? extends Army> clazz, final HttpInputMessage inputMessage)
 		throws IOException, HttpMessageNotReadableException {
 
+		if (inputMessage instanceof ClientHttpResponse) {
+			if (((ClientHttpResponse) inputMessage).getStatusCode() != HttpStatus.OK) {
+				return null;
+			}
+		}
+
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		final byte[] buffer = new byte[1024];
 		int n;
@@ -48,8 +56,8 @@ public class ArmyStreamConverter extends AbstractHttpMessageConverter<Army> {
 	}
 
 	@Override
-	protected void writeInternal(final Army t, final HttpOutputMessage outputMessage) throws IOException,
-		HttpMessageNotWritableException {
+	protected void writeInternal(final Army t, final HttpOutputMessage outputMessage)
+		throws IOException, HttpMessageNotWritableException {
 		// TODO Auto-generated method stub
 
 	}
