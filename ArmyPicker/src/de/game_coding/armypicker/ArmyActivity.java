@@ -20,6 +20,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
@@ -93,6 +94,18 @@ public class ArmyActivity extends Activity {
 	@ViewById(R.id.army_specific_unit_gear_view)
 	protected View specificGearView;
 
+	@ViewById(R.id.army_show_weapon_stats)
+	protected ImageButton showWeaponsButton;
+
+	@ViewById(R.id.army_show_unit_stats)
+	protected ImageButton showStatsButton;
+
+	@ViewById(R.id.army_show_unit_lists)
+	protected ImageButton showUnitListButton;
+
+	@ViewById(R.id.army_show_chance_calculator)
+	protected ImageButton showCalculatorButton;
+
 	private boolean showTypes;
 
 	private UnitSummaries showSummaries = UnitSummaries.NONE;
@@ -106,6 +119,8 @@ public class ArmyActivity extends Activity {
 	@AfterViews
 	protected void init() {
 		restoreSettings();
+
+		showUnitListButton.setColorFilter(0xff60E0FF);
 
 		army = getIntent().getParcelableExtra(EXTRA_ARMY);
 
@@ -135,11 +150,13 @@ public class ArmyActivity extends Activity {
 	@Click(R.id.army_show_chance_calculator)
 	protected void showChanceView() {
 		chanceView.setVisibility(View.VISIBLE);
+		showCalculatorButton.setColorFilter(0xff60E0FF);
 	}
 
 	@Click(R.id.chance_view)
 	protected void hideChanceView() {
 		chanceView.setVisibility(View.GONE);
+		showCalculatorButton.setColorFilter(0xffffffff);
 	}
 
 	@Click(R.id.army_show_characters_lists)
@@ -190,6 +207,9 @@ public class ArmyActivity extends Activity {
 		pointLabel.setVisibility(View.GONE);
 		statsList.setVisibility(View.VISIBLE);
 		weaponList.setVisibility(View.GONE);
+		showWeaponsButton.setColorFilter(0xffffffff);
+		showStatsButton.setColorFilter(0xff60E0FF);
+		showUnitListButton.setColorFilter(0xffffffff);
 	}
 
 	@Click(R.id.army_show_unit_lists)
@@ -199,6 +219,9 @@ public class ArmyActivity extends Activity {
 		pointLabel.setVisibility(View.VISIBLE);
 		armyList.setVisibility(View.VISIBLE);
 		weaponList.setVisibility(View.GONE);
+		showWeaponsButton.setColorFilter(0xffffffff);
+		showStatsButton.setColorFilter(0xffffffff);
+		showUnitListButton.setColorFilter(0xff60E0FF);
 	}
 
 	@Click(R.id.army_show_weapon_stats)
@@ -208,6 +231,9 @@ public class ArmyActivity extends Activity {
 		pointLabel.setVisibility(View.GONE);
 		statsList.setVisibility(View.GONE);
 		weaponList.setVisibility(View.VISIBLE);
+		showWeaponsButton.setColorFilter(0xff60E0FF);
+		showStatsButton.setColorFilter(0xffffffff);
+		showUnitListButton.setColorFilter(0xffffffff);
 	}
 
 	@Click(R.id.army_show_detachments)
