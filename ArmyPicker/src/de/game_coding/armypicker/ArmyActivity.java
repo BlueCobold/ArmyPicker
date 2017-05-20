@@ -1,5 +1,7 @@
 package de.game_coding.armypicker;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import de.game_coding.armypicker.adapter.UnitListAdapter;
@@ -38,8 +41,10 @@ import de.game_coding.armypicker.util.CloneUtil;
 import de.game_coding.armypicker.util.FileUtil;
 import de.game_coding.armypicker.util.UIUtil;
 import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.util.WeaponUtils;
 import de.game_coding.armypicker.viewmodel.UnitStatsSummaries;
 import de.game_coding.armypicker.viewmodel.UnitSummaries;
+import de.game_coding.armypicker.viewmodel.WeaponStatsSummaries;
 
 @EActivity(R.layout.activity_army)
 @OptionsMenu(R.menu.army_activity_menu)
@@ -48,6 +53,9 @@ public class ArmyActivity extends Activity {
 	private static final String SETTING_SHOW_TYPES = "ArmyActivity.SHOW_TYPES";
 
 	private static final String SETTING_SHOW_SUMMARIES = "ArmyActivity.SHOW_SUMMARIES";
+
+	private static final String SETTING_SHOW_SPECIFIC_GEAR_SUMMARIES = "ArmyActivity.SETTING_SHOW_SPECIFIC_GEAR_SUMMARIES";
+	private static final String SETTING_SHOW_GEAR_SUMMARIES = "ArmyActivity.SETTING_SHOW_GEAR_SUMMARIES";
 
 	public static final String EXTRA_ARMY = "ArmyActivity.EXTRA_ARMY";
 
@@ -112,9 +120,14 @@ public class ArmyActivity extends Activity {
 
 	private UnitStatsSummaries showStatsSummaries = UnitStatsSummaries.NONE;
 
+	private WeaponStatsSummaries specificGearSummaries = WeaponStatsSummaries.NONE;
+	private WeaponStatsSummaries gearSummaries = WeaponStatsSummaries.NONE;
+
 	private List<UnitStats> stats;
 
 	private Unit shownStatsUnit;
+
+	private StatsEntry shownStatsEntry;
 
 	@AfterViews
 	protected void init() {
@@ -133,11 +146,12 @@ public class ArmyActivity extends Activity {
 
 		stats = CloneUtil.clone(army.getStats(), UnitStats.CREATOR);
 		sortStatsByName(stats);
-		statsList.setAdapter(new UnitStatsListAdapter(this, stats, showStatsSummaries));
+		final Collection<StatsEntry> empty = new ArrayList<UnitStats.StatsEntry>();
+		statsList.setAdapter(new UnitStatsListAdapter(this, stats, empty, showStatsSummaries));
 
 		final UnitStats weapons = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
 		sortStatsByName(weapons);
-		weaponList.setAdapter(new WeaponStatsListAdapter(this, weapons));
+		weaponList.setAdapter(new WeaponStatsListAdapter(this, weapons, WeaponStatsSummaries.NONE));
 
 		UIUtil.show(selectionView, army.getUnits().size() == 0);
 	}
@@ -167,12 +181,11 @@ public class ArmyActivity extends Activity {
 
 	@ItemClick(R.id.army_available_unit_selection)
 	protected void selectNewUnit(final Unit unit) {
-		armyList.setAdapter(null);
 		army.addUnit(CloneUtil.clone(unit, Unit.CREATOR));
 		if (showTypes) {
 			sortUnits(army);
 		}
-		armyList.setAdapter(newUnitAdapter());
+		setAdapter(armyList, newUnitAdapter());
 		pointLabel.setText(String.valueOf(army.getTotalCosts()));
 		UIUtil.hide(selectionView);
 		FileUtil.storeArmy(army, ArmyActivity.this);
@@ -226,6 +239,9 @@ public class ArmyActivity extends Activity {
 
 	@Click(R.id.army_show_weapon_stats)
 	protected void showWeaponList() {
+		final UnitStats weapons = CloneUtil.clone(army.getWeapons(), UnitStats.CREATOR);
+		sortStatsByName(weapons);
+		setAdapter(weaponList, new WeaponStatsListAdapter(this, weapons, gearSummaries));
 		armyList.setVisibility(View.GONE);
 		armyTitle.setVisibility(View.GONE);
 		pointLabel.setVisibility(View.GONE);
@@ -234,6 +250,14 @@ public class ArmyActivity extends Activity {
 		showWeaponsButton.setColorFilter(0xff60E0FF);
 		showStatsButton.setColorFilter(0xffffffff);
 		showUnitListButton.setColorFilter(0xffffffff);
+	}
+
+	private void setAdapter(final ListView listView, final ListAdapter adapter) {
+		final int index = listView.getFirstVisiblePosition();
+		final View v = listView.getChildAt(0);
+		final int top = (v == null) ? 0 : (v.getTop() - listView.getPaddingTop());
+		listView.setAdapter(adapter);
+		listView.setSelectionFromTop(index, top);
 	}
 
 	@Click(R.id.army_show_detachments)
@@ -245,6 +269,8 @@ public class ArmyActivity extends Activity {
 		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		showTypes = settings.getBoolean(SETTING_SHOW_TYPES, false);
 		showSummaries = UnitSummaries.values()[settings.getInt(SETTING_SHOW_SUMMARIES, 0)];
+		specificGearSummaries = WeaponStatsSummaries.values()[settings.getInt(SETTING_SHOW_SPECIFIC_GEAR_SUMMARIES, 0)];
+		gearSummaries = WeaponStatsSummaries.values()[settings.getInt(SETTING_SHOW_GEAR_SUMMARIES, 0)];
 	}
 
 	private void storeSettings() {
@@ -252,6 +278,8 @@ public class ArmyActivity extends Activity {
 		final Editor editor = settings.edit();
 		editor.putBoolean(SETTING_SHOW_TYPES, showTypes);
 		editor.putInt(SETTING_SHOW_SUMMARIES, showSummaries.ordinal());
+		editor.putInt(SETTING_SHOW_SPECIFIC_GEAR_SUMMARIES, specificGearSummaries.ordinal());
+		editor.putInt(SETTING_SHOW_GEAR_SUMMARIES, gearSummaries.ordinal());
 		editor.apply();
 	}
 
@@ -269,10 +297,9 @@ public class ArmyActivity extends Activity {
 
 			@Override
 			public void onDelete(final Unit unit) {
-				armyList.setAdapter(null);
 				army.removeUnit(unit);
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
-				armyList.setAdapter(newUnitAdapter());
+				setAdapter(armyList, newUnitAdapter());
 				FileUtil.storeArmy(army, ArmyActivity.this);
 			}
 		});
@@ -297,7 +324,8 @@ public class ArmyActivity extends Activity {
 		shownStatsUnit = unit;
 		specificStatsView.setVisibility(View.VISIBLE);
 		final UnitStats stats = UnitUtils.getStats(unit.getStatsReferences(), army.getStats());
-		specificStatsList.setAdapter(new UnitStatsListAdapter(ArmyActivity.this, stats, showStatsSummaries));
+		final Collection<StatsEntry> weapons = WeaponUtils.getWeapons(stats, army.getWeapons());
+		setAdapter(specificStatsList, new UnitStatsListAdapter(ArmyActivity.this, stats, weapons, showStatsSummaries));
 		if (stats.getEntries().size() > 1) {
 			specificInlineWeaponList.setVisibility(View.GONE);
 		} else {
@@ -305,7 +333,8 @@ public class ArmyActivity extends Activity {
 				stats.getEntries().toArray(new StatsEntry[stats.getEntries().size()]));
 			specificInlineWeaponList.setVisibility(gear.getEntries().size() > 0 ? View.VISIBLE : View.GONE);
 			if (gear.getEntries().size() > 0) {
-				specificInlineWeaponList.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, gear));
+				setAdapter(specificInlineWeaponList,
+					new WeaponStatsListAdapter(ArmyActivity.this, gear, specificGearSummaries));
 			}
 		}
 	}
@@ -313,13 +342,15 @@ public class ArmyActivity extends Activity {
 	@ItemClick(R.id.army_specific_weapon_stats_list)
 	protected void hideSpecificGearView() {
 		specificGearView.setVisibility(View.GONE);
+		shownStatsEntry = null;
 	}
 
 	@ItemLongClick({ R.id.army_unit_stats_list, R.id.army_specific_unit_stats_list })
 	protected void showGearWindow(final StatsEntry statsEntry) {
+		shownStatsEntry = statsEntry;
 		specificGearView.setVisibility(View.VISIBLE);
-		specificWeaponList
-			.setAdapter(new WeaponStatsListAdapter(ArmyActivity.this, getGear(army.getWeapons(), statsEntry)));
+		setAdapter(specificWeaponList, new WeaponStatsListAdapter(ArmyActivity.this,
+			getGear(army.getWeapons(), statsEntry), specificGearSummaries));
 	}
 
 	private UnitStats getGear(final UnitStats lookupList, final StatsEntry... statsEntries) {
@@ -364,8 +395,7 @@ public class ArmyActivity extends Activity {
 			sortUnits(army);
 		}
 		showUnitList();
-		armyList.setAdapter(null);
-		armyList.setAdapter(newUnitAdapter());
+		setAdapter(armyList, newUnitAdapter());
 		storeSettings();
 	}
 
@@ -375,7 +405,7 @@ public class ArmyActivity extends Activity {
 			if (resultCode == RESULT_OK) {
 				final Bundle bundle = data.getExtras();
 				army = bundle.getParcelable(BattalionActivity.EXTRA_ARMY);
-				armyList.setAdapter(newUnitAdapter());
+				setAdapter(armyList, newUnitAdapter());
 				pointLabel.setText(String.valueOf(army.getTotalCosts()));
 			}
 		}
@@ -402,16 +432,25 @@ public class ArmyActivity extends Activity {
 
 	@OptionsItem(R.id.action_show_summary)
 	protected void showHideSummaries() {
-		if (specificStatsView.getVisibility() == View.VISIBLE && shownStatsUnit != null) {
+		if (specificGearView.getVisibility() == View.VISIBLE && shownStatsEntry != null) {
+			specificGearSummaries = WeaponStatsSummaries.values()[(specificGearSummaries.ordinal() + 1)
+				% WeaponStatsSummaries.values().length];
+			showGearWindow(shownStatsEntry);
+			return;
+		} else if (specificStatsView.getVisibility() == View.VISIBLE && shownStatsUnit != null) {
 			showStatsSummaries = UnitStatsSummaries.values()[(showStatsSummaries.ordinal() + 1)
 				% UnitStatsSummaries.values().length];
 			showStatsWindow(shownStatsUnit);
 			return;
+		} else if (weaponList.getVisibility() == View.VISIBLE) {
+			gearSummaries = WeaponStatsSummaries.values()[(gearSummaries.ordinal() + 1)
+				% WeaponStatsSummaries.values().length];
+			showWeaponList();
+			return;
 		}
 		showSummaries = UnitSummaries.values()[(showSummaries.ordinal() + 1) % UnitSummaries.values().length];
 		showUnitList();
-		armyList.setAdapter(null);
-		armyList.setAdapter(newUnitAdapter());
+		setAdapter(armyList, newUnitAdapter());
 		storeSettings();
 	}
 

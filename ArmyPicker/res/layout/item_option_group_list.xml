@@ -16,15 +16,14 @@
 		android:background="#0AFFFFFF"
 		/>
 
-	<TextView 
-		android:id="@+id/option_warnings_header"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal"
-		android:textColor="#A0FF0000"
-		android:textSize="16sp"
-		android:background="#30FF0000"
-		/>
+	<TextView
+	    android:id="@+id/option_warnings_header"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#30FF0000"
+	    android:gravity="center_horizontal"
+	    android:textColor="#A0FF8040"
+	    android:textSize="16sp" />
 
 	<LinearLayout
 		android:id="@+id/option_list"

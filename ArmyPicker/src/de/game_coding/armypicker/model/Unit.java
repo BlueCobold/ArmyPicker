@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import de.game_coding.armypicker.model.OptionRule.Enabler;
 import de.game_coding.armypicker.model.UnitOptionGroup.GroupType;
 import de.game_coding.armypicker.model.creators.UnitCreator;
 import de.game_coding.armypicker.model.creators.UnitOptionGroupCreator;
@@ -263,6 +264,10 @@ public class Unit extends Model {
 	@Override
 	protected int getFeatureVersion() {
 		return 0;
+	}
+
+	public Unit addRule(final int targetGroupId, final Enabler enabler) {
+		return addRule(targetGroupId, enabler.getRule());
 	}
 
 	public Unit addRule(final int targetGroupId, final OptionRule rule) {

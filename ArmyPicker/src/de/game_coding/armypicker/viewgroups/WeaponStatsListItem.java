@@ -10,6 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import de.game_coding.armypicker.R;
+import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.UnitStats;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 
@@ -20,7 +21,10 @@ public class WeaponStatsListItem extends RelativeLayout {
 	protected TextView title;
 
 	@ViewById(R.id.item_list_table)
-	protected TableLayout table;
+	protected TableLayout itemTable;
+
+	@ViewById(R.id.item_rules_table)
+	protected TableLayout rulesTable;
 
 	private UnitStats stats;
 
@@ -30,7 +34,7 @@ public class WeaponStatsListItem extends RelativeLayout {
 		super(context);
 	}
 
-	public void bind(final UnitStats stats, final StatsEntry statsEntry, final int width) {
+	public void bind(final UnitStats stats, final StatsEntry statsEntry, final int width, final boolean showRules) {
 		entry = statsEntry;
 		this.stats = stats;
 		String entryName = "";
@@ -38,14 +42,21 @@ public class WeaponStatsListItem extends RelativeLayout {
 			entryName = entry.getName();
 		}
 		title.setText(entryName);
-		table.removeAllViews();
-		addRow(entry.getValues(), width);
+		itemTable.removeAllViews();
+		rulesTable.removeAllViews();
+		addRow(itemTable, entry.getValues(), width, null);
 		for (final StatsEntry weapon : entry.getSecondaries()) {
-			addRow(weapon.getValues(), width);
+			addRow(itemTable, weapon.getValues(), width, null);
+		}
+		if (showRules) {
+			for (final GameRule rule : entry.getGameRules()) {
+				addRow(rulesTable, new String[] { rule.getTitle(), rule.getDescription() }, width,
+					new float[] { 0.4f, 0.6f });
+			}
 		}
 	}
 
-	private void addRow(final String[] values, final int width) {
+	private void addRow(final TableLayout table, final String[] values, final int width, final float[] entryWidths) {
 		boolean empty = true;
 		for (final String value : values) {
 			empty &= value.isEmpty();
@@ -54,7 +65,10 @@ public class WeaponStatsListItem extends RelativeLayout {
 			return;
 		}
 		final TableRow tableRow = new TableRow(getContext());
-		final float[] percents = new float[] { 0.18f, 0.20f, 0.12f, 0.12f, 0.12f, 0.26f };
+		float[] percents = entryWidths;
+		if (percents == null) {
+			percents = new float[] { 0.18f, 0.20f, 0.12f, 0.12f, 0.12f, 0.26f };
+		}
 
 		for (int i = 0; i < values.length && i < stats.getHeaders().length; i++) {
 			final String value = values[i];

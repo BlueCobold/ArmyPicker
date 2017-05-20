@@ -56,8 +56,8 @@ public class MainActivity extends Activity {
 			add(build(SPACE_ELVES));
 			add(build(SPACE_CLOWNS));
 			add(build(EVIL_SPACE_ELVES));
-			add(build(SPACE_MONKS));
-			add(build(GREEN_SPACE_MONKS));
+			// add(build(SPACE_MONKS));
+			// add(build(GREEN_SPACE_MONKS));
 		}
 
 		private Army build(final IArmyTemplateBuilder builder) {

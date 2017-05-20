@@ -1,5 +1,7 @@
 package de.game_coding.armypicker.viewgroups;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.androidannotations.annotations.EViewGroup;
@@ -19,6 +21,7 @@ import de.game_coding.armypicker.adapter.UnitGameRuleListAdapter;
 import de.game_coding.armypicker.model.GameRule;
 import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.util.WeaponUtils;
 import de.game_coding.armypicker.viewmodel.UnitStatsSummaries;
 
 @EViewGroup(R.layout.item_unit_stats_list)
@@ -40,7 +43,8 @@ public class UnitStatsListItem extends RelativeLayout {
 		super(context);
 	}
 
-	public void bind(final StatsEntry item, final String[] headers, final UnitStatsSummaries showSummaries) {
+	public void bind(final StatsEntry item, final String[] headers, final Collection<StatsEntry> weapons,
+		final UnitStatsSummaries showSummaries) {
 
 		String entryName = "";
 		if (item != null) {
@@ -55,7 +59,9 @@ public class UnitStatsListItem extends RelativeLayout {
 			addRow(sec.getValues());
 		}
 
-		final List<GameRule> rules = item.getGameRules();
+		final List<GameRule> rules = new ArrayList<GameRule>();
+		rules.addAll(item.getGameRules());
+		rules.addAll(WeaponUtils.getGearRules(weapons));
 		if (showSummaries == UnitStatsSummaries.ALL_SUMMARIES && !rules.isEmpty()) {
 			rulesSummary.setText(UnitUtils.getRulesSummaries(rules));
 			rulesSummary.setVisibility(View.VISIBLE);
@@ -83,8 +89,14 @@ public class UnitStatsListItem extends RelativeLayout {
 			final TextView text = new TextView(getContext());
 			text.setText(statName);
 			text.setGravity(Gravity.CENTER_HORIZONTAL);
-			text.setLayoutParams(
-				new TableRow.LayoutParams(table.getWidth() / values.length, TableRow.LayoutParams.WRAP_CONTENT));
+
+			final int width = table.getWidth() / values.length;
+			/*
+			 * if (statName.equals("M")) { width += (int) (width * 0.4); } else
+			 * if (statName.equals("S") || statName.equals("T")) { width -=
+			 * (int) (width * 0.2); }
+			 */
+			text.setLayoutParams(new TableRow.LayoutParams(width, TableRow.LayoutParams.WRAP_CONTENT));
 			text.setTextColor(text.getResources().getColor(R.color.text_color));
 			tableRow.addView(text);
 		}

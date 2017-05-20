@@ -76,6 +76,11 @@ public class UnitStats extends Model {
 		return this;
 	}
 
+	public UnitStats addSecondary(final String name, final String... values) {
+		entries.get(entries.size() - 1).addSecondary(name, values);
+		return this;
+	}
+
 	public UnitStats appendEntry(final String name, final String... values) {
 		entries.add(new StatsEntry(name, values));
 		return this;

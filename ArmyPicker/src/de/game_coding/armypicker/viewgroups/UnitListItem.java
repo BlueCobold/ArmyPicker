@@ -1,6 +1,7 @@
 package de.game_coding.armypicker.viewgroups;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.androidannotations.annotations.Click;
@@ -23,8 +24,10 @@ import de.game_coding.armypicker.model.Unit;
 import de.game_coding.armypicker.model.UnitOption;
 import de.game_coding.armypicker.model.UnitOptionGroup;
 import de.game_coding.armypicker.model.UnitStats;
+import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.util.UIUtil;
 import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.util.WeaponUtils;
 import de.game_coding.armypicker.viewmodel.UnitSummaries;
 
 @EViewGroup(R.layout.item_unit_list)
@@ -76,14 +79,18 @@ public class UnitListItem extends RelativeLayout {
 
 	private UnitSummaries showSummaries = UnitSummaries.NONE;
 
+	private Collection<StatsEntry> weapons;
+
 	public UnitListItem(final Context context) {
 		super(context);
 	}
 
-	public void bind(final Unit item, final UnitStats stats, final UnitSummaries showSummaries) {
+	public void bind(final Unit item, final UnitStats stats, final Collection<StatsEntry> weapons,
+		final UnitSummaries showSummaries) {
 		unit = item;
 		this.stats = stats;
 		this.showSummaries = showSummaries;
+		this.weapons = weapons;
 
 		title.setText(unit.getName());
 		costs.setText(String.valueOf(unit.getTotalCosts()));
@@ -115,14 +122,16 @@ public class UnitListItem extends RelativeLayout {
 		}
 
 		final List<GameRule> rules = stats.getGameRules();
-		if (showSummaries == UnitSummaries.ALL_SUMMARIES && !rules.isEmpty()) {
-			rulesSummary.setText(UnitUtils.getRulesSummaries(rules));
+		final Collection<GameRule> gearRules = WeaponUtils.getGearRules(weapons);
+		if (showSummaries == UnitSummaries.ALL_SUMMARIES && !(rules.isEmpty() && gearRules.isEmpty())) {
+			rulesSummary.setText(UnitUtils.getRulesSummaries(rules, gearRules));
 			rulesSummary.setVisibility(View.VISIBLE);
 		} else {
 			rulesSummary.setVisibility(View.GONE);
 		}
 
-		if (showSummaries == UnitSummaries.ALL_DETAILS && !rules.isEmpty()) {
+		if (showSummaries == UnitSummaries.ALL_DETAILS && !(rules.isEmpty() && gearRules.isEmpty())) {
+			rules.addAll(gearRules);
 			final UnitGameRuleListAdapter ruleAdapter = new UnitGameRuleListAdapter(getContext(), rules);
 			buildRuleEntries(ruleAdapter);
 			ruleList.setVisibility(View.VISIBLE);

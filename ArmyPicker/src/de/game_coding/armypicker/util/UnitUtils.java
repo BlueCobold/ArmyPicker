@@ -31,8 +31,22 @@ public final class UnitUtils {
 	}
 
 	public static String getRulesSummaries(final Collection<GameRule> rules) {
+		return getRulesSummaries(rules, null);
+	}
+
+	public static String getRulesSummaries(final Collection<GameRule> rules, final Collection<GameRule> gearRules) {
 		final StringBuilder sb = new StringBuilder();
 		for (final GameRule rule : rules) {
+			if (sb.length() != 0) {
+				sb.append(", ").append(rule.getTitle());
+			} else {
+				sb.append(rule.getTitle());
+			}
+		}
+		if (gearRules == null) {
+			return sb.toString();
+		}
+		for (final GameRule rule : gearRules) {
 			if (sb.length() != 0) {
 				sb.append(", ").append(rule.getTitle());
 			} else {

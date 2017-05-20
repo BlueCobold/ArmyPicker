@@ -1,6 +1,7 @@
 package de.game_coding.armypicker.adapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -14,7 +15,10 @@ import de.game_coding.armypicker.model.Battalion;
 import de.game_coding.armypicker.model.BattalionRequirement;
 import de.game_coding.armypicker.model.IValueChangedNotifier;
 import de.game_coding.armypicker.model.Unit;
+import de.game_coding.armypicker.model.UnitStats;
+import de.game_coding.armypicker.model.UnitStats.StatsEntry;
 import de.game_coding.armypicker.util.UnitUtils;
+import de.game_coding.armypicker.util.WeaponUtils;
 import de.game_coding.armypicker.viewgroups.UnitListItem;
 import de.game_coding.armypicker.viewgroups.UnitListItem_;
 import de.game_coding.armypicker.viewmodel.UnitSummaries;
@@ -68,7 +72,9 @@ public class UnitListAdapter extends BaseUnitAdapter<UnitListItem> {
 	protected void fillView(final UnitListItem view, final Unit item, final int position, final ViewGroup parent) {
 
 		view.setDeleteHandler(army.getUnits().contains(item) ? deleteHandler : null);
-		view.bind(item, UnitUtils.getStats(item.getStatsReferences(), army.getStats()), showSummaries);
+		final UnitStats stats = UnitUtils.getStats(item.getStatsReferences(), army.getStats());
+		final Collection<StatsEntry> weapons = WeaponUtils.getWeapons(stats, army.getWeapons());
+		view.bind(item, stats, weapons, showSummaries);
 		view.setNotifier(notifier);
 
 		if (showHeader && (position == 0 || item.getType() != getItem(position - 1).getType())) {

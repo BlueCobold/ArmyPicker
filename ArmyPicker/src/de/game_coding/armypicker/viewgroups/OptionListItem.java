@@ -59,8 +59,13 @@ public class OptionListItem extends RelativeLayout {
 	@Click(R.id.option_add)
 	protected void onAddClicked() {
 		if (optionGroup.canSelectMore(option)) {
-			option.setAmountSelected(option.getAmountSelected()
-				+ (optionGroup.getType() == GroupType.ONE_PER_MODEL ? optionGroup.getLimit() : 1));
+			if (optionGroup.getType() == GroupType.ONE_PER_MODEL) {
+				option.setAmountSelected(option.getAmountSelected() + optionGroup.getLimit());
+			} else if (optionGroup.getType() == GroupType.X_PER_UNIT) {
+				option.setAmountSelected(optionGroup.getInitalOptionNumberPerGroup());
+			} else {
+				option.setAmountSelected(option.getAmountSelected() + 1);
+			}
 			updateValues();
 		}
 	}
@@ -94,7 +99,8 @@ public class OptionListItem extends RelativeLayout {
 		UIUtil.show(delete,
 			(option.getAmountSelected() > 0 && optionGroup.getType() != GroupType.X_OF_EACH_PER_MODEL)
 				&& (optionGroup.getOptions().size() > 1 || (optionGroup.getType() != GroupType.ONE_PER_MODEL
-					&& optionGroup.getType() != GroupType.ONE_PER_MODEL_EXEPT_ONE)));
+					&& optionGroup.getType() != GroupType.ONE_PER_MODEL_EXEPT_ONE
+					&& optionGroup.getType() != GroupType.X_PER_UNIT)));
 		UIUtil.show(add, optionGroup.canSelectMore(option) && option.isEnabled());
 		UIUtil.show(costs, option.getCosts() > 0);
 	}

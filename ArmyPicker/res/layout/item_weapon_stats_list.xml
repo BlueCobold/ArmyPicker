@@ -23,5 +23,15 @@
 		android:layout_marginLeft="10dp"
 		android:layout_below="@id/list_item_name" >
 	</TableLayout>
+	<TableLayout
+		android:id="@+id/item_rules_table"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#18FFFFFF"
+		android:shrinkColumns="*"
+		android:stretchColumns="*"
+		android:layout_marginLeft="10dp"
+		android:layout_below="@id/item_list_table" >
+	</TableLayout>
 	
 </RelativeLayout>

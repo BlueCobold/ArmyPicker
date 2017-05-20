@@ -61,6 +61,8 @@ public class UnitOptionGroup extends Model {
 
 	private int groupSize = 1;
 
+	private int reducer = 0;
+
 	private int limit;
 
 	private List<UnitOption> options = new ArrayList<UnitOption>();
@@ -137,9 +139,12 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
-		if (this.optionNumberPerGroup != Math.max(0, optionNumberPerGroup)) {
-			this.optionNumberPerGroup = Math.max(0, optionNumberPerGroup);
-			validateAmounts();
+		if (type != GroupType.UP_TO_X_PER_Y_MODELS && type != GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS
+			&& type != GroupType.ONE_PER_MODEL && type != GroupType.X_OF_EACH_PER_MODEL) {
+			if (this.optionNumberPerGroup != Math.max(0, optionNumberPerGroup)) {
+				this.optionNumberPerGroup = Math.max(0, optionNumberPerGroup);
+				validateAmounts();
+			}
 		}
 	}
 
@@ -167,14 +172,16 @@ public class UnitOptionGroup extends Model {
 		int current = 0;
 		for (final UnitOption option : options) {
 			if (type == GroupType.ONE_PER_MODEL || type == GroupType.ONE_PER_MODEL_EXEPT_ONE) {
-				option.setAmountSelected(option.getAmountSelected() > 0 ? max : 0);
+				option
+					.setAmountSelected(option.getAmountSelected() > 0 || getOptions().size() == 1 ? max - reducer : 0);
 			} else if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS || type == GroupType.UP_TO_X_OF_EACH_PER_UNIT) {
 				option.setAmountSelected(Math.min(option.getAmountSelected(), max));
 				continue;
 			} else if (type == GroupType.X_PER_UNIT) {
-				option.setAmountSelected(optionNumberPerGroup);
+				option.setAmountSelected(
+					option.getAmountSelected() == max - reducer || getOptions().size() == 1 ? max - reducer : 0);
 			} else if (type == GroupType.X_OF_EACH_PER_MODEL) {
-				option.setAmountSelected(optionNumberPerGroup);
+				option.setAmountSelected(max - reducer);
 				continue;
 			}
 			if (option.getParentId() >= 0) {
@@ -281,7 +288,7 @@ public class UnitOptionGroup extends Model {
 				return optionNumberPerGroup;
 
 			case X_OF_EACH_PER_MODEL:
-				return optionNumberPerGroup;
+				return limit * initialOptionNumberPerGroup;
 
 			case ONE_PER_MODEL:
 				max = limit;
@@ -297,14 +304,16 @@ public class UnitOptionGroup extends Model {
 				break;
 
 			default:
-				max = optionNumberPerGroup * (limit / groupSize);
+				max = optionNumberPerGroup * (limit / groupSize) - reducer;
 				break;
 		}
 		return max;
 	}
 
 	public boolean canSelectMore(final UnitOption option) {
-		if (!enabled) {
+		final boolean hasMultipleOptions = (type != GroupType.ONE_PER_MODEL && type != GroupType.X_OF_EACH_PER_MODEL)
+			|| options.size() > 1;
+		if (!enabled || !hasMultipleOptions) {
 			return false;
 		}
 		if (type == GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS || type == GroupType.UP_TO_X_OF_EACH_PER_UNIT) {
@@ -397,5 +406,12 @@ public class UnitOptionGroup extends Model {
 			name += group.toString() + ", ";
 		}
 		return name;
+	}
+
+	public void reduceBy(final int diff) {
+		reducer = diff;
+		if (type == GroupType.UP_TO_X_PER_Y_MODELS) {
+			validateAmounts();
+		}
 	}
 }

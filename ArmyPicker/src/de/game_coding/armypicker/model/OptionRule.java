@@ -17,7 +17,8 @@ public class OptionRule extends Model implements IRule {
 		REDUCE_GROUP_AMOUNT_BY, //
 		REDUCE_GROUP_AMOUNT_BY_OPTION, //
 		ADD_WARNING, //
-		LIMIT_OPTION_TO
+		LIMIT_OPTION_TO, //
+		LIMIT_OPTIONS_TO_MEMBERS, //
 	}
 
 	private enum ConditionType {
@@ -25,17 +26,25 @@ public class OptionRule extends Model implements IRule {
 		NEVER, //
 		ON_OWNER_SELECTED, //
 		ON_OPTION_SELECTED, //
+		/**
+		 * True if at least one of the given options is not selected
+		 */
 		ON_OPTION_NOT_SELECTED, //
+		/**
+		 * True if none of the given options is selected
+		 */
+		ON_NO_OPTION_SELECTED, //
 		ON_UNSELECTED, //
 		GROUP_SUMS_LESS_THAN, //
 		GROUP_SUMS_MORE_THAN, //
-		LIMIT_LESS_THAN
+		LIMIT_LESS_THAN, //
 	}
 
 	private int targetId;
 	public int[] sourceIds = new int[0];
 	private int[] targetIds = new int[0];
 	public int value;
+	public int conditionValue;
 	private GroupType targetType = GroupType.ONE_PER_MODEL;
 	private ConditionType conditionType = ConditionType.ALWAYS;
 	private ActionType actionType = ActionType.CHANGE_GROUP_TYPE;
@@ -53,38 +62,56 @@ public class OptionRule extends Model implements IRule {
 	public void check() {
 		final UnitOptionGroup target = getGroup(targetId);
 		switch (actionType) {
-		case CHANGE_GROUP_TYPE:
-			if (checkCondition() && target != null) {
-				target.setType(targetType);
+			case CHANGE_GROUP_TYPE:
+				if (checkCondition() && target != null) {
+					target.setType(targetType);
+				}
+				break;
+			case ENABLE_GROUP:
+				if (target != null) {
+					target.setEnabled(checkCondition());
+				}
+				break;
+			case ENABLE_OPTION:
+				handleEnableOption(true);
+				break;
+			case DISABLE_OPTION:
+				handleEnableOption(false);
+				break;
+			case REDUCE_GROUP_AMOUNT:
+				handleLimitOptionAmountBy(Integer.MIN_VALUE);
+				break;
+			case REDUCE_GROUP_AMOUNT_BY:
+				handleLimitOptionAmountBy(value);
+				break;
+			case REDUCE_GROUP_AMOUNT_BY_OPTION:
+				handleLimitOptionAmountBy(new Enabler().buildSourceOptionSums());
+				break;
+			case ADD_WARNING:
+				handleAddWarning();
+				break;
+			case LIMIT_OPTION_TO:
+				handleOptionLimit();
+				break;
+			case LIMIT_OPTIONS_TO_MEMBERS:
+				handleOptionLimitsByMembers();
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void handleOptionLimitsByMembers() {
+		final UnitOptionGroup owner = getOwnerGroup();
+		final int members = owner.getLimit() - value;
+		int total = 0;
+		for (final int id : targetIds) {
+			final UnitOption option = getOption(id);
+			final int delta = members - total - option.getAmountSelected();
+			if (delta < 0) {
+				option.setAmountSelected(option.getAmountSelected() + delta);
 			}
-			break;
-		case ENABLE_GROUP:
-			if (target != null) {
-				target.setEnabled(checkCondition());
-			}
-			break;
-		case ENABLE_OPTION:
-			handleEnableOption(true);
-			break;
-		case DISABLE_OPTION:
-			handleEnableOption(false);
-			break;
-		case REDUCE_GROUP_AMOUNT:
-			handleLimitOptionAmountBy(Integer.MIN_VALUE);
-			break;
-		case REDUCE_GROUP_AMOUNT_BY:
-			handleLimitOptionAmountBy(value);
-			break;
-		case REDUCE_GROUP_AMOUNT_BY_OPTION:
-			handleLimitOptionAmountBy(new Enabler().buildSourceOptionSums());
-			break;
-		case ADD_WARNING:
-			handleAddWarning();
-			break;
-		case LIMIT_OPTION_TO:
-			handleOptionLimit();
-		default:
-			break;
+			total += option.getAmountSelected();
 		}
 	}
 
@@ -98,46 +125,54 @@ public class OptionRule extends Model implements IRule {
 	private boolean checkCondition() {
 		final UnitOptionGroup owner = getOwnerGroup();
 		switch (conditionType) {
-		case ALWAYS:
-			return true;
+			case ALWAYS:
+				return true;
 
-		case NEVER:
-			return false;
+			case NEVER:
+				return false;
 
-		case LIMIT_LESS_THAN:
-			return owner != null && owner.getLimit() < value;
+			case LIMIT_LESS_THAN:
+				return owner != null && owner.getLimit() < conditionValue;
 
-		case ON_OWNER_SELECTED:
-			return owner != null && owner.getAmountSelected() > 0;
+			case ON_OWNER_SELECTED:
+				return owner != null && owner.getAmountSelected() > 0;
 
-		case ON_OPTION_SELECTED:
-			for (final int id : sourceIds) {
-				final UnitOption option = getOption(id);
-				if (option != null && option.getAmountSelected() > 0) {
-					return true;
+			case ON_OPTION_SELECTED:
+				for (final int id : sourceIds) {
+					final UnitOption option = getOption(id);
+					if (option != null && option.getAmountSelected() > 0) {
+						return true;
+					}
 				}
-			}
-			return false;
-		case ON_OPTION_NOT_SELECTED:
-			for (final int id : sourceIds) {
-				final UnitOption option = getOption(id);
-				if (option != null && option.getAmountSelected() == 0) {
-					return true;
+				return false;
+			case ON_OPTION_NOT_SELECTED:
+				for (final int id : sourceIds) {
+					final UnitOption option = getOption(id);
+					if (option != null && option.getAmountSelected() == 0) {
+						return true;
+					}
 				}
-			}
-			return false;
+				return false;
+			case ON_NO_OPTION_SELECTED:
+				for (final int id : sourceIds) {
+					final UnitOption option = getOption(id);
+					if (option != null && option.getAmountSelected() != 0) {
+						return false;
+					}
+				}
+				return true;
 
-		case ON_UNSELECTED:
-			return owner != null && owner.getAmountSelected() == 0;
+			case ON_UNSELECTED:
+				return owner != null && owner.getAmountSelected() == 0;
 
-		case GROUP_SUMS_LESS_THAN:
-			return new Enabler().buildSourceSelectionSums() < value;
+			case GROUP_SUMS_LESS_THAN:
+				return new Enabler().buildSourceSelectionSums() < conditionValue;
 
-		case GROUP_SUMS_MORE_THAN:
-			return new Enabler().buildSourceSelectionSums() > value;
+			case GROUP_SUMS_MORE_THAN:
+				return new Enabler().buildSourceSelectionSums() > conditionValue;
 
-		default:
-			break;
+			default:
+				break;
 		}
 		return false;
 	}
@@ -168,9 +203,7 @@ public class OptionRule extends Model implements IRule {
 	}
 
 	private void handleAddWarning() {
-		for (final int sourceId : sourceIds) {
-			setWarning(sourceId);
-		}
+		setWarning(getOwnerGroup().getId());
 	}
 
 	private void setWarning(final int groupId) {
@@ -193,8 +226,10 @@ public class OptionRule extends Model implements IRule {
 			final UnitOptionGroup target = getGroup(targetId);
 			if (target != null) {
 				if (checkCondition()) {
+					target.reduceBy(diff);
 					target.setOptionNumberPerGroup(target.getInitalOptionNumberPerGroup() - diff);
 				} else {
+					target.reduceBy(0);
 					target.setOptionNumberPerGroup(target.getInitalOptionNumberPerGroup());
 				}
 			}
@@ -300,6 +335,7 @@ public class OptionRule extends Model implements IRule {
 		dest.writeInt(targetIds.length);
 		dest.writeIntArray(targetIds);
 		dest.writeInt(value);
+		dest.writeInt(conditionValue);
 		dest.writeString(text);
 		dest.writeInt(targetType.ordinal());
 		dest.writeInt(conditionType.ordinal());
@@ -318,6 +354,9 @@ public class OptionRule extends Model implements IRule {
 		targetIds = new int[source.readInt()];
 		source.readIntArray(targetIds);
 		value = source.readInt();
+		if (getFileVersion() >= 1) {
+			conditionValue = source.readInt();
+		}
 		text = source.readString();
 		targetType = GroupType.values()[source.readInt()];
 		conditionType = ConditionType.values()[source.readInt()];
@@ -326,7 +365,7 @@ public class OptionRule extends Model implements IRule {
 
 	@Override
 	protected int getFeatureVersion() {
-		return 0;
+		return 1;
 	}
 
 	public static final Parcelable.Creator<OptionRule> CREATOR = new Creator<OptionRule>() {
@@ -364,6 +403,10 @@ public class OptionRule extends Model implements IRule {
 	}
 
 	public class Enabler {
+		public OptionRule getRule() {
+			return OptionRule.this;
+		}
+
 		public OptionRule basedOnGroup() {
 			conditionType = ConditionType.ON_OWNER_SELECTED;
 			return OptionRule.this;
@@ -381,6 +424,12 @@ public class OptionRule extends Model implements IRule {
 			return OptionRule.this;
 		}
 
+		public OptionRule basedOnNotAnyOption(final int... optionIds) {
+			OptionRule.this.sourceIds = optionIds;
+			conditionType = ConditionType.ON_NO_OPTION_SELECTED;
+			return OptionRule.this;
+		}
+
 		public OptionRule always() {
 			conditionType = ConditionType.ALWAYS;
 			return OptionRule.this;
@@ -392,7 +441,7 @@ public class OptionRule extends Model implements IRule {
 		}
 
 		public OptionRule ifMembersLessThan(final int number) {
-			value = number;
+			conditionValue = number;
 			conditionType = ConditionType.LIMIT_LESS_THAN;
 			return OptionRule.this;
 		}
@@ -400,6 +449,11 @@ public class OptionRule extends Model implements IRule {
 		public SumsComparator whenSumsOfGroups(final int... groupId) {
 			OptionRule.this.sourceIds = groupId;
 			return new SumsComparator();
+		}
+
+		public OptionRule minus(final int value) {
+			OptionRule.this.value = value;
+			return OptionRule.this;
 		}
 
 		protected int buildSourceSelectionSums() {
@@ -431,10 +485,10 @@ public class OptionRule extends Model implements IRule {
 			return new Enabler();
 		}
 
-		public OptionRule byAmountOfOption(final int... optionIds) {
+		public Enabler byAmountOfOption(final int... optionIds) {
 			sourceIds = optionIds;
 			actionType = ActionType.REDUCE_GROUP_AMOUNT_BY_OPTION;
-			return OptionRule.this;
+			return new Enabler();
 		}
 	}
 
@@ -445,17 +499,23 @@ public class OptionRule extends Model implements IRule {
 			actionType = ActionType.LIMIT_OPTION_TO;
 			return new Enabler();
 		}
+
+		public Enabler byNumberOfMembers() {
+			actionType = ActionType.LIMIT_OPTIONS_TO_MEMBERS;
+			value = 0;
+			return new Enabler();
+		}
 	}
 
 	public class SumsComparator {
 		public OptionRule lessThan(final int value) {
-			OptionRule.this.value = value;
+			OptionRule.this.conditionValue = value;
 			OptionRule.this.conditionType = ConditionType.GROUP_SUMS_LESS_THAN;
 			return OptionRule.this;
 		}
 
 		public OptionRule moreThan(final int value) {
-			OptionRule.this.value = value;
+			OptionRule.this.conditionValue = value;
 			OptionRule.this.conditionType = ConditionType.GROUP_SUMS_MORE_THAN;
 			return OptionRule.this;
 		}

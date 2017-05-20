@@ -1,6 +1,7 @@
 package de.game_coding.armypicker.adapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -13,21 +14,25 @@ import de.game_coding.armypicker.viewmodel.UnitStatsSummaries;
 
 public class UnitStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, UnitStatsListItem> {
 
-	private final List<UnitStats> stats;
+	private final List<UnitStats> units;
 	private final UnitStatsSummaries showStatsSummaries;
+	private final Collection<StatsEntry> weapons;
 
-	public UnitStatsListAdapter(final Context context, final UnitStats stats, UnitStatsSummaries showStatsSummaries) {
-		super(context, stats.getEntries());
+	public UnitStatsListAdapter(final Context context, final UnitStats units, final Collection<StatsEntry> weapons,
+		final UnitStatsSummaries showStatsSummaries) {
+		super(context, units.getEntries());
 		this.showStatsSummaries = showStatsSummaries;
-		this.stats = new ArrayList<UnitStats>();
-		this.stats.add(stats);
+		this.units = new ArrayList<UnitStats>();
+		this.units.add(units);
+		this.weapons = weapons;
 	}
 
-	public UnitStatsListAdapter(final Context context, final List<UnitStats> stats,
-		UnitStatsSummaries showStatsSummaries) {
-		super(context, merge(stats));
-		this.stats = stats;
+	public UnitStatsListAdapter(final Context context, final List<UnitStats> units,
+		final Collection<StatsEntry> weapons, final UnitStatsSummaries showStatsSummaries) {
+		super(context, merge(units));
+		this.units = units;
 		this.showStatsSummaries = showStatsSummaries;
+		this.weapons = weapons;
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public class UnitStatsListAdapter extends BaseAdapter<UnitStats.StatsEntry, Unit
 	@Override
 	protected void fillView(final UnitStatsListItem view, final StatsEntry item, final int position,
 		final ViewGroup parent) {
-		view.bind(item, findByIndex(stats, position).getHeaders(), showStatsSummaries);
+		view.bind(item, findByIndex(units, position).getHeaders(), weapons, showStatsSummaries);
 	}
 
 	private UnitStats findByIndex(final List<UnitStats> stats, final int position) {
