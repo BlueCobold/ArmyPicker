@@ -27,6 +27,7 @@ import de.game_coding.armypicker.builder.IArmyTemplateBuilder;
 import de.game_coding.armypicker.builder.SpaceClownBuilder;
 import de.game_coding.armypicker.builder.SpaceElveBuilder;
 import de.game_coding.armypicker.builder.SpaceMonkBuilder;
+import de.game_coding.armypicker.builder.UndeadSpaceElveBuilder;
 import de.game_coding.armypicker.listener.DeleteHandler;
 import de.game_coding.armypicker.listener.EditHandler;
 import de.game_coding.armypicker.model.Army;
@@ -48,6 +49,7 @@ public class MainActivity extends Activity {
 	private static final IArmyTemplateBuilder SPACE_CLOWNS = new SpaceClownBuilder();
 	private static final IArmyTemplateBuilder GREEN_SPACE_MONKS = new GreenSpaceMonkBuilder();
 	private static final IArmyTemplateBuilder EVIL_SPACE_ELVES = new EvilSpaceElveBuilder();
+	private static final IArmyTemplateBuilder UNDEAD_SPACE_ELVES = new UndeadSpaceElveBuilder();
 
 	private static final List<Army> ARMY_TEMPLATES = new ArrayList<Army>() {
 		private static final long serialVersionUID = 1493878691032538962L;
@@ -56,6 +58,7 @@ public class MainActivity extends Activity {
 			add(build(SPACE_ELVES));
 			add(build(SPACE_CLOWNS));
 			add(build(EVIL_SPACE_ELVES));
+			add(build(UNDEAD_SPACE_ELVES));
 			// add(build(SPACE_MONKS));
 			// add(build(GREEN_SPACE_MONKS));
 		}
