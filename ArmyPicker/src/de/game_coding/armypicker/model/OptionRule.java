@@ -412,6 +412,12 @@ public class OptionRule extends Model implements IRule {
 			return OptionRule.this;
 		}
 
+		/**
+		 * Triggers to true if any of the options is selected
+		 * 
+		 * @param optionIds
+		 * @return
+		 */
 		public OptionRule basedOnOption(final int... optionIds) {
 			OptionRule.this.sourceIds = optionIds;
 			conditionType = ConditionType.ON_OPTION_SELECTED;
