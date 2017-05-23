@@ -14,7 +14,7 @@ public class UnitStats extends Model {
 		private final String name;
 		private final String[] values;
 		private final List<StatsEntry> secondaries = new ArrayList<StatsEntry>();
-		private final int id;
+		private int id;
 		private final List<Integer> gearReferences = new ArrayList<Integer>();
 		private final List<GameRule> gameRules = new ArrayList<GameRule>();
 
@@ -51,12 +51,21 @@ public class UnitStats extends Model {
 			return id;
 		}
 
+		public void setId(final int id) {
+			this.id = id;
+		}
+
 		public List<Integer> getGearReferences() {
 			return gearReferences;
 		}
 
 		public List<GameRule> getGameRules() {
 			return gameRules;
+		}
+
+		@Override
+		public String toString() {
+			return name;
 		}
 	}
 

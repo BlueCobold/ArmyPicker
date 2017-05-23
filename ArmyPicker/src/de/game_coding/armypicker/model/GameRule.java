@@ -12,24 +12,24 @@ public class GameRule extends Model {
 
 	private String description;
 
-	public GameRule(Parcel source) {
+	public GameRule(final Parcel source) {
 		readFromParcel(source);
 	}
 
-	public GameRule(String title, String description) {
+	public GameRule(final String title, final String description) {
 		this.title = title;
 		this.description = description;
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags) {
+	public void writeToParcel(final Parcel dest, final int flags) {
 		super.writeToParcel(dest, flags);
 		dest.writeString(title);
 		dest.writeString(description);
 	}
 
 	@Override
-	protected void readFromParcel(Parcel source) {
+	protected void readFromParcel(final Parcel source) {
 		super.readFromParcel(source);
 		if (getFileVersion() > getFeatureVersion()) {
 			return;
@@ -52,7 +52,7 @@ public class GameRule extends Model {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -60,7 +60,7 @@ public class GameRule extends Model {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -74,7 +74,7 @@ public class GameRule extends Model {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -102,4 +102,8 @@ public class GameRule extends Model {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return title;
+	}
 }
