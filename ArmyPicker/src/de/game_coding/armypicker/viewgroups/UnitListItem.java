@@ -260,7 +260,7 @@ public class UnitListItem extends RelativeLayout {
 		String result = new String();
 		for (final UnitOptionGroup group : unit.getOptions()) {
 			for (final UnitOption option : group.getOptions()) {
-				if (option.getAmountSelected() == 0) {
+				if (option.getAmountSelected() <= 0) {
 					continue;
 				}
 				if (!result.isEmpty()) {
