@@ -414,4 +414,17 @@ public class UnitOptionGroup extends Model {
 			validateAmounts();
 		}
 	}
+
+	public UnitOptionGroup removeOption(final int... ids) {
+		final List<UnitOption> newOptions = new ArrayList<UnitOption>();
+		for (final int id : ids) {
+			for (final UnitOption option : options) {
+				if (option.getId() != id) {
+					newOptions.add(option);
+				}
+			}
+		}
+		options = newOptions;
+		return this;
+	}
 }
