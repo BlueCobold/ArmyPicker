@@ -140,7 +140,8 @@ public class UnitOptionGroup extends Model {
 
 	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
 		if (type != GroupType.UP_TO_X_PER_Y_MODELS && type != GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS
-			&& type != GroupType.ONE_PER_MODEL && type != GroupType.X_OF_EACH_PER_MODEL) {
+			&& type != GroupType.ONE_PER_MODEL && type != GroupType.ONE_PER_MODEL_EXEPT_ONE
+			&& type != GroupType.X_OF_EACH_PER_MODEL) {
 			if (this.optionNumberPerGroup != Math.max(0, optionNumberPerGroup)) {
 				this.optionNumberPerGroup = Math.max(0, optionNumberPerGroup);
 				validateAmounts();
@@ -323,6 +324,10 @@ public class UnitOptionGroup extends Model {
 		int current = 0;
 		if (option.getParentId() >= 0) {
 			return option.getAmountSelected() < getOptionAmount(option.getParentId());
+		}
+		if (type == GroupType.X_OF_EACH_PER_MODEL || (options.size() == 1
+			&& (type == GroupType.ONE_PER_MODEL || type == GroupType.ONE_PER_MODEL_EXEPT_ONE))) {
+			return false;
 		}
 		for (final UnitOption unitOption : options) {
 			if (unitOption.getParentId() >= 0) {
