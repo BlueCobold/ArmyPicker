@@ -19,6 +19,7 @@ public class OptionRule extends Model implements IRule {
 		ADD_WARNING, //
 		LIMIT_OPTION_TO, //
 		LIMIT_OPTIONS_TO_MEMBERS, //
+		REDUCE_GROUP_AMOUNT_BY_GROUPS, //
 	}
 
 	private enum ConditionType {
@@ -86,6 +87,9 @@ public class OptionRule extends Model implements IRule {
 				break;
 			case REDUCE_GROUP_AMOUNT_BY_OPTION:
 				handleLimitOptionAmountBy(new Enabler().buildSourceOptionSums());
+				break;
+			case REDUCE_GROUP_AMOUNT_BY_GROUPS:
+				handleLimitOptionAmountBy(new Enabler().buildSourceGroupsSums());
 				break;
 			case ADD_WARNING:
 				handleAddWarning();
@@ -414,7 +418,7 @@ public class OptionRule extends Model implements IRule {
 
 		/**
 		 * Triggers to true if any of the options is selected
-		 * 
+		 *
 		 * @param optionIds
 		 * @return
 		 */
@@ -477,6 +481,17 @@ public class OptionRule extends Model implements IRule {
 			}
 			return sum;
 		}
+
+		protected int buildSourceGroupsSums() {
+			int sum = 0;
+			for (final int sourceId : sourceIds) {
+				final UnitOptionGroup group = getGroup(sourceId);
+				for (final UnitOption option : group.getOptions()) {
+					sum += option.getAmountSelected();
+				}
+			}
+			return sum;
+		}
 	}
 
 	public class GroupAmountReducer {
@@ -494,6 +509,12 @@ public class OptionRule extends Model implements IRule {
 		public Enabler byAmountOfOption(final int... optionIds) {
 			sourceIds = optionIds;
 			actionType = ActionType.REDUCE_GROUP_AMOUNT_BY_OPTION;
+			return new Enabler();
+		}
+
+		public Enabler byAmountOfGroups(final int... groupIds) {
+			sourceIds = groupIds;
+			actionType = ActionType.REDUCE_GROUP_AMOUNT_BY_GROUPS;
 			return new Enabler();
 		}
 	}
