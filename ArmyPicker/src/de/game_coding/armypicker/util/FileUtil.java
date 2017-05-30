@@ -74,14 +74,15 @@ public final class FileUtil {
 		storeToFile(army, army.getId() + FILE_SUFFIX, context);
 	}
 
-	public static List<Army> readArmies(final Context context) {
+	public static List<Army> readArmies(final Context context, final String infix, final boolean include) {
 		final List<Army> results = new ArrayList<Army>();
 		final File dir = getFilePath(context);
 		final File[] armies = dir.listFiles(new FileFilter() {
 
 			@Override
 			public boolean accept(final File pathname) {
-				return pathname.getAbsolutePath().endsWith(FILE_SUFFIX);
+				return pathname.getAbsolutePath().endsWith(FILE_SUFFIX)
+					&& (pathname.getAbsolutePath().contains(infix) == include);
 			}
 		});
 		for (final File armyFile : armies) {
@@ -93,7 +94,8 @@ public final class FileUtil {
 		return results;
 	}
 
-	public static <T> T readFromFile(final String fileName, final Context context, final Parcelable.Creator<T> creator) {
+	public static <T> T readFromFile(final String fileName, final Context context,
+		final Parcelable.Creator<T> creator) {
 		final File dir = getFilePath(context);
 		if (dir == null) {
 			return null;
@@ -154,8 +156,12 @@ public final class FileUtil {
 	}
 
 	public static void delete(final Army army, final Context context) {
+		deleteFile(army.getId() + FILE_SUFFIX, context);
+	}
+
+	public static void deleteFile(final String file, final Context context) {
 		final File dir = getFilePath(context);
-		final File armyFile = new File(dir, army.getId() + FILE_SUFFIX);
+		final File armyFile = new File(dir, file);
 		if (armyFile.exists()) {
 			armyFile.delete();
 		}

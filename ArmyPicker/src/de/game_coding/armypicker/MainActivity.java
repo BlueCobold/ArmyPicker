@@ -108,11 +108,15 @@ public class MainActivity extends Activity {
 	@AfterViews
 	protected void init() {
 
-		final List<Army> army = FileUtil.readArmies(this);
+		final List<Army> army = FileUtil.readArmies(this, "_template.", false);
 		if (army != null) {
 			armies.addAll(army);
 		}
-
+		final List<Army> templates = FileUtil.readArmies(this, "_template.", true);
+		if (templates != null) {
+			ARMY_TEMPLATES.addAll(templates);
+		}
+		downloadView.setDownloadedTemplates(templates);
 		downloadView.setArmies(ARMY_TEMPLATES);
 		armyListView.setAdapter(newArmyAdapter(armyListView));
 		UIUtil.hide(editView);
