@@ -55,12 +55,11 @@ public class MainActivity extends Activity {
 		private static final long serialVersionUID = 1493878691032538962L;
 
 		{
-			add(build(SPACE_ELVES));
-			add(build(SPACE_CLOWNS));
-			add(build(EVIL_SPACE_ELVES));
-			add(build(UNDEAD_SPACE_ELVES));
-			// add(build(SPACE_MONKS));
-			// add(build(GREEN_SPACE_MONKS));
+			/*
+			 * add(build(SPACE_ELVES)); add(build(SPACE_CLOWNS));
+			 * add(build(EVIL_SPACE_ELVES)); add(build(UNDEAD_SPACE_ELVES));
+			 * add(build(SPACE_MONKS));
+			 */// add(build(GREEN_SPACE_MONKS));
 		}
 
 		private Army build(final IArmyTemplateBuilder builder) {
