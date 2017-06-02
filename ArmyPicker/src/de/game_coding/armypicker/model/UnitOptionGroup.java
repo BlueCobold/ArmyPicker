@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 public class UnitOptionGroup extends Model {
 
@@ -71,7 +70,7 @@ public class UnitOptionGroup extends Model {
 
 	private int id;
 
-	private Creator<?> ruleCreator;
+	private Creator<IRule> ruleCreator;
 
 	private boolean enabled = true;
 
@@ -120,7 +119,7 @@ public class UnitOptionGroup extends Model {
 		this.options = Arrays.asList(options);
 	}
 
-	public UnitOptionGroup(final Parcel source, final Creator<?> ruleCreator) {
+	public UnitOptionGroup(final Parcel source, final Creator<IRule> ruleCreator) {
 		this.ruleCreator = ruleCreator;
 		readFromParcel(source);
 	}
@@ -141,7 +140,7 @@ public class UnitOptionGroup extends Model {
 	public void setOptionNumberPerGroup(final int optionNumberPerGroup) {
 		if (type != GroupType.UP_TO_X_PER_Y_MODELS && type != GroupType.UP_TO_X_OF_EACH_PER_Y_MODELS
 			&& type != GroupType.ONE_PER_MODEL && type != GroupType.ONE_PER_MODEL_EXEPT_ONE
-			&& type != GroupType.X_OF_EACH_PER_MODEL) {
+			&& type != GroupType.X_OF_EACH_PER_MODEL && type != GroupType.UP_TO_X_PER_UNIT) {
 			if (this.optionNumberPerGroup != Math.max(0, optionNumberPerGroup)) {
 				this.optionNumberPerGroup = Math.max(0, optionNumberPerGroup);
 				validateAmounts();
@@ -169,6 +168,10 @@ public class UnitOptionGroup extends Model {
 	}
 
 	public void validateAmounts() {
+		validateAmounts(false);
+	}
+
+	public void validateAmounts(final boolean selfCheck) {
 		final int max = enabled || type == GroupType.X_PER_UNIT ? getMaxAmount() : 0;
 		int current = 0;
 		for (final UnitOption option : options) {
@@ -195,8 +198,10 @@ public class UnitOptionGroup extends Model {
 				current = max;
 			}
 		}
-		for (final IRule rule : rules) {
-			rule.check();
+		if (!selfCheck) {
+			for (final IRule rule : rules) {
+				rule.check();
+			}
 		}
 		return;
 	}
@@ -286,7 +291,7 @@ public class UnitOptionGroup extends Model {
 		int max = limit;
 		switch (type) {
 			case X_PER_UNIT:
-				return optionNumberPerGroup;
+				return initialOptionNumberPerGroup;
 
 			case X_OF_EACH_PER_MODEL:
 				return limit * initialOptionNumberPerGroup;
@@ -301,7 +306,7 @@ public class UnitOptionGroup extends Model {
 
 			case UP_TO_X_PER_UNIT:
 			case UP_TO_X_OF_EACH_PER_UNIT:
-				max = optionNumberPerGroup;
+				max = optionNumberPerGroup - reducer;
 				break;
 
 			default:
@@ -396,7 +401,7 @@ public class UnitOptionGroup extends Model {
 
 		id = source.readInt();
 
-		rules = readList(source, (Parcelable.Creator<IRule>) ruleCreator);
+		rules = readList(source, ruleCreator);
 	}
 
 	@Override
@@ -413,10 +418,10 @@ public class UnitOptionGroup extends Model {
 		return name;
 	}
 
-	public void reduceBy(final int diff) {
+	public void reduceBy(final int diff, final UnitOptionGroup cause) {
 		reducer = diff;
-		if (type == GroupType.UP_TO_X_PER_Y_MODELS) {
-			validateAmounts();
+		if (type == GroupType.UP_TO_X_PER_Y_MODELS || type == GroupType.UP_TO_X_PER_UNIT) {
+			validateAmounts(cause == this);
 		}
 	}
 

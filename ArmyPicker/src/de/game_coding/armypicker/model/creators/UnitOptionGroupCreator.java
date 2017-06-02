@@ -1,15 +1,16 @@
 package de.game_coding.armypicker.model.creators;
 
-import de.game_coding.armypicker.model.UnitOptionGroup;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+import de.game_coding.armypicker.model.IRule;
+import de.game_coding.armypicker.model.UnitOptionGroup;
 
 public class UnitOptionGroupCreator implements Creator<UnitOptionGroup> {
 
-	private final Creator<?> ruleCreator;
+	private final Creator<IRule> ruleCreator;
 
-	public UnitOptionGroupCreator(final Parcelable.Creator<?> ruleCreator) {
+	public UnitOptionGroupCreator(final Parcelable.Creator<IRule> ruleCreator) {
 		this.ruleCreator = ruleCreator;
 	}
 

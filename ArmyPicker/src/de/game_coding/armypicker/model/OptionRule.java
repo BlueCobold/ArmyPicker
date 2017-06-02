@@ -230,10 +230,10 @@ public class OptionRule extends Model implements IRule {
 			final UnitOptionGroup target = getGroup(targetId);
 			if (target != null) {
 				if (checkCondition()) {
-					target.reduceBy(diff);
+					target.reduceBy(diff, this.getOwnerGroup());
 					target.setOptionNumberPerGroup(target.getInitalOptionNumberPerGroup() - diff);
 				} else {
-					target.reduceBy(0);
+					target.reduceBy(0, this.getOwnerGroup());
 					target.setOptionNumberPerGroup(target.getInitalOptionNumberPerGroup());
 				}
 			}
@@ -372,7 +372,7 @@ public class OptionRule extends Model implements IRule {
 		return 1;
 	}
 
-	public static final Parcelable.Creator<OptionRule> CREATOR = new Creator<OptionRule>() {
+	public static final Parcelable.Creator<IRule> CREATOR = new Creator<IRule>() {
 
 		@Override
 		public OptionRule[] newArray(final int size) {
